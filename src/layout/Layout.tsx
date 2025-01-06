@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import useUserAuthenticated from "../hooks/useUserAuthenticated";
+import isUserAuthenticated from "../app/isUserAuthenticated";
 import PrivateLayout from "./components/PrivateLayout";
 
 const Layout = () => {
-  const { isUserAuthenticated } = useUserAuthenticated();
+  const userAuth = isUserAuthenticated();
 
   return (
     <div>
-      {isUserAuthenticated ? (
+      {userAuth ? (
         <PrivateLayout>
           <Outlet />
         </PrivateLayout>

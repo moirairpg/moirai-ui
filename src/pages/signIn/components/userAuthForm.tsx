@@ -19,7 +19,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
       </div>
       <a
-        href="https://discord.com/oauth2/authorize?client_id=1159186267465064530&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcode&scope=identify"
+        href={import.meta.env.VITE_CHATRPG_DISCORD_LOGIN_URL}
         className="flex items-center justify-center w-[100%]"
       >
         <Button
