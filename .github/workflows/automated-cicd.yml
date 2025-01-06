@@ -1,0 +1,51 @@
+name: Node.js CI
+on: [push]
+env:
+  FORCE_COLOR: 2
+  NODE: 18
+  CI: ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+      - name: Install npm dependencies
+        run: npm install
+      - name: Run build
+        run: npm run build
+        env:
+          CHATRPG_COOKIE_ENCRYPTION_KEY: "${{ secrets.CHATRPG_COOKIE_ENCRYPTION_KEY }}"
+          CHATRPG_DISCORD_LOGIN_URL: "${{ vars.CHATRPG_DISCORD_LOGIN_URL }}"
+          CHATRPG_BACKEND_API_URL: "${{ vars.CHATRPG_BACKEND_API_URL }}"
+      - name: Build and push image to GitLab Container Registry
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo ${{ secrets.GITLAB_ACCESS_TOKEN }} | docker login registry.gitlab.com -u thaalesalves --password-stdin
+          docker build -t registry.gitlab.com/thaalesalves/chatrpg:front-end .
+          docker push registry.gitlab.com/thaalesalves/chatrpg:front-end
+      - name: Deploy to Digital Ocean
+        if: github.ref == 'refs/heads/master'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo ${{ secrets.GITLAB_ACCESS_TOKEN }} | sudo docker login registry.gitlab.com -u thaalesalves --password-stdin
+            sudo docker rm -f chatrpg-fe
+            sudo docker rmi -f registry.gitlab.com/thaalesalves/chatrpg:front-end
+            sudo docker run -d \
+              --name=chatrpg-fe \
+              --hostname=chatrpg-fe \
+              --network=deployuser_dockerlan \
+              -p 1313:80 \
+              registry.gitlab.com/thaalesalves/chatrpg:front-end
