@@ -1,0 +1,45 @@
+name: Build MoirAI-FE on push
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+env:
+  FORCE_COLOR: 2
+  NODE: 20
+  CI: ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '20.x'
+      - name: Install npm dependencies
+        run: npm install
+      - name: Run build
+        run: npm run build
+        env:
+          CHATRPG_DISCORD_LOGIN_URL: "${{ vars.CHATRPG_DISCORD_LOGIN_URL }}"
+          CHATRPG_BACKEND_API_URL: "${{ vars.CHATRPG_BACKEND_API_URL }}"
+      - name: Test container build image
+        if: github.ref != 'refs/heads/develop'
+        run: docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+      - name: Login to GitHub Container Registry
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ vars.DOCKER_REPO_ADDR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image to GitHub Container Registry
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+          docker push ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge
