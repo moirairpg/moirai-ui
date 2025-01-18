@@ -2,7 +2,7 @@ import Layout from "@/layout/Layout";
 import { CreateWorldPage } from "@/pages/create-world";
 import ErrorPage from "@/pages/errors/errorPageRoute";
 import Login from "@/pages/signIn";
-import WorldPage, { loader } from "@/pages/worlds";
+import WorldPage from "@/pages/worlds";
 import { queryClient } from "@/utils/queryClient";
 import {
   createBrowserRouter,
@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import { loader } from "@/pages/worlds/loader";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
