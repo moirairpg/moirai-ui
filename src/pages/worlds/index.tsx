@@ -1,45 +1,27 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  LoaderFunctionArgs,
   useLoaderData,
-  useNavigation,
-  useSubmit,
+  // useNavigation,
+  // useSubmit,
 } from "react-router-dom";
 import { WorldsContainer } from "./components/worldsContainer";
 import {
-  QueryClient,
-  queryOptions,
-  useIsFetching,
+  // useIsFetching,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { getWorlds } from "./services/worlds";
-import { useDebounce } from "use-debounce";
-
-const worldsListQuery = (q?: string) =>
-  queryOptions({
-    queryKey: ["worlds", "list", q ?? "all"],
-    queryFn: () => getWorlds(),
-  });
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ request }: LoaderFunctionArgs) => {
-    const url = new URL(request.url);
-    const q = url.searchParams.get("q") ?? "";
-    await queryClient.ensureQueryData(worldsListQuery(q));
-    return { q };
-  };
+import { loader } from "./loader";
+import { worldsListQuery } from "./worldsListQuery";
+// import { useDebounce } from "use-debounce";
 
 export default function WorldPage() {
   const { q } = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof loader>>
   >;
   const { data: worldsList } = useSuspenseQuery(worldsListQuery(q));
-  const searching = useIsFetching({ queryKey: ["contacts", "list"] }) > 0;
-  const navigation = useNavigation();
-  const submit = useSubmit();
+  // const searching = useIsFetching({ queryKey: ["contacts", "list"] }) > 0;
+  // const navigation = useNavigation();
+  // const submit = useSubmit();
 
-  const debouncedSubmit = useDebounce(submit, 500);
+  // const debouncedSubmit = useDebounce(submit, 500);
 
   return (
     <>
