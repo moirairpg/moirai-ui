@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { authenticatedFetch } from '../utils/api';
+import { apiFetch } from '../utils/api';
 
 export type Plugin = {
   name: string;
@@ -48,7 +48,7 @@ export function PluginsProvider({ children }: { children: ReactNode }) {
 
   const refreshPlugins = useCallback(async () => {
     try {
-      const res = await authenticatedFetch('/api/plugins');
+      const res = await apiFetch('/api/plugins');
       if (res.ok) {
         const data = await res.json();
         setPlugins(data.plugins || []);
@@ -78,7 +78,7 @@ export function PluginsProvider({ children }: { children: ReactNode }) {
 
   const installPlugin = useCallback(async (url: string) => {
     try {
-      const res = await authenticatedFetch('/api/plugins/install', {
+      const res = await apiFetch('/api/plugins/install', {
         method: 'POST',
         body: JSON.stringify({ url }),
       });
@@ -95,7 +95,7 @@ export function PluginsProvider({ children }: { children: ReactNode }) {
 
   const uninstallPlugin = useCallback(async (name: string) => {
     try {
-      const res = await authenticatedFetch(`/api/plugins/${encodeURIComponent(name)}`, {
+      const res = await apiFetch(`/api/plugins/${encodeURIComponent(name)}`, {
         method: 'DELETE',
       });
       const data = await res.json();
@@ -111,7 +111,7 @@ export function PluginsProvider({ children }: { children: ReactNode }) {
 
   const updatePlugin = useCallback(async (name: string) => {
     try {
-      const res = await authenticatedFetch(`/api/plugins/${encodeURIComponent(name)}/update`, {
+      const res = await apiFetch(`/api/plugins/${encodeURIComponent(name)}/update`, {
         method: 'POST',
       });
       const data = await res.json();
@@ -127,7 +127,7 @@ export function PluginsProvider({ children }: { children: ReactNode }) {
 
   const togglePlugin = useCallback(async (name: string, enabled: boolean): Promise<{ success: boolean; error: string | null }> => {
     try {
-      const res = await authenticatedFetch(`/api/plugins/${encodeURIComponent(name)}/enable`, {
+      const res = await apiFetch(`/api/plugins/${encodeURIComponent(name)}/enable`, {
         method: 'PUT',
         body: JSON.stringify({ enabled }),
       });

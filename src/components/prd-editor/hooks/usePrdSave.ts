@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import type { ExistingPrdFile, SavePrdInput, SavePrdResult } from '../types';
 import { ensurePrdExtension } from '../utils/fileName';
 
@@ -59,7 +59,7 @@ export function usePrdSave({
       setSaving(true);
 
       try {
-        const response = await authenticatedFetch(`/api/taskmaster/prd/${encodeURIComponent(projectName)}`, {
+        const response = await apiFetch(`/api/taskmaster/prd/${encodeURIComponent(projectName)}`, {
           method: 'POST',
           body: JSON.stringify({
             fileName: finalFileName,

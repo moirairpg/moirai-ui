@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '../../../shared/view/ui';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import type { FileTreeImageSelection } from '../types/types';
 
 type ImageViewerProps = {
@@ -25,7 +25,7 @@ export default function ImageViewer({ file, onClose }: ImageViewerProps) {
         setError(null);
         setImageUrl(null);
 
-        const response = await authenticatedFetch(imagePath, {
+        const response = await apiFetch(imagePath, {
           signal: controller.signal,
         });
 

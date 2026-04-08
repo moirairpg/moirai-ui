@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { authenticatedFetch } from "../../../utils/api";
+import { apiFetch } from "../../../utils/api";
 import { ReleaseInfo } from "../../../types/sharedTypes";
 import { copyTextToClipboard } from "../../../utils/clipboard";
 import type { InstallMode } from "../../../hooks/useVersionCheck";
@@ -37,7 +37,7 @@ export function VersionUpgradeModal({
 
         try {
             // Call the backend API to run the update command
-            const response = await authenticatedFetch('/api/system/update', {
+            const response = await apiFetch('/api/system/update', {
                 method: 'POST',
             });
 

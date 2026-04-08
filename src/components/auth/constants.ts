@@ -1,8 +1,5 @@
-export const AUTH_TOKEN_STORAGE_KEY = 'auth-token';
-
 export const AUTH_ERROR_MESSAGES = {
-  authStatusCheckFailed: 'Failed to check authentication status',
-  loginFailed: 'Login failed',
-  registrationFailed: 'Registration failed',
+  authCheckFailed: 'Failed to check authentication status',
+  oauthFailed: 'Failed to initiate Discord login. Please try again.',
   networkError: 'Network error. Please try again.',
 } as const;

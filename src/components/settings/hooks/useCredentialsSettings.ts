@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import type {
   ApiKeyItem,
   ApiKeysResponse,
@@ -43,8 +43,8 @@ export function useCredentialsSettings({
       setLoading(true);
 
       const [apiKeysResponse, credentialsResponse] = await Promise.all([
-        authenticatedFetch('/api/settings/api-keys'),
-        authenticatedFetch('/api/settings/credentials?type=github_token'),
+        apiFetch('/api/settings/api-keys'),
+        apiFetch('/api/settings/credentials?type=github_token'),
       ]);
 
       const [apiKeysPayload, credentialsPayload] = await Promise.all([
@@ -67,7 +67,7 @@ export function useCredentialsSettings({
     }
 
     try {
-      const response = await authenticatedFetch('/api/settings/api-keys', {
+      const response = await apiFetch('/api/settings/api-keys', {
         method: 'POST',
         body: JSON.stringify({ keyName: newKeyName.trim() }),
       });
@@ -95,7 +95,7 @@ export function useCredentialsSettings({
     }
 
     try {
-      const response = await authenticatedFetch(`/api/settings/api-keys/${keyId}`, {
+      const response = await apiFetch(`/api/settings/api-keys/${keyId}`, {
         method: 'DELETE',
       });
 
@@ -113,7 +113,7 @@ export function useCredentialsSettings({
 
   const toggleApiKey = useCallback(async (keyId: string, isActive: boolean) => {
     try {
-      const response = await authenticatedFetch(`/api/settings/api-keys/${keyId}/toggle`, {
+      const response = await apiFetch(`/api/settings/api-keys/${keyId}/toggle`, {
         method: 'PATCH',
         body: JSON.stringify({ isActive: !isActive }),
       });
@@ -136,7 +136,7 @@ export function useCredentialsSettings({
     }
 
     try {
-      const response = await authenticatedFetch('/api/settings/credentials', {
+      const response = await apiFetch('/api/settings/credentials', {
         method: 'POST',
         body: JSON.stringify({
           credentialName: newGithubName.trim(),
@@ -169,7 +169,7 @@ export function useCredentialsSettings({
     }
 
     try {
-      const response = await authenticatedFetch(`/api/settings/credentials/${credentialId}`, {
+      const response = await apiFetch(`/api/settings/credentials/${credentialId}`, {
         method: 'DELETE',
       });
 
@@ -187,7 +187,7 @@ export function useCredentialsSettings({
 
   const toggleGithubCredential = useCallback(async (credentialId: string, isActive: boolean) => {
     try {
-      const response = await authenticatedFetch(`/api/settings/credentials/${credentialId}/toggle`, {
+      const response = await apiFetch(`/api/settings/credentials/${credentialId}/toggle`, {
         method: 'PATCH',
         body: JSON.stringify({ isActive: !isActive }),
       });

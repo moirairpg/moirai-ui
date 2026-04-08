@@ -58,7 +58,7 @@ export function useTaskMaster() {
 
 export function TaskMasterProvider({ children }: { children: React.ReactNode }) {
   const { latestMessage } = useWebSocket();
-  const { user, token, isLoading: isAuthLoading } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const [projects, setProjects] = useState<TaskMasterProject[]>([]);
   const [currentProject, setCurrentProjectState] = useState<TaskMasterProject | null>(null);
@@ -99,7 +99,7 @@ export function TaskMasterProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const refreshProjects = useCallback(async () => {
-    if (!user || !token) {
+    if (!user) {
       setProjects([]);
       setCurrentProjectState(null);
       setProjectTaskMaster(null);
@@ -136,12 +136,12 @@ export function TaskMasterProvider({ children }: { children: React.ReactNode }) 
     } finally {
       setIsLoading(false);
     }
-  }, [clearError, handleError, token, user]);
+  }, [clearError, handleError, user]);
 
   const refreshTasks = useCallback(async () => {
     const projectName = currentProject?.name;
 
-    if (!projectName || !user || !token) {
+    if (!projectName || !user) {
       setTasks([]);
       setNextTask(null);
       return;
@@ -169,10 +169,10 @@ export function TaskMasterProvider({ children }: { children: React.ReactNode }) 
     } finally {
       setIsLoadingTasks(false);
     }
-  }, [clearError, currentProject?.name, handleError, token, user]);
+  }, [clearError, currentProject?.name, handleError, user]);
 
   const refreshMCPStatus = useCallback(async () => {
-    if (!user || !token) {
+    if (!user) {
       setMcpServerStatus(null);
       return;
     }
@@ -194,20 +194,20 @@ export function TaskMasterProvider({ children }: { children: React.ReactNode }) 
     } finally {
       setIsLoadingMCP(false);
     }
-  }, [clearError, handleError, token, user]);
+  }, [clearError, handleError, user]);
 
   useEffect(() => {
-    if (!isAuthLoading && user && token) {
+    if (!isAuthLoading && user) {
       void refreshProjects();
       void refreshMCPStatus();
     }
-  }, [isAuthLoading, refreshMCPStatus, refreshProjects, token, user]);
+  }, [isAuthLoading, refreshMCPStatus, refreshProjects, user]);
 
   useEffect(() => {
-    if (currentProject?.name && user && token) {
+    if (currentProject?.name && user) {
       void refreshTasks();
     }
-  }, [currentProject?.name, refreshTasks, token, user]);
+  }, [currentProject?.name, refreshTasks, user]);
 
   useEffect(() => {
     const message = latestMessage as TaskMasterWebSocketMessage | null;

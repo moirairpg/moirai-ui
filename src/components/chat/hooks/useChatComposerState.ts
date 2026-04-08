@@ -10,7 +10,7 @@ import type {
   TouchEvent,
 } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import { thinkingModes } from '../constants/thinkingModes';
 import { grantClaudeToolPermission } from '../utils/chatPermissions';
 import { safeLocalStorage } from '../utils/chatStorage';
@@ -285,7 +285,7 @@ export function useChatComposerState({
           tokenUsage: tokenBudget,
         };
 
-        const response = await authenticatedFetch('/api/commands/execute', {
+        const response = await apiFetch('/api/commands/execute', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -503,7 +503,7 @@ export function useChatComposerState({
         });
 
         try {
-          const response = await authenticatedFetch(`/api/projects/${selectedProject.name}/upload-images`, {
+          const response = await apiFetch(`/api/projects/${selectedProject.name}/upload-images`, {
             method: 'POST',
             headers: {},
             body: formData,

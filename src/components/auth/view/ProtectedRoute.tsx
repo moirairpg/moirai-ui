@@ -1,41 +1,13 @@
 import type { ReactNode } from 'react';
-import { IS_PLATFORM } from '../../../constants/config';
 import { useAuth } from '../context/AuthContext';
-import Onboarding from '../../onboarding/view/Onboarding';
 import AuthLoadingScreen from './AuthLoadingScreen';
-import LoginForm from './LoginForm';
-import SetupForm from './SetupForm';
+import DiscordLoginScreen from './DiscordLoginScreen';
 
-type ProtectedRouteProps = {
-  children: ReactNode;
-};
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user, isLoading } = useAuth();
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, isLoading, needsSetup, hasCompletedOnboarding, refreshOnboardingStatus } = useAuth();
-
-  if (isLoading) {
-    return <AuthLoadingScreen />;
-  }
-
-  if (IS_PLATFORM) {
-    if (!hasCompletedOnboarding) {
-      return <Onboarding onComplete={refreshOnboardingStatus} />;
-    }
-
-    return <>{children}</>;
-  }
-
-  if (needsSetup) {
-    return <SetupForm />;
-  }
-
-  if (!user) {
-    return <LoginForm />;
-  }
-
-  if (!hasCompletedOnboarding) {
-    return <Onboarding onComplete={refreshOnboardingStatus} />;
-  }
+  if (isLoading) return <AuthLoadingScreen />;
+  if (!user) return <DiscordLoginScreen />;
 
   return <>{children}</>;
 }

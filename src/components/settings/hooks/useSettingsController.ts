@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import {
   AUTH_STATUS_ENDPOINTS,
   DEFAULT_AUTH_STATUS,
@@ -270,7 +270,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
 
   const checkAuthStatus = useCallback(async (provider: AgentProvider) => {
     try {
-      const response = await authenticatedFetch(AUTH_STATUS_ENDPOINTS[provider]);
+      const response = await apiFetch(AUTH_STATUS_ENDPOINTS[provider]);
 
       if (!response.ok) {
         setAuthStatusByProvider(provider, {
@@ -303,7 +303,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
 
   const fetchCursorMcpServers = useCallback(async () => {
     try {
-      const response = await authenticatedFetch('/api/cursor/mcp');
+      const response = await apiFetch('/api/cursor/mcp');
       if (!response.ok) {
         console.error('Failed to fetch Cursor MCP servers');
         return;
@@ -318,7 +318,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
 
   const fetchCodexMcpServers = useCallback(async () => {
     try {
-      const configResponse = await authenticatedFetch('/api/codex/mcp/config/read');
+      const configResponse = await apiFetch('/api/codex/mcp/config/read');
 
       if (configResponse.ok) {
         const configData = await toResponseJson<McpReadResponse>(configResponse);
@@ -328,7 +328,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
         }
       }
 
-      const cliResponse = await authenticatedFetch('/api/codex/mcp/cli/list');
+      const cliResponse = await apiFetch('/api/codex/mcp/cli/list');
       if (!cliResponse.ok) {
         return;
       }
@@ -346,7 +346,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
 
   const fetchMcpServers = useCallback(async () => {
     try {
-      const configResponse = await authenticatedFetch('/api/mcp/config/read');
+      const configResponse = await apiFetch('/api/mcp/config/read');
       if (configResponse.ok) {
         const configData = await toResponseJson<McpReadResponse>(configResponse);
         if (configData.success && configData.servers) {
@@ -355,7 +355,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
         }
       }
 
-      const cliResponse = await authenticatedFetch('/api/mcp/cli/list');
+      const cliResponse = await apiFetch('/api/mcp/cli/list');
       if (cliResponse.ok) {
         const cliData = await toResponseJson<McpCliReadResponse>(cliResponse);
         if (cliData.success && cliData.servers) {
@@ -364,7 +364,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
         }
       }
 
-      const fallbackResponse = await authenticatedFetch('/api/mcp/servers?scope=user');
+      const fallbackResponse = await apiFetch('/api/mcp/servers?scope=user');
       if (!fallbackResponse.ok) {
         console.error('Failed to fetch MCP servers');
         return;
@@ -378,7 +378,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
   }, []);
 
   const deleteMcpServer = useCallback(async (serverId: string, scope = 'user') => {
-    const response = await authenticatedFetch(`/api/mcp/cli/remove/${serverId}?scope=${scope}`, {
+    const response = await apiFetch(`/api/mcp/cli/remove/${serverId}?scope=${scope}`, {
       method: 'DELETE',
     });
 
@@ -397,7 +397,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
     async (serverData: ClaudeMcpFormState, editingServer: McpServer | null) => {
       const newServerScope = serverData.scope || 'user';
 
-      const response = await authenticatedFetch('/api/mcp/cli/add', {
+      const response = await apiFetch('/api/mcp/cli/add', {
         method: 'POST',
         body: JSON.stringify({
           name: serverData.name,
@@ -450,7 +450,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
   const submitMcpForm = useCallback(
     async (formData: ClaudeMcpFormState, editingServer: McpServer | null) => {
       if (formData.importMode === 'json') {
-        const response = await authenticatedFetch('/api/mcp/cli/add-json', {
+        const response = await apiFetch('/api/mcp/cli/add-json', {
           method: 'POST',
           body: JSON.stringify({
             name: formData.name,
@@ -502,7 +502,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
   );
 
   const testMcpServer = useCallback(async (serverId: string, scope = 'user') => {
-    const response = await authenticatedFetch(`/api/mcp/servers/${serverId}/test?scope=${scope}`, {
+    const response = await apiFetch(`/api/mcp/servers/${serverId}/test?scope=${scope}`, {
       method: 'POST',
     });
 
@@ -516,7 +516,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
   }, []);
 
   const discoverMcpTools = useCallback(async (serverId: string, scope = 'user') => {
-    const response = await authenticatedFetch(`/api/mcp/servers/${serverId}/tools?scope=${scope}`, {
+    const response = await apiFetch(`/api/mcp/servers/${serverId}/tools?scope=${scope}`, {
       method: 'POST',
     });
 
@@ -572,7 +572,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
   );
 
   const deleteCodexMcpServer = useCallback(async (serverId: string) => {
-    const response = await authenticatedFetch(`/api/codex/mcp/cli/remove/${serverId}`, {
+    const response = await apiFetch(`/api/codex/mcp/cli/remove/${serverId}`, {
       method: 'DELETE',
     });
 
@@ -589,7 +589,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
 
   const saveCodexMcpServer = useCallback(
     async (serverData: CodexMcpFormState, editingServer: McpServer | null) => {
-      const response = await authenticatedFetch('/api/codex/mcp/cli/add', {
+      const response = await apiFetch('/api/codex/mcp/cli/add', {
         method: 'POST',
         body: JSON.stringify({
           name: serverData.name,
@@ -692,7 +692,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
       setGeminiPermissionMode(savedGeminiSettings.permissionMode || 'default');
 
       try {
-        const notificationResponse = await authenticatedFetch('/api/settings/notification-preferences');
+        const notificationResponse = await apiFetch('/api/settings/notification-preferences');
         if (notificationResponse.ok) {
           const notificationData = await toResponseJson<NotificationPreferencesResponse>(notificationResponse);
           if (notificationData.success && notificationData.preferences) {
@@ -767,7 +767,7 @@ export function useSettingsController({ isOpen, initialTab, projects, onClose }:
         lastUpdated: now,
       }));
 
-      const notificationResponse = await authenticatedFetch('/api/settings/notification-preferences', {
+      const notificationResponse = await apiFetch('/api/settings/notification-preferences', {
         method: 'PUT',
         body: JSON.stringify(notificationPreferences),
       });

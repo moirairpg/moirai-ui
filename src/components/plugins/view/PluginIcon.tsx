@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 
 type Props = {
   pluginName: string;
@@ -18,7 +18,7 @@ export default function PluginIcon({ pluginName, iconFile, className }: Props) {
 
   useEffect(() => {
     if (!url || svgCache.has(url)) return;
-    authenticatedFetch(url)
+    apiFetch(url)
       .then((r) => {
         if (!r.ok) return;
         return r.text();

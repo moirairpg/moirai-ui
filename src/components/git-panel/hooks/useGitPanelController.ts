@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import { DEFAULT_BRANCH, RECENT_COMMITS_LIMIT } from '../constants/constants';
 import type {
   GitApiErrorResponse,
@@ -19,8 +19,7 @@ import type {
 import { getAllChangedFiles } from '../utils/gitPanelUtils';
 import { useSelectedProvider } from './useSelectedProvider';
 
-// ! use authenticatedFetch directly. fetchWithAuth is redundant 
-const fetchWithAuth = authenticatedFetch as (url: string, options?: RequestInit) => Promise<Response>;
+const fetchWithAuth = apiFetch as (url: string, options?: RequestInit) => Promise<Response>;
 
 function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === 'AbortError';
@@ -542,7 +541,7 @@ export function useGitPanelController({
       }
 
       try {
-        const response = await authenticatedFetch('/api/git/generate-commit-message', {
+        const response = await apiFetch('/api/git/generate-commit-message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

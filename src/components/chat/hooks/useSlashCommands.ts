@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Dispatch, KeyboardEvent, RefObject, SetStateAction } from 'react';
 import Fuse from 'fuse.js';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import { safeLocalStorage } from '../utils/chatStorage';
 import type { Project } from '../../../types/app';
 
@@ -88,7 +88,7 @@ export function useSlashCommands({
       }
 
       try {
-        const response = await authenticatedFetch('/api/commands/list', {
+        const response = await apiFetch('/api/commands/list', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

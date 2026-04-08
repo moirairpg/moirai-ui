@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { MutableRefObject } from 'react';
-import { authenticatedFetch } from '../../../utils/api';
+import { apiFetch } from '../../../utils/api';
 import type { ChatMessage, Provider } from '../types/types';
 import type { Project, ProjectSession, SessionProvider } from '../../../types/app';
 import { createCachedDiffCalculator, type DiffCalculator } from '../utils/messageTransforms';
@@ -551,7 +551,7 @@ export function useChatSessionState({
     const fetchInitialTokenUsage = async () => {
       try {
         const url = `/api/projects/${selectedProject.name}/sessions/${selectedSession.id}/token-usage`;
-        const response = await authenticatedFetch(url);
+        const response = await apiFetch(url);
         if (response.ok) {
           setTokenBudget(await response.json());
         } else {
