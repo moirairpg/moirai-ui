@@ -39,9 +39,10 @@ export default function AppContent() {
     setSidebarOpen,
     setIsInputFocused,
     setShowSettings,
+    showSettings,
+    settingsInitialTab,
     openSettings,
     refreshProjectsSilently,
-    sidebarSharedProps,
   } = useProjectsState({
     sessionId,
     navigate,
@@ -51,8 +52,6 @@ export default function AppContent() {
   });
 
   useEffect(() => {
-    // Expose a non-blocking refresh for chat/session flows.
-    // Full loading refreshes are still available through direct fetchProjects calls.
     window.refreshProjects = refreshProjectsSilently;
 
     return () => {
@@ -106,7 +105,6 @@ export default function AppContent() {
     };
   }, [navigate, refreshProjectsSilently, setActiveTab, setSidebarOpen]);
 
-  // Permission recovery: query pending permissions on WebSocket reconnect or session change
   useEffect(() => {
     const isReconnect = isConnected && !wasConnectedRef.current;
 
@@ -124,11 +122,19 @@ export default function AppContent() {
     }
   }, [isConnected, selectedSession?.id, sendMessage]);
 
+  const sidebarProps = {
+    onShowSettings: () => setShowSettings(true),
+    showSettings,
+    settingsInitialTab,
+    onCloseSettings: () => setShowSettings(false),
+    isMobile,
+  };
+
   return (
     <div className="fixed inset-0 flex bg-background">
       {!isMobile ? (
         <div className="h-full flex-shrink-0 border-r border-border/50">
-          <Sidebar {...sidebarSharedProps} />
+          <Sidebar {...sidebarProps} />
         </div>
       ) : (
         <div
@@ -154,7 +160,7 @@ export default function AppContent() {
             onClick={(event) => event.stopPropagation()}
             onTouchStart={(event) => event.stopPropagation()}
           >
-            <Sidebar {...sidebarSharedProps} />
+            <Sidebar {...sidebarProps} />
           </div>
         </div>
       )}
