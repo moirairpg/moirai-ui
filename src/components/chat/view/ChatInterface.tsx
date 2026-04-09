@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTasksSettings } from '../../../contexts/TasksSettingsContext';
 import { QuickSettingsPanel } from '../../quick-settings-panel';
-import type { ChatInterfaceProps, Provider  } from '../types/types';
+import type { ChatInterfaceProps, ChatMessage, Provider  } from '../types/types';
 import type { SessionProvider } from '../../../types/app';
 import { useChatProviderState } from '../hooks/useChatProviderState';
 import { useChatSessionState } from '../hooks/useChatSessionState';
@@ -11,12 +11,25 @@ import { useChatComposerState } from '../hooks/useChatComposerState';
 import { useSessionStore } from '../../../stores/useSessionStore';
 import ChatMessagesPane from './subcomponents/ChatMessagesPane';
 import ChatComposer from './subcomponents/ChatComposer';
+import { AdventureMessagesPane } from '../../../features/adventure/components/AdventureMessagesPane';
+import type { AdventureMessage } from '../../../features/adventure/types';
 
 
 type PendingViewSession = {
   sessionId: string | null;
   startedAt: number;
 };
+
+const activePersonaName = 'Persona';
+
+function toAdventureMessages(chatMessages: ChatMessage[]): AdventureMessage[] {
+  return chatMessages.map((m) => ({
+    id: String(m.id ?? m.timestamp),
+    role: m.type === 'user' ? 'user' : m.type === 'system' ? 'system' : 'persona',
+    content: String(m.content ?? ''),
+    personaName: m.type === 'assistant' ? activePersonaName : undefined,
+  }));
+}
 
 function ChatInterface({
   selectedProject,
@@ -292,9 +305,18 @@ function ChatInterface({
     );
   }
 
+  const isAdventureSession = Boolean(selectedSession?.isAdventure);
+  const adventureMessages = toAdventureMessages(visibleMessages);
+
   return (
     <>
       <div className="flex h-full flex-col">
+        {isAdventureSession ? (
+          <AdventureMessagesPane
+            messages={adventureMessages}
+            isGenerating={isLoading}
+          />
+        ) : (
         <ChatMessagesPane
           scrollContainerRef={scrollContainerRef}
           onWheel={handleScroll}
@@ -340,6 +362,7 @@ function ChatInterface({
           selectedProject={selectedProject}
           isLoading={isLoading}
         />
+        )}
 
         <ChatComposer
           pendingPermissionRequests={pendingPermissionRequests}
