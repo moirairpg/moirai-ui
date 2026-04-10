@@ -17,10 +17,10 @@
     "projects": "проекты",
     "noMatchingProjects": "Нет подходящих проектов",
     "tryDifferentSearch": "Попробуйте изменить поисковый запрос",
-    "runClaudeCli": "Запустите Claude CLI в каталоге проекта для начала работы"
+    "runClaudeCli": "Запустите MoirAI в каталоге проекта для начала работы"
   },
   "app": {
-    "title": "Claude Code UI",
+    "title": "MoirAI",
     "subtitle": "Интерфейс AI помощника для программирования"
   },
   "sessions": {

@@ -4,37 +4,25 @@ import { useDeviceSettings } from '../../../hooks/useDeviceSettings';
 import { useVersionCheck } from '../../../hooks/useVersionCheck';
 import { useUiPreferences } from '../../../hooks/useUiPreferences';
 import type { SidebarProps } from '../types/types';
-import type { MoirAISidebarNavProps } from '../../../features/sidebar/components/MoirAISidebarNav';
 import SidebarCollapsed from './subcomponents/SidebarCollapsed';
 import SidebarContent from './subcomponents/SidebarContent';
 import SidebarModals from './subcomponents/SidebarModals';
 
-function Sidebar({ onShowSettings, showSettings, settingsInitialTab, onCloseSettings, isMobile }: SidebarProps) {
+function Sidebar({ navProps, isMobile }: SidebarProps) {
   const { t } = useTranslation(['sidebar', 'common']);
   const { isPWA } = useDeviceSettings({ trackMobile: false });
   const { updateAvailable, latestVersion, currentVersion, releaseInfo, installMode } = useVersionCheck('siteboon', 'claudecodeui');
   useUiPreferences();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [showVersionModal, setShowVersionModal] = useState(false);
-
-  const navProps: MoirAISidebarNavProps = {
-    onMyStuffClick: () => {},
-    onSharedWithMeClick: () => {},
-    onCreateAdventure: () => {},
-    onBrowseAdventures: () => {},
-    onAdventureClick: (_id) => {},
-    onCreateWorld: () => {},
-    onBrowseWorlds: () => {},
-    onCreatePersona: () => {},
-    onBrowsePersonas: () => {},
-  };
+  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <>
       <SidebarModals
         showSettings={showSettings}
-        settingsInitialTab={settingsInitialTab ?? 'agents'}
-        onCloseSettings={onCloseSettings}
+        settingsInitialTab="agents"
+        onCloseSettings={() => setShowSettings(false)}
         showVersionModal={showVersionModal}
         onCloseVersionModal={() => setShowVersionModal(false)}
         releaseInfo={releaseInfo}
@@ -47,7 +35,7 @@ function Sidebar({ onShowSettings, showSettings, settingsInitialTab, onCloseSett
       {isSidebarCollapsed ? (
         <SidebarCollapsed
           onExpand={() => setIsSidebarCollapsed(false)}
-          onShowSettings={onShowSettings}
+          onShowSettings={() => setShowSettings(true)}
           updateAvailable={updateAvailable}
           onShowVersionModal={() => setShowVersionModal(true)}
           t={t}
@@ -63,7 +51,7 @@ function Sidebar({ onShowSettings, showSettings, settingsInitialTab, onCloseSett
           releaseInfo={releaseInfo}
           latestVersion={latestVersion}
           onShowVersionModal={() => setShowVersionModal(true)}
-          onShowSettings={onShowSettings}
+          onShowSettings={() => setShowSettings(true)}
           navProps={navProps}
           t={t}
         />

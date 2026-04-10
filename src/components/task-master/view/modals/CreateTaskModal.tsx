@@ -35,7 +35,7 @@ export default function CreateTaskModal({ isOpen, onClose }: CreateTaskModalProp
                 <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h4 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">Pro tip: ask Claude Code directly</h4>
+                <h4 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">Pro tip: ask MoirAI directly</h4>
                 <p className="mb-3 text-sm text-blue-800 dark:text-blue-200">
                   Ask for a task in chat with context and requirements. TaskMaster can generate implementation-ready tasks.
                 </p>

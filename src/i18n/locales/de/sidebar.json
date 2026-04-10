@@ -17,10 +17,10 @@
     "projects": "Projekte",
     "noMatchingProjects": "Keine passenden Projekte",
     "tryDifferentSearch": "Versuch, den Suchbegriff anzupassen",
-    "runClaudeCli": "Führ Claude CLI in einem Projektverzeichnis aus, um zu beginnen"
+    "runClaudeCli": "Führ MoirAI in einem Projektverzeichnis aus, um zu beginnen"
   },
   "app": {
-    "title": "Claude Code UI",
+    "title": "MoirAI",
     "subtitle": "KI-Programmierassistent-Oberfläche"
   },
   "sessions": {

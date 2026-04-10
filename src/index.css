@@ -85,37 +85,37 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 217.2 91.2% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217.2 91.2% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 220 5% 8%;
+    --foreground: 210 10% 93%;
+    --card: 220 5% 12%;
+    --card-foreground: 210 10% 93%;
+    --popover: 220 5% 12%;
+    --popover-foreground: 210 10% 93%;
+    --primary: 220 10% 55%;
+    --primary-foreground: 220 5% 8%;
+    --secondary: 220 5% 18%;
+    --secondary-foreground: 210 10% 93%;
+    --muted: 220 5% 18%;
+    --muted-foreground: 220 5% 55%;
+    --accent: 220 5% 22%;
+    --accent-foreground: 210 10% 93%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 220 13% 46%;
-    --ring: 217.2 91.2% 59.8%;
+    --destructive-foreground: 210 10% 93%;
+    --border: 220 5% 20%;
+    --input: 220 5% 30%;
+    --ring: 220 10% 55%;
 
     /* Nav design tokens — dark overrides */
-    --nav-glass-bg: 217.2 91.2% 8% / 0.55;
+    --nav-glass-bg: 220 5% 8% / 0.55;
     --nav-glass-blur: 24px;
-    --nav-glass-saturate: 1.6;
-    --nav-tab-glow: 217.2 91.2% 59.8% / 0.25;
-    --nav-tab-ring: 217.2 91.2% 59.8% / 0.15;
+    --nav-glass-saturate: 1.2;
+    --nav-tab-glow: 220 10% 55% / 0.2;
+    --nav-tab-ring: 220 10% 55% / 0.12;
     --nav-float-shadow: 0 0% 0% / 0.35;
-    --nav-float-ring: 217.2 32.6% 17.5% / 0.3;
-    --nav-divider-color: 217.2 32.6% 17.5% / 0.5;
-    --nav-input-bg: 217.2 32.6% 17.5% / 0.5;
-    --nav-input-focus-ring: 217.2 91.2% 59.8% / 0.25;
+    --nav-float-ring: 220 5% 20% / 0.3;
+    --nav-divider-color: 220 5% 20% / 0.5;
+    --nav-input-bg: 220 5% 18% / 0.5;
+    --nav-input-focus-ring: 220 10% 55% / 0.2;
   }
 }
 

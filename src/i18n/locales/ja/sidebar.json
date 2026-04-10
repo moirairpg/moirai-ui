@@ -17,10 +17,10 @@
     "projects": "プロジェクト",
     "noMatchingProjects": "一致するプロジェクトがありません",
     "tryDifferentSearch": "検索語を変えてお試しください",
-    "runClaudeCli": "プロジェクトディレクトリでClaude CLIを実行して始めましょう"
+    "runClaudeCli": "プロジェクトディレクトリでMoirAIを実行して始めましょう"
   },
   "app": {
-    "title": "Claude Code UI",
+    "title": "MoirAI",
     "subtitle": "AIコーディングアシスタント"
   },
   "sessions": {

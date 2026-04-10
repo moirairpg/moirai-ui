@@ -206,7 +206,7 @@
     "startSession": "新しいClaudeセッションを開始",
     "resumeSession": "セッションを再開: {{displayName}}...",
     "runCommand": "{{projectName}}で{{command}}を実行",
-    "startCli": "{{projectName}}でClaude CLIを起動しています",
+    "startCli": "{{projectName}}でMoirAIを起動しています",
     "defaultCommand": "コマンド"
   },
   "claudeStatus": {

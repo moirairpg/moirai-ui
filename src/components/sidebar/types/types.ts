@@ -1,4 +1,5 @@
 import type { Project, ProjectSession, SessionProvider } from '../../../types/app';
+import type { MoirAISidebarNavProps } from '../../../features/sidebar/components/MoirAISidebarNav';
 
 export type ProjectSortOrder = 'name' | 'date';
 
@@ -26,9 +27,6 @@ export type MCPServerStatus = {
 export type SettingsProject = Pick<Project, 'name' | 'displayName' | 'fullPath' | 'path'>;
 
 export type SidebarProps = {
-  onShowSettings: () => void;
-  showSettings: boolean;
-  settingsInitialTab?: string;
-  onCloseSettings: () => void;
+  navProps: MoirAISidebarNavProps;
   isMobile: boolean;
 };

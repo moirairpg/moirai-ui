@@ -23,7 +23,7 @@ export function AdventureMessageBlock({ message }: AdventureMessageBlockProps) {
       <span className={`font-mono font-medium ${prefixClass}`}>
         {prefix} ›
       </span>
-      <span className="ml-2 whitespace-pre-wrap text-foreground">
+      <span className="ml-2 whitespace-pre-wrap [overflow-wrap:anywhere] text-foreground">
         {message.content}
       </span>
     </div>

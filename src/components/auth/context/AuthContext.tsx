@@ -25,18 +25,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const loginWithDiscord = useCallback(async () => {
-    try {
-      setError(null);
-      const res = await api.auth.discordAuthorizeUrl();
-      const data = await res.json();
-      if (!res.ok || !data?.url) {
-        setError(AUTH_ERROR_MESSAGES.oauthFailed);
-        return;
-      }
-      window.location.href = data.url;
-    } catch {
-      setError(AUTH_ERROR_MESSAGES.networkError);
+    const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI;
+    if (!clientId || !redirectUri) {
+      setError(AUTH_ERROR_MESSAGES.oauthFailed);
+      return;
     }
+    const url = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
+    window.location.href = url;
   }, []);
 
   const logout = useCallback(async () => {

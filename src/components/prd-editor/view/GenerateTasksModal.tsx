@@ -39,10 +39,10 @@ export default function GenerateTasksModal({
         <div className="space-y-4 p-6">
           <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
             <h4 className="mb-2 font-semibold text-purple-900 dark:text-purple-100">
-              Ask Claude Code directly
+              Ask MoirAI directly
             </h4>
             <p className="mb-3 text-sm text-purple-800 dark:text-purple-200">
-              Save this PRD, then ask Claude Code in chat to parse the file and create your initial tasks.
+              Save this PRD, then ask MoirAI in chat to parse the file and create your initial tasks.
             </p>
 
             <div className="rounded border border-purple-200 bg-white p-3 dark:border-purple-700 dark:bg-gray-800">

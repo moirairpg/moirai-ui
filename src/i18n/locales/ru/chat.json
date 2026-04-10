@@ -233,7 +233,7 @@
     "startSession": "Начать новый сеанс Claude",
     "resumeSession": "Возобновить сеанс: {{displayName}}...",
     "runCommand": "Выполнить {{command}} в {{projectName}}",
-    "startCli": "Запуск Claude CLI в {{projectName}}",
+    "startCli": "Запуск MoirAI в {{projectName}}",
     "defaultCommand": "команда"
   },
   "claudeStatus": {

@@ -233,7 +233,7 @@
     "startSession": "Neue Claude-Sitzung starten",
     "resumeSession": "Sitzung fortsetzen: {{displayName}}...",
     "runCommand": "{{command}} in {{projectName}} ausführen",
-    "startCli": "Claude CLI wird in {{projectName}} gestartet",
+    "startCli": "MoirAI wird in {{projectName}} gestartet",
     "defaultCommand": "Befehl"
   },
   "claudeStatus": {

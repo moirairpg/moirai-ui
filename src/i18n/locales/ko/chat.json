@@ -215,7 +215,7 @@
     "startSession": "새 Claude 세션 시작",
     "resumeSession": "세션 재개: {{displayName}}...",
     "runCommand": "{{projectName}}에서 {{command}} 실행",
-    "startCli": "{{projectName}}에서 Claude CLI 시작",
+    "startCli": "{{projectName}}에서 MoirAI 시작",
     "defaultCommand": "명령어"
   },
   "claudeStatus": {
