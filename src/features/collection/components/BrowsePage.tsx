@@ -10,8 +10,8 @@ export function AdventureBrowsePage() {
   const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = useAdventureCollection('EXPLORE');
   const handlePlay = (id: string) => navigate(`/adventure/play/${id}`);
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/adventure/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/adventure/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (
@@ -27,9 +27,10 @@ export function AdventureBrowsePage() {
 }
 
 export function WorldBrowsePage() {
+  const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = useWorldCollection('EXPLORE');
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/world/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/world/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/world/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (
@@ -45,9 +46,10 @@ export function WorldBrowsePage() {
 }
 
 export function PersonaBrowsePage() {
+  const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = usePersonaCollection('EXPLORE');
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/persona/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/persona/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/persona/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (

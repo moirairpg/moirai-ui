@@ -7,6 +7,9 @@ import AppContent from './components/app/AppContent';
 import AuthErrorPage from './components/auth/view/AuthErrorPage';
 import CollectionPage from './features/collection/components/CollectionPage';
 import { AdventureBrowsePage, WorldBrowsePage, PersonaBrowsePage } from './features/collection/components/BrowsePage';
+import AdventureFormPage from './features/adventure/components/AdventureFormPage';
+import WorldFormPage from './features/world/components/WorldFormPage';
+import PersonaFormPage from './features/persona/components/PersonaFormPage';
 import i18n from './i18n/config.js';
 
 export default function App() {
@@ -28,6 +31,15 @@ export default function App() {
                       <Route path="/adventures/browse" element={<AppContent><AdventureBrowsePage /></AppContent>} />
                       <Route path="/worlds/browse" element={<AppContent><WorldBrowsePage /></AppContent>} />
                       <Route path="/personas/browse" element={<AppContent><PersonaBrowsePage /></AppContent>} />
+                      <Route path="/adventure/new" element={<AppContent><AdventureFormPage mode="create" /></AppContent>} />
+                      <Route path="/adventure/:adventureId/edit" element={<AppContent><AdventureFormPage mode="edit" /></AppContent>} />
+                      <Route path="/adventure/:adventureId/view" element={<AppContent><AdventureFormPage mode="view" /></AppContent>} />
+                      <Route path="/world/new" element={<AppContent><WorldFormPage mode="create" /></AppContent>} />
+                      <Route path="/world/:worldId/edit" element={<AppContent><WorldFormPage mode="edit" /></AppContent>} />
+                      <Route path="/world/:worldId/view" element={<AppContent><WorldFormPage mode="view" /></AppContent>} />
+                      <Route path="/persona/new" element={<AppContent><PersonaFormPage mode="create" /></AppContent>} />
+                      <Route path="/persona/:personaId/edit" element={<AppContent><PersonaFormPage mode="edit" /></AppContent>} />
+                      <Route path="/persona/:personaId/view" element={<AppContent><PersonaFormPage mode="view" /></AppContent>} />
                     </Routes>
                   </ProtectedRoute>
                 </WebSocketProvider>

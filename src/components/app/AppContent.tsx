@@ -19,9 +19,9 @@ export default function AppContent({ children }: AppContentProps) {
     onCreateAdventure: () => navigate('/adventure/new'),
     onBrowseAdventures: () => navigate('/adventures/browse'),
     onAdventureClick: (id: string) => navigate(`/adventure/play/${id}`),
-    onCreateWorld: () => {},
+    onCreateWorld: () => navigate('/world/new'),
     onBrowseWorlds: () => navigate('/worlds/browse'),
-    onCreatePersona: () => {},
+    onCreatePersona: () => navigate('/persona/new'),
     onBrowsePersonas: () => navigate('/personas/browse'),
   };
 

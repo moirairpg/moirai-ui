@@ -14,8 +14,8 @@ function AdventureTab({ view }: TabProps) {
   const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = useAdventureCollection(view);
   const handlePlay = (id: string) => navigate(`/adventure/play/${id}`);
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/adventure/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/adventure/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (
@@ -28,9 +28,10 @@ function AdventureTab({ view }: TabProps) {
 }
 
 function WorldTab({ view }: TabProps) {
+  const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = useWorldCollection(view);
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/world/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/world/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/world/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (
@@ -43,9 +44,10 @@ function WorldTab({ view }: TabProps) {
 }
 
 function PersonaTab({ view }: TabProps) {
+  const navigate = useNavigate();
   const { items, isLoading, hasMore, loadMore, removeItem } = usePersonaCollection(view);
-  const handleView = (id: string) => console.log('view', id);
-  const handleEdit = (id: string) => console.log('edit', id);
+  const handleView = (id: string) => navigate(`/persona/${id}/view`);
+  const handleEdit = (id: string) => navigate(`/persona/${id}/edit`);
   const handleDelete = (id: string) => apiFetch(`/api/persona/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
 
   return (
