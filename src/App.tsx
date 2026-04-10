@@ -5,6 +5,8 @@ import { AuthProvider, ProtectedRoute } from './components/auth';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import AppContent from './components/app/AppContent';
 import AuthErrorPage from './components/auth/view/AuthErrorPage';
+import CollectionPage from './features/collection/components/CollectionPage';
+import { AdventureBrowsePage, WorldBrowsePage, PersonaBrowsePage } from './features/collection/components/BrowsePage';
 import i18n from './i18n/config.js';
 
 export default function App() {
@@ -21,6 +23,11 @@ export default function App() {
                     <Routes>
                       <Route path="/" element={<AppContent />} />
                       <Route path="/adventure/play/:adventureId" element={<AppContent />} />
+                      <Route path="/my-stuff" element={<AppContent><CollectionPage view="MY_STUFF" title="My Stuff" /></AppContent>} />
+                      <Route path="/shared-with-me" element={<AppContent><CollectionPage view="SHARED_WITH_ME" title="Shared With Me" /></AppContent>} />
+                      <Route path="/adventures/browse" element={<AppContent><AdventureBrowsePage /></AppContent>} />
+                      <Route path="/worlds/browse" element={<AppContent><WorldBrowsePage /></AppContent>} />
+                      <Route path="/personas/browse" element={<AppContent><PersonaBrowsePage /></AppContent>} />
                     </Routes>
                   </ProtectedRoute>
                 </WebSocketProvider>

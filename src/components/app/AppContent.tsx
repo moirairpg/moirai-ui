@@ -1,24 +1,37 @@
+import type { ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Sidebar from '../sidebar/view/Sidebar';
 import AdventurePage from '../../features/adventure/components/AdventurePage';
 import { useDeviceSettings } from '../../hooks/useDeviceSettings';
 
-export default function AppContent() {
+type AppContentProps = {
+  children?: ReactNode;
+};
+
+export default function AppContent({ children }: AppContentProps) {
   const navigate = useNavigate();
   const { adventureId } = useParams<{ adventureId?: string }>();
   const { isMobile } = useDeviceSettings({ trackPWA: false });
 
   const navProps = {
-    onMyStuffClick: () => {},
-    onSharedWithMeClick: () => {},
+    onMyStuffClick: () => navigate('/my-stuff'),
+    onSharedWithMeClick: () => navigate('/shared-with-me'),
     onCreateAdventure: () => navigate('/adventure/new'),
-    onBrowseAdventures: () => {},
+    onBrowseAdventures: () => navigate('/adventures/browse'),
     onAdventureClick: (id: string) => navigate(`/adventure/play/${id}`),
     onCreateWorld: () => {},
-    onBrowseWorlds: () => {},
+    onBrowseWorlds: () => navigate('/worlds/browse'),
     onCreatePersona: () => {},
-    onBrowsePersonas: () => {},
+    onBrowsePersonas: () => navigate('/personas/browse'),
   };
+
+  const content = adventureId
+    ? <AdventurePage adventureId={adventureId} />
+    : children ?? (
+        <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">
+          Select an adventure to begin.
+        </div>
+      );
 
   return (
     <div className="fixed inset-0 flex bg-background">
@@ -27,13 +40,7 @@ export default function AppContent() {
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {adventureId ? (
-          <AdventurePage adventureId={adventureId} />
-        ) : (
-          <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">
-            Select an adventure to begin.
-          </div>
-        )}
+        {content}
       </div>
     </div>
   );
