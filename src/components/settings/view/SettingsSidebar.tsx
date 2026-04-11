@@ -1,4 +1,4 @@
-import { Bell, Bot, Key, ListChecks, Palette, Puzzle } from 'lucide-react';
+import { Bell, Palette } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import { PillBar, Pill } from '../../../shared/view/ui';
@@ -12,15 +12,11 @@ type SettingsSidebarProps = {
 type NavItem = {
   id: SettingsMainTab;
   labelKey: string;
-  icon: typeof Bot;
+  icon: typeof Palette;
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'agents', labelKey: 'mainTabs.agents', icon: Bot },
   { id: 'appearance', labelKey: 'mainTabs.appearance', icon: Palette },
-  { id: 'api', labelKey: 'mainTabs.apiTokens', icon: Key },
-  { id: 'tasks', labelKey: 'mainTabs.tasks', icon: ListChecks },
-  { id: 'plugins', labelKey: 'mainTabs.plugins', icon: Puzzle },
   { id: 'notifications', labelKey: 'mainTabs.notifications', icon: Bell },
 ];
 
@@ -29,7 +25,6 @@ export default function SettingsSidebar({ activeTab, onChange }: SettingsSidebar
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden w-56 flex-shrink-0 border-r border-border bg-muted/30 md:flex md:flex-col">
         <nav className="flex flex-col gap-1 p-3">
           {NAV_ITEMS.map((item) => {
@@ -55,7 +50,6 @@ export default function SettingsSidebar({ activeTab, onChange }: SettingsSidebar
         </nav>
       </aside>
 
-      {/* Mobile horizontal nav — pill bar */}
       <div className="flex-shrink-0 border-b border-border px-3 py-2 md:hidden">
         <PillBar className="scrollbar-hide w-full overflow-x-auto">
           {NAV_ITEMS.map((item) => {

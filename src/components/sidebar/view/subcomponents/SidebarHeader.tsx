@@ -6,8 +6,6 @@ import { IS_PLATFORM } from '../../../../constants/config';
 type SidebarHeaderProps = {
   isPWA: boolean;
   isMobile: boolean;
-  isRefreshing: boolean;
-  onRefresh: () => void;
   onCreateAdventure: () => void;
   onCollapseSidebar: () => void;
   t: TFunction;
@@ -16,8 +14,6 @@ type SidebarHeaderProps = {
 export default function SidebarHeader({
   isPWA,
   isMobile,
-  isRefreshing,
-  onRefresh,
   onCreateAdventure,
   onCollapseSidebar,
   t,

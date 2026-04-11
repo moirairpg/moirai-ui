@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeviceSettings } from '../../../hooks/useDeviceSettings';
-import { useVersionCheck } from '../../../hooks/useVersionCheck';
 import { useUiPreferences } from '../../../hooks/useUiPreferences';
 import type { SidebarProps } from '../types/types';
 import SidebarCollapsed from './subcomponents/SidebarCollapsed';
@@ -11,46 +10,28 @@ import SidebarModals from './subcomponents/SidebarModals';
 function Sidebar({ navProps, isMobile }: SidebarProps) {
   const { t } = useTranslation(['sidebar', 'common']);
   const { isPWA } = useDeviceSettings({ trackMobile: false });
-  const { updateAvailable, latestVersion, currentVersion, releaseInfo, installMode } = useVersionCheck('siteboon', 'claudecodeui');
   useUiPreferences();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [showVersionModal, setShowVersionModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   return (
     <>
       <SidebarModals
         showSettings={showSettings}
-        settingsInitialTab="agents"
         onCloseSettings={() => setShowSettings(false)}
-        showVersionModal={showVersionModal}
-        onCloseVersionModal={() => setShowVersionModal(false)}
-        releaseInfo={releaseInfo}
-        currentVersion={currentVersion}
-        latestVersion={latestVersion}
-        installMode={installMode}
-        t={t}
       />
 
       {isSidebarCollapsed ? (
         <SidebarCollapsed
           onExpand={() => setIsSidebarCollapsed(false)}
           onShowSettings={() => setShowSettings(true)}
-          updateAvailable={updateAvailable}
-          onShowVersionModal={() => setShowVersionModal(true)}
           t={t}
         />
       ) : (
         <SidebarContent
           isPWA={isPWA}
           isMobile={isMobile}
-          isRefreshing={false}
-          onRefresh={() => {}}
           onCollapseSidebar={() => setIsSidebarCollapsed(true)}
-          updateAvailable={updateAvailable}
-          releaseInfo={releaseInfo}
-          latestVersion={latestVersion}
-          onShowVersionModal={() => setShowVersionModal(true)}
           onShowSettings={() => setShowSettings(true)}
           navProps={navProps}
           t={t}

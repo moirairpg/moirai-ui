@@ -1,70 +1,24 @@
-export type SessionProvider = 'claude' | 'cursor' | 'codex' | 'gemini';
-
-export type AppTab = 'chat' | 'files' | 'shell' | 'git' | 'tasks' | 'preview' | `plugin:${string}`;
-
-export interface ProjectSession {
+export interface Adventure {
   id: string;
-  title?: string;
-  summary?: string;
-  name?: string;
+  title: string;
+  worldId?: string;
+  personaId?: string;
   createdAt?: string;
-  created_at?: string;
-  updated_at?: string;
-  lastActivity?: string;
-  messageCount?: number;
-  __provider?: SessionProvider;
-  __projectName?: string;
-  [key: string]: unknown;
+  updatedAt?: string;
 }
 
-export interface ProjectSessionMeta {
-  total?: number;
-  hasMore?: boolean;
-  [key: string]: unknown;
-}
-
-export interface ProjectTaskmasterInfo {
-  hasTaskmaster?: boolean;
-  status?: string;
-  metadata?: Record<string, unknown>;
-  [key: string]: unknown;
-}
-
-export interface Project {
+export interface World {
+  id: string;
   name: string;
-  displayName: string;
-  fullPath: string;
-  path?: string;
-  sessions?: ProjectSession[];
-  cursorSessions?: ProjectSession[];
-  codexSessions?: ProjectSession[];
-  geminiSessions?: ProjectSession[];
-  sessionMeta?: ProjectSessionMeta;
-  taskmaster?: ProjectTaskmasterInfo;
-  [key: string]: unknown;
+  description?: string;
 }
 
-export interface LoadingProgress {
-  type?: 'loading_progress';
-  phase?: string;
-  current: number;
-  total: number;
-  currentProject?: string;
-  [key: string]: unknown;
-}
-
-export interface ProjectsUpdatedMessage {
-  type: 'projects_updated';
-  projects: Project[];
-  changedFile?: string;
-  [key: string]: unknown;
-}
-
-export interface LoadingProgressMessage extends LoadingProgress {
-  type: 'loading_progress';
+export interface Persona {
+  id: string;
+  name: string;
+  description?: string;
 }
 
 export type AppSocketMessage =
-  | LoadingProgressMessage
-  | ProjectsUpdatedMessage
-  | { type?: string;[key: string]: unknown };
+  | { type: 'adventures_updated'; adventures: Adventure[] }
+  | { type?: string; [key: string]: unknown };

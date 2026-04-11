@@ -1,6 +1,5 @@
 import type { TFunction } from 'i18next';
 import { ScrollArea } from '../../../../shared/view/ui';
-import type { ReleaseInfo } from '../../../../types/sharedTypes';
 import { MoirAISidebarNav, type MoirAISidebarNavProps } from '../../../../features/sidebar/components/MoirAISidebarNav';
 import SidebarFooter from './SidebarFooter';
 import SidebarHeader from './SidebarHeader';
@@ -8,13 +7,7 @@ import SidebarHeader from './SidebarHeader';
 type SidebarContentProps = {
   isPWA: boolean;
   isMobile: boolean;
-  isRefreshing: boolean;
-  onRefresh: () => void;
   onCollapseSidebar: () => void;
-  updateAvailable: boolean;
-  releaseInfo: ReleaseInfo | null;
-  latestVersion: string | null;
-  onShowVersionModal: () => void;
   onShowSettings: () => void;
   navProps: MoirAISidebarNavProps;
   t: TFunction;
@@ -23,13 +16,7 @@ type SidebarContentProps = {
 export default function SidebarContent({
   isPWA,
   isMobile,
-  isRefreshing,
-  onRefresh,
   onCollapseSidebar,
-  updateAvailable,
-  releaseInfo,
-  latestVersion,
-  onShowVersionModal,
   onShowSettings,
   navProps,
   t,
@@ -39,8 +26,6 @@ export default function SidebarContent({
       <SidebarHeader
         isPWA={isPWA}
         isMobile={isMobile}
-        isRefreshing={isRefreshing}
-        onRefresh={onRefresh}
         onCreateAdventure={navProps.onCreateAdventure}
         onCollapseSidebar={onCollapseSidebar}
         t={t}
@@ -50,14 +35,7 @@ export default function SidebarContent({
         <MoirAISidebarNav {...navProps} />
       </ScrollArea>
 
-      <SidebarFooter
-        updateAvailable={updateAvailable}
-        releaseInfo={releaseInfo}
-        latestVersion={latestVersion}
-        onShowVersionModal={onShowVersionModal}
-        onShowSettings={onShowSettings}
-        t={t}
-      />
+      <SidebarFooter onShowSettings={onShowSettings} t={t} />
     </div>
   );
 }
