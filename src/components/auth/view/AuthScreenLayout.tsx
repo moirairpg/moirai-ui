@@ -1,5 +1,9 @@
+import { useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { MessageSquare } from 'lucide-react';
+
+const backgroundImages = Object.values(
+  import.meta.glob('../../../assets/auth-backgrounds/*.{jpg,jpeg,png,webp}', { eager: true, import: 'default' })
+) as string[];
 
 type AuthScreenLayoutProps = {
   title: string;
@@ -16,16 +20,22 @@ export default function AuthScreenLayout({
   footerText,
   logo,
 }: AuthScreenLayoutProps) {
+  const background = useMemo(
+    () => backgroundImages[Math.floor(Math.random() * backgroundImages.length)],
+    []
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div
+      className="flex min-h-screen items-center justify-center p-4"
+      style={background ? { backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+    >
       <div className="w-full max-w-md">
-        <div className="space-y-6 rounded-lg border border-border bg-card p-8 shadow-lg">
+        <div className="space-y-6 rounded-lg border border-border bg-card/90 p-8 shadow-lg backdrop-blur-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               {logo ?? (
-                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary shadow-sm">
-                  <MessageSquare className="h-8 w-8 text-primary-foreground" />
-                </div>
+                <img src="/logo-128.png" alt="MoirAI" className="h-16 w-16 rounded-lg object-cover" />
               )}
             </div>
             <h1 className="text-2xl font-bold text-foreground">{title}</h1>

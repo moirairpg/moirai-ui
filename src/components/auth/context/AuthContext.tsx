@@ -37,7 +37,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = useCallback(async () => {
     await api.auth.logout().catch(() => {});
-    setUser(null);
+    window.location.href = '/';
   }, []);
 
   const value = useMemo<AuthContextValue>(

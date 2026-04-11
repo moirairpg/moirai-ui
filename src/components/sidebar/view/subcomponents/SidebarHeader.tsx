@@ -20,11 +20,7 @@ export default function SidebarHeader({
 }: SidebarHeaderProps) {
   const LogoBlock = () => (
     <div className="flex min-w-0 items-center gap-2.5">
-      <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-primary/90 shadow-sm">
-        <svg className="h-3.5 w-3.5 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      </div>
+      <img src="/logo-64.png" alt="MoirAI" className="h-7 w-7 flex-shrink-0 rounded-lg object-cover" />
       <h1 className="truncate text-sm font-semibold tracking-tight text-foreground">{t('app.title')}</h1>
     </div>
   );
