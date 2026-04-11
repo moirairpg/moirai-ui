@@ -1,4 +1,4 @@
-import { Bell, Palette } from 'lucide-react';
+import { Gamepad2, Palette, UserCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import { PillBar, Pill } from '../../../shared/view/ui';
@@ -16,8 +16,9 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
+  { id: 'account', labelKey: 'mainTabs.account', icon: UserCircle },
   { id: 'appearance', labelKey: 'mainTabs.appearance', icon: Palette },
-  { id: 'notifications', labelKey: 'mainTabs.notifications', icon: Bell },
+  { id: 'gameplay', labelKey: 'mainTabs.gameplay', icon: Gamepad2 },
 ];
 
 export default function SettingsSidebar({ activeTab, onChange }: SettingsSidebarProps) {

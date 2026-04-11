@@ -100,14 +100,28 @@
   },
   "mainTabs": {
     "label": "Settings",
-    "agents": "Agents",
+    "account": "Account",
     "appearance": "Appearance",
-    "git": "Git",
-    "apiTokens": "API & Tokens",
-    "tasks": "Tasks",
-    "notifications": "Notifications",
-    "plugins": "Plugins"
-
+    "gameplay": "Gameplay",
+    "notifications": "Notifications"
+  },
+  "accountSettings": {
+    "title": "Account",
+    "username": {
+      "label": "Logged in as"
+    },
+    "logout": {
+      "label": "Logout",
+      "description": "Sign out of your account",
+      "button": "Logout"
+    }
+  },
+  "gameplaySettings": {
+    "title": "Gameplay",
+    "spinnerPhrases": {
+      "label": "Spinner phrases",
+      "description": "Show flavour phrases while the AI is generating a response"
+    }
   },
   "notifications": {
     "title": "Notifications",
@@ -133,33 +147,15 @@
       "label": "Dark Mode",
       "description": "Toggle between light and dark themes"
     },
-    "projectSorting": {
-      "label": "Project Sorting",
-      "description": "How projects are ordered in the sidebar",
-      "alphabetical": "Alphabetical",
-      "recentActivity": "Recent Activity"
-    },
-    "codeEditor": {
-      "title": "Code Editor",
-      "theme": {
-        "label": "Editor Theme",
-        "description": "Default theme for the code editor"
-      },
-      "wordWrap": {
-        "label": "Word Wrap",
-        "description": "Enable word wrapping by default in the editor"
-      },
-      "showMinimap": {
-        "label": "Show Minimap",
-        "description": "Display a minimap for easier navigation in diff view"
-      },
-      "lineNumbers": {
-        "label": "Show Line Numbers",
-        "description": "Display line numbers in the editor"
-      },
+    "text": {
+      "title": "Text",
       "fontSize": {
-        "label": "Font Size",
-        "description": "Editor font size in pixels"
+        "label": "Font size",
+        "description": "Size of text in the adventure view"
+      },
+      "scrollSpeed": {
+        "label": "Scroll speed",
+        "description": "How fast the message history scrolls"
       }
     }
   },

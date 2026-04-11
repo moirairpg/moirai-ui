@@ -2,10 +2,10 @@ import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../shared/view/ui';
 import SettingsSidebar from '../view/SettingsSidebar';
+import AccountSettingsTab from '../view/tabs/AccountSettingsTab';
 import AppearanceSettingsTab from '../view/tabs/AppearanceSettingsTab';
-import NotificationsSettingsTab from '../view/tabs/NotificationsSettingsTab';
+import GameplaySettingsTab from '../view/tabs/GameplaySettingsTab';
 import { useSettingsController } from '../hooks/useSettingsController';
-import { useWebPush } from '../../../hooks/useWebPush';
 import type { SettingsProps } from '../types/types';
 
 function Settings({ isOpen, onClose }: SettingsProps) {
@@ -14,37 +14,13 @@ function Settings({ isOpen, onClose }: SettingsProps) {
     activeTab,
     setActiveTab,
     saveStatus,
-    projectSortOrder,
-    setProjectSortOrder,
-    codeEditorSettings,
-    updateCodeEditorSetting,
-    notificationPreferences,
-    setNotificationPreferences,
+    fontSize,
+    setFontSize,
+    scrollSpeed,
+    setScrollSpeed,
+    spinnerPhrasesEnabled,
+    setSpinnerPhrasesEnabled,
   } = useSettingsController({ isOpen });
-
-  const {
-    permission: pushPermission,
-    isSubscribed: isPushSubscribed,
-    isLoading: isPushLoading,
-    subscribe: pushSubscribe,
-    unsubscribe: pushUnsubscribe,
-  } = useWebPush();
-
-  const handleEnablePush = async () => {
-    await pushSubscribe();
-    setNotificationPreferences({
-      ...notificationPreferences,
-      channels: { ...notificationPreferences.channels, webPush: true },
-    });
-  };
-
-  const handleDisablePush = async () => {
-    await pushUnsubscribe();
-    setNotificationPreferences({
-      ...notificationPreferences,
-      channels: { ...notificationPreferences.channels, webPush: false },
-    });
-  };
 
   if (!isOpen) return null;
 
@@ -73,27 +49,19 @@ function Settings({ isOpen, onClose }: SettingsProps) {
 
           <main className="flex-1 overflow-y-auto">
             <div key={activeTab} className="settings-content-enter space-y-6 p-4 pb-safe-area-inset-bottom md:space-y-8 md:p-6">
+              {activeTab === 'account' && <AccountSettingsTab />}
               {activeTab === 'appearance' && (
                 <AppearanceSettingsTab
-                  projectSortOrder={projectSortOrder}
-                  onProjectSortOrderChange={setProjectSortOrder}
-                  codeEditorSettings={codeEditorSettings}
-                  onCodeEditorThemeChange={(value) => updateCodeEditorSetting('theme', value)}
-                  onCodeEditorWordWrapChange={(value) => updateCodeEditorSetting('wordWrap', value)}
-                  onCodeEditorShowMinimapChange={(value) => updateCodeEditorSetting('showMinimap', value)}
-                  onCodeEditorLineNumbersChange={(value) => updateCodeEditorSetting('lineNumbers', value)}
-                  onCodeEditorFontSizeChange={(value) => updateCodeEditorSetting('fontSize', value)}
+                  fontSize={fontSize}
+                  onFontSizeChange={setFontSize}
+                  scrollSpeed={scrollSpeed}
+                  onScrollSpeedChange={setScrollSpeed}
                 />
               )}
-              {activeTab === 'notifications' && (
-                <NotificationsSettingsTab
-                  notificationPreferences={notificationPreferences}
-                  onNotificationPreferencesChange={setNotificationPreferences}
-                  pushPermission={pushPermission}
-                  isPushSubscribed={isPushSubscribed}
-                  isPushLoading={isPushLoading}
-                  onEnablePush={handleEnablePush}
-                  onDisablePush={handleDisablePush}
+              {activeTab === 'gameplay' && (
+                <GameplaySettingsTab
+                  spinnerPhrasesEnabled={spinnerPhrasesEnabled}
+                  onSpinnerPhrasesChange={setSpinnerPhrasesEnabled}
                 />
               )}
             </div>

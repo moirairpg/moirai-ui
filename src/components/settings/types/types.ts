@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
 
-export type SettingsMainTab = 'appearance' | 'notifications';
+export type SettingsMainTab = 'account' | 'appearance' | 'gameplay';
 export type ProjectSortOrder = 'name' | 'date';
 export type SaveStatus = 'success' | 'error' | null;
 
@@ -14,14 +14,6 @@ export type NotificationPreferencesState = {
     stop: boolean;
     error: boolean;
   };
-};
-
-export type CodeEditorSettingsState = {
-  theme: 'dark' | 'light';
-  wordWrap: boolean;
-  showMinimap: boolean;
-  lineNumbers: boolean;
-  fontSize: string;
 };
 
 export type SettingsProps = {
