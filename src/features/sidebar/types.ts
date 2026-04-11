@@ -11,8 +11,6 @@ export type ModelConfiguration = {
 
 export type ContextAttributes = {
   nudge: string;
-  authorsNote: string;
-  scene: string;
   bump: string;
   bumpFrequency: number;
 };

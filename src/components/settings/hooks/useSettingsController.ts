@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { SettingsMainTab } from '../types/types';
 
 const readFontSize = (): string =>
@@ -18,12 +18,6 @@ export function useSettingsController({ isOpen }: { isOpen: boolean }) {
   const [fontSize, setFontSize] = useState<string>(() => readFontSize());
   const [scrollSpeed, setScrollSpeed] = useState<number>(() => readScrollSpeed());
   const [spinnerPhrasesEnabled, setSpinnerPhrasesEnabled] = useState<boolean>(() => readSpinnerPhrases());
-
-  const isInitialLoadRef = useRef(true);
-
-  useEffect(() => {
-    if (isOpen) isInitialLoadRef.current = true;
-  }, [isOpen]);
 
   useEffect(() => {
     localStorage.setItem('fontSize', fontSize);
