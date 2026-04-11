@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "Neues Abenteuer", "edit": "Abenteuer bearbeiten", "fallback": "Abenteuer" },
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "world": "Welt",
+      "persona": "Persona",
+      "visibility": "Sichtbarkeit",
+      "moderation": "Moderation",
+      "multiplayer": "Mehrspieler",
+      "adventureStart": "Abenteuerbeginn",
+      "lorebook": "Lore-Buch",
+      "aiModel": "KI-Modell",
+      "maxTokenLimit": "Maximales Token-Limit",
+      "temperature": "Temperatur",
+      "nudge": "Hinweis",
+      "bump": "Erinnerung",
+      "bumpFrequency": "Erinnerungsfrequenz",
+      "contextAttributes": "Kontextattribute",
+      "modelConfiguration": "Modellkonfiguration"
+    },
+    "tooltips": {
+      "visibility": "Wer dieses Abenteuer sehen kann",
+      "moderation": "Wie streng Inhalte gefiltert werden — markierte Nachrichten werden vollständig verworfen",
+      "aiModel": "Das KI-Modell, das dieses Abenteuer antreibt",
+      "maxTokenLimit": "Wie lang KI-Antworten sein können",
+      "temperature": "Niedriger = konsistenter, höher = kreativer",
+      "nudge": "Ein leiser Hinweis, der das Verhalten der KI lenkt",
+      "bump": "Erinnert die KI regelmäßig an ihre Persönlichkeit und lenkt ihr Verhalten",
+      "bumpFrequency": "Wie oft der Erinnerungstext wiederholt wird, in Nachrichten"
+    },
+    "options": {
+      "public": "Öffentlich",
+      "private": "Privat",
+      "strict": "Streng",
+      "permissive": "Permissiv",
+      "disabled": "Deaktiviert"
+    },
+    "placeholders": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "playerId": "Spieler-ID (optional)"
+    },
+    "empty": {
+      "noWorlds": "Keine Welten gefunden. Erstelle zuerst eine.",
+      "noPersonas": "Keine Personas gefunden. Erstelle zuerst eine.",
+      "noLorebook": "Keine Lore-Einträge."
+    },
+    "actions": {
+      "back": "Zurück",
+      "save": "Speichern",
+      "saving": "Wird gespeichert...",
+      "cancel": "Abbrechen",
+      "done": "Fertig",
+      "addEntry": "Eintrag hinzufügen",
+      "advanced": "Erweitert"
+    },
+    "player": "Spieler: ",
+    "errors": {
+      "loadFailed": "Daten konnten nicht geladen werden.",
+      "saveFailed": "Abenteuer konnte nicht gespeichert werden."
+    }
+  },
+  "page": {
+    "inputPlaceholder": "Was tust du? (Enter zum Senden, Shift+Enter für Zeilenumbruch)",
+    "send": "Senden",
+    "loading": "Wird geladen...",
+    "formatting": {
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "strikethrough": "Durchgestrichen"
+    },
+    "generatingPhrases": [
+      "Die Geschichte wird gewoben...",
+      "Das Orakel wird befragt...",
+      "Die Welt erwacht...",
+      "Das Schicksal wird geschrieben...",
+      "Die Geschichte entfaltet sich...",
+      "Schatten gleiten durch die Dunkelheit...",
+      "Die Fäden des Schicksals verweben sich...",
+      "Uralte Kräfte erwachen..."
+    ]
+  }
+}

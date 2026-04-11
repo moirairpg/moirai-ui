@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AdventureMessageBlock } from './AdventureMessageBlock';
-import { generatingPhrases } from '../constants/generatingPhrases';
 import type { AdventureMessage } from '../types';
 
 type AdventureMessagesPaneProps = {
@@ -11,10 +11,6 @@ type AdventureMessagesPaneProps = {
   onFetchMore: () => void;
 };
 
-function randomPhrase(): string {
-  return generatingPhrases[Math.floor(Math.random() * generatingPhrases.length)];
-}
-
 export function AdventureMessagesPane({
   messages,
   isGenerating,
@@ -22,9 +18,13 @@ export function AdventureMessagesPane({
   isFetchingMore,
   onFetchMore,
 }: AdventureMessagesPaneProps) {
+  const { t } = useTranslation('adventure');
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number | null>(null);
   const isPrependingRef = useRef(false);
+
+  const phrases = t('page.generatingPhrases', { returnObjects: true }) as string[];
+  const randomPhrase = () => phrases[Math.floor(Math.random() * phrases.length)];
   const [currentPhrase, setCurrentPhrase] = useState<string>(() => randomPhrase());
 
   // Scroll to bottom when new messages are appended
@@ -63,7 +63,7 @@ export function AdventureMessagesPane({
       setCurrentPhrase(randomPhrase());
     }, 3000);
     return () => clearInterval(interval);
-  }, [isGenerating]);
+  }, [isGenerating, phrases]);
 
   return (
     <div
@@ -72,7 +72,7 @@ export function AdventureMessagesPane({
       onScroll={handleScroll}
     >
       {isFetchingMore && (
-        <div className="py-2 text-center text-xs text-muted-foreground">Loading...</div>
+        <div className="py-2 text-center text-xs text-muted-foreground">{t('page.loading')}</div>
       )}
 
       <div className="space-y-0.5">

@@ -1,0 +1,23 @@
+{
+  "app": {
+    "title": "MoirAI"
+  },
+  "tooltips": {
+    "viewEnvironments": "Ver ambientes",
+    "hideSidebar": "Ocultar barra lateral"
+  },
+  "actions": {
+    "settings": "Configurações"
+  },
+  "nav": {
+    "myStuff": "Meu conteúdo",
+    "sharedWithMe": "Compartilhado comigo",
+    "explore": "Explorar",
+    "adventures": "Aventuras",
+    "createAdventure": "Criar aventura",
+    "worlds": "Mundos",
+    "createWorld": "Criar mundo",
+    "personas": "Personas",
+    "createPersona": "Criar persona"
+  }
+}

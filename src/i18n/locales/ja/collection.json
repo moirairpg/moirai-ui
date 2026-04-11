@@ -1,0 +1,36 @@
+{
+  "browse": {
+    "title": "探索",
+    "tabs": {
+      "adventures": "アドベンチャー",
+      "worlds": "ワールド",
+      "personas": "ペルソナ"
+    }
+  },
+  "myStuff": {
+    "title": "マイコンテンツ",
+    "tabs": {
+      "adventures": "アドベンチャー",
+      "worlds": "ワールド",
+      "personas": "ペルソナ"
+    }
+  },
+  "sharedWithMe": {
+    "title": "共有されたもの"
+  },
+  "card": {
+    "actions": {
+      "play": "プレイ",
+      "edit": "編集",
+      "delete": "削除",
+      "view": "表示",
+      "cancel": "キャンセル"
+    },
+    "confirm": "よろしいですか？"
+  },
+  "grid": {
+    "loading": "読み込み中...",
+    "empty": "まだ何もありません。",
+    "loadMore": "もっと読む"
+  }
+}

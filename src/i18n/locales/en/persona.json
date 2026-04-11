@@ -1,0 +1,29 @@
+{
+  "form": {
+    "title": { "new": "New Persona", "edit": "Edit Persona", "fallback": "Persona" },
+    "fields": {
+      "name": "Name",
+      "personality": "Personality",
+      "visibility": "Visibility"
+    },
+    "tooltips": {
+      "personality": "How this persona thinks, speaks, and behaves",
+      "visibility": "Who can see this persona"
+    },
+    "options": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "actions": {
+      "back": "Back",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "loading": "Loading...",
+    "errors": {
+      "loadFailed": "Failed to load persona.",
+      "saveFailed": "Failed to save persona."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "新しいワールド", "edit": "ワールドを編集", "fallback": "ワールド" },
+    "fields": {
+      "name": "名前",
+      "description": "説明",
+      "adventureStart": "アドベンチャー開始",
+      "visibility": "公開設定",
+      "lorebook": "ロアブック"
+    },
+    "tooltips": {
+      "adventureStart": "このワールドのアドベンチャーでストーリーが始まる場所",
+      "visibility": "このワールドを見られる人"
+    },
+    "options": {
+      "public": "公開",
+      "private": "非公開"
+    },
+    "placeholders": {
+      "name": "名前",
+      "description": "説明"
+    },
+    "empty": {
+      "noLorebook": "ロアエントリがありません。"
+    },
+    "actions": {
+      "back": "戻る",
+      "save": "保存",
+      "saving": "保存中...",
+      "cancel": "キャンセル",
+      "done": "完了",
+      "addEntry": "エントリを追加"
+    },
+    "loading": "読み込み中...",
+    "errors": {
+      "loadFailed": "ワールドの読み込みに失敗しました。",
+      "saveFailed": "ワールドの保存に失敗しました。"
+    }
+  }
+}

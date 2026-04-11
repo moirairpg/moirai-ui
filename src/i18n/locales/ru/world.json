@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "Новый мир", "edit": "Редактировать мир", "fallback": "Мир" },
+    "fields": {
+      "name": "Название",
+      "description": "Описание",
+      "adventureStart": "Начало приключения",
+      "visibility": "Видимость",
+      "lorebook": "Лорбук"
+    },
+    "tooltips": {
+      "adventureStart": "Где начинается история для приключений в этом мире",
+      "visibility": "Кто может видеть этот мир"
+    },
+    "options": {
+      "public": "Публичный",
+      "private": "Приватный"
+    },
+    "placeholders": {
+      "name": "Название",
+      "description": "Описание"
+    },
+    "empty": {
+      "noLorebook": "Записей в лорбуке нет."
+    },
+    "actions": {
+      "back": "Назад",
+      "save": "Сохранить",
+      "saving": "Сохранение...",
+      "cancel": "Отмена",
+      "done": "Готово",
+      "addEntry": "Добавить запись"
+    },
+    "loading": "Загрузка...",
+    "errors": {
+      "loadFailed": "Не удалось загрузить мир.",
+      "saveFailed": "Не удалось сохранить мир."
+    }
+  }
+}

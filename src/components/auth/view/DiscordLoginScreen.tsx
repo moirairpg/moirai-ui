@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import AuthScreenLayout from './AuthScreenLayout';
 import AuthErrorAlert from './AuthErrorAlert';
@@ -12,12 +13,13 @@ function DiscordIcon() {
 
 export default function DiscordLoginScreen() {
   const { loginWithDiscord, error, isLoading } = useAuth();
+  const { t } = useTranslation('auth');
 
   return (
     <AuthScreenLayout
-      title="Welcome to MoirAI"
-      description="Sign in with your Discord account to continue"
-      footerText="MoirAI uses Discord for authentication"
+      title={t('login.title')}
+      description={t('login.description')}
+      footerText={t('login.footer')}
     >
       <div className="space-y-4">
         <AuthErrorAlert errorMessage={error ?? ''} />
@@ -28,7 +30,7 @@ export default function DiscordLoginScreen() {
           style={{ backgroundColor: '#5865F2' }}
         >
           <DiscordIcon />
-          Continue with Discord
+          {t('login.button')}
         </button>
       </div>
     </AuthScreenLayout>

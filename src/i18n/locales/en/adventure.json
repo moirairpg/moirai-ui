@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "New Adventure", "edit": "Edit Adventure", "fallback": "Adventure" },
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "world": "World",
+      "persona": "Persona",
+      "visibility": "Visibility",
+      "moderation": "Moderation",
+      "multiplayer": "Multiplayer",
+      "adventureStart": "Adventure Start",
+      "lorebook": "Lorebook",
+      "aiModel": "AI Model",
+      "maxTokenLimit": "Max Token Limit",
+      "temperature": "Temperature",
+      "nudge": "Nudge",
+      "bump": "Bump",
+      "bumpFrequency": "Bump Frequency",
+      "contextAttributes": "Context Attributes",
+      "modelConfiguration": "Model Configuration"
+    },
+    "tooltips": {
+      "visibility": "Who can see this adventure",
+      "moderation": "How tightly content is filtered — flagged messages are discarded entirely",
+      "aiModel": "The AI model powering this adventure",
+      "maxTokenLimit": "How long AI responses can be",
+      "temperature": "Lower = more consistent, higher = more creative",
+      "nudge": "A quiet hint that guides how the AI behaves",
+      "bump": "Periodically reminds the AI of its personality and guides its behavior",
+      "bumpFrequency": "How often the bump text repeats, in messages"
+    },
+    "options": {
+      "public": "Public",
+      "private": "Private",
+      "strict": "Strict",
+      "permissive": "Permissive",
+      "disabled": "Disabled"
+    },
+    "placeholders": {
+      "name": "Name",
+      "description": "Description",
+      "playerId": "Player ID (optional)"
+    },
+    "empty": {
+      "noWorlds": "No worlds found. Create one first.",
+      "noPersonas": "No personas found. Create one first.",
+      "noLorebook": "No lorebook entries."
+    },
+    "actions": {
+      "back": "Back",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "done": "Done",
+      "addEntry": "Add Entry",
+      "advanced": "Advanced"
+    },
+    "player": "Player: ",
+    "errors": {
+      "loadFailed": "Failed to load data.",
+      "saveFailed": "Failed to save adventure."
+    }
+  },
+  "page": {
+    "inputPlaceholder": "What do you do? (Enter to send, Shift+Enter for newline)",
+    "send": "Send",
+    "loading": "Loading...",
+    "formatting": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "strikethrough": "Strikethrough"
+    },
+    "generatingPhrases": [
+      "Weaving the tale...",
+      "Consulting the oracle...",
+      "The world stirs...",
+      "Fate is being written...",
+      "The story unfolds...",
+      "Shadows shift in the dark...",
+      "The threads of destiny intertwine...",
+      "Ancient forces stir..."
+    ]
+  }
+}

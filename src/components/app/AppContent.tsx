@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Sidebar from '../sidebar/view/Sidebar';
 import AdventurePage from '../../features/adventure/components/AdventurePage';
 import { useDeviceSettings } from '../../hooks/useDeviceSettings';
@@ -12,6 +13,7 @@ export default function AppContent({ children }: AppContentProps) {
   const navigate = useNavigate();
   const { adventureId } = useParams<{ adventureId?: string }>();
   const { isMobile } = useDeviceSettings({ trackPWA: false });
+  const { t } = useTranslation('common');
 
   const navProps = {
     onMyStuffClick: () => navigate('/my-stuff'),
@@ -30,7 +32,7 @@ export default function AppContent({ children }: AppContentProps) {
     ? <AdventurePage adventureId={adventureId} />
     : children ?? (
         <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">
-          Select an adventure to begin.
+          {t('selectAdventure')}
         </div>
       );
 

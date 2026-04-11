@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Bold, Italic, Strikethrough } from 'lucide-react';
 import { AdventureMessagesPane } from './AdventureMessagesPane';
 import { useAdventureMessages } from '../hooks/useAdventureMessages';
@@ -19,13 +20,13 @@ function stripSaidPrefix(content: string): string {
 type FormatButton = {
   icon: typeof Bold;
   marker: string;
-  title: string;
+  titleKey: string;
 };
 
 const FORMAT_BUTTONS: FormatButton[] = [
-  { icon: Bold, marker: '**', title: 'Bold' },
-  { icon: Italic, marker: '*', title: 'Italic' },
-  { icon: Strikethrough, marker: '~~', title: 'Strikethrough' },
+  { icon: Bold, marker: '**', titleKey: 'page.formatting.bold' },
+  { icon: Italic, marker: '*', titleKey: 'page.formatting.italic' },
+  { icon: Strikethrough, marker: '~~', titleKey: 'page.formatting.strikethrough' },
 ];
 
 function applyFormat(
@@ -61,6 +62,7 @@ function applyFormat(
 }
 
 export default function AdventurePage({ adventureId }: AdventurePageProps) {
+  const { t } = useTranslation('adventure');
   const [personaName, setPersonaName] = useState<string | undefined>(undefined);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -126,11 +128,11 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
 
       <div className="border-t border-border/50 p-4">
         <div className="flex gap-1 mb-1.5">
-          {FORMAT_BUTTONS.map(({ icon: Icon, marker, title }) => (
+          {FORMAT_BUTTONS.map(({ icon: Icon, marker, titleKey }) => (
             <button
               key={marker}
               type="button"
-              title={title}
+              title={t(titleKey)}
               onMouseDown={(e) => { e.preventDefault(); handleFormat(marker); }}
               className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
@@ -145,7 +147,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
             rows={1}
             className="flex-1 resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
             style={{ minHeight: '2.25rem', maxHeight: '8rem', overflowY: 'auto' }}
-            placeholder="What do you do? (Enter to send, Shift+Enter for newline)"
+            placeholder={t('page.inputPlaceholder')}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
@@ -160,7 +162,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
             disabled={isGenerating || !input.trim()}
             className="self-end rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
-            Send
+            {t('page.send')}
           </button>
         </form>
       </div>

@@ -1,0 +1,29 @@
+{
+  "form": {
+    "title": { "new": "새 페르소나", "edit": "페르소나 편집", "fallback": "페르소나" },
+    "fields": {
+      "name": "이름",
+      "personality": "성격",
+      "visibility": "공개 설정"
+    },
+    "tooltips": {
+      "personality": "이 페르소나의 사고방식, 말투, 행동 방식",
+      "visibility": "이 페르소나를 볼 수 있는 사람"
+    },
+    "options": {
+      "public": "공개",
+      "private": "비공개"
+    },
+    "actions": {
+      "back": "뒤로",
+      "save": "저장",
+      "saving": "저장 중...",
+      "cancel": "취소"
+    },
+    "loading": "로딩 중...",
+    "errors": {
+      "loadFailed": "페르소나를 불러오지 못했습니다.",
+      "saveFailed": "페르소나를 저장하지 못했습니다."
+    }
+  }
+}

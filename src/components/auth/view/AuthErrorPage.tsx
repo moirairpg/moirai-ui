@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import AuthScreenLayout from './AuthScreenLayout';
 
@@ -15,12 +16,13 @@ function ErrorIcon() {
 
 export default function AuthErrorPage() {
   const { loginWithDiscord } = useAuth();
+  const { t } = useTranslation('auth');
 
   return (
     <AuthScreenLayout
-      title="Authentication Failed"
-      description="Something went wrong while signing you in. Please try again."
-      footerText="MoirAI uses Discord for authentication"
+      title={t('error.title')}
+      description={t('error.description')}
+      footerText={t('error.footer')}
       logo={<ErrorIcon />}
     >
       <button
@@ -28,7 +30,7 @@ export default function AuthErrorPage() {
         className="flex w-full items-center justify-center gap-3 rounded-md px-4 py-2.5 font-medium text-white transition-opacity hover:opacity-90"
         style={{ backgroundColor: '#5865F2' }}
       >
-        Try again
+        {t('error.retry')}
       </button>
     </AuthScreenLayout>
   );

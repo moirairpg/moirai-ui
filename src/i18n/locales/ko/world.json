@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "새 세계", "edit": "세계 편집", "fallback": "세계" },
+    "fields": {
+      "name": "이름",
+      "description": "설명",
+      "adventureStart": "어드벤처 시작",
+      "visibility": "공개 설정",
+      "lorebook": "로어북"
+    },
+    "tooltips": {
+      "adventureStart": "이 세계의 어드벤처에서 이야기가 시작되는 곳",
+      "visibility": "이 세계를 볼 수 있는 사람"
+    },
+    "options": {
+      "public": "공개",
+      "private": "비공개"
+    },
+    "placeholders": {
+      "name": "이름",
+      "description": "설명"
+    },
+    "empty": {
+      "noLorebook": "로어 항목이 없습니다."
+    },
+    "actions": {
+      "back": "뒤로",
+      "save": "저장",
+      "saving": "저장 중...",
+      "cancel": "취소",
+      "done": "완료",
+      "addEntry": "항목 추가"
+    },
+    "loading": "로딩 중...",
+    "errors": {
+      "loadFailed": "세계를 불러오지 못했습니다.",
+      "saveFailed": "세계를 저장하지 못했습니다."
+    }
+  }
+}

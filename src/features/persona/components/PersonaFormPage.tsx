@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Info } from 'lucide-react';
 import type { PersonaDetails } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
@@ -18,6 +19,7 @@ const EMPTY: FormState = { name: '', personality: '', visibility: 'PUBLIC' };
 export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
   const navigate = useNavigate();
   const { personaId } = useParams<{ personaId: string }>();
+  const { t } = useTranslation('persona');
   const [form, setForm] = useState<FormState>(EMPTY);
   const [loading, setLoading] = useState(mode !== 'create');
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
 
   const readOnly = mode === 'view';
 
-  const title = mode === 'create' ? 'New Persona' : mode === 'edit' ? 'Edit Persona' : 'Persona';
+  const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
     if (mode === 'create') return;
@@ -36,7 +38,7 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
         setLoading(false);
       })
       .catch(() => {
-        setError('Failed to load persona.');
+        setError(t('form.errors.loadFailed'));
         setLoading(false);
       });
   }, [mode, personaId]);
@@ -69,13 +71,13 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
         navigate(`/persona/${personaId}/view`);
       }
     } catch {
-      setError('Failed to save persona.');
+      setError(t('form.errors.saveFailed'));
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">Loading...</div>;
+    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">{t('form.loading')}</div>;
   }
 
   return (
@@ -84,7 +86,7 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-            Back
+            {t('form.actions.back')}
           </button>
         </div>
 
@@ -92,7 +94,7 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Name</label>
+            <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
             <input
               type="text"
               value={form.name}
@@ -104,8 +106,8 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
 
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              Personality
-              <Tooltip content="How this persona thinks, speaks, and behaves" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              {t('form.fields.personality')}
+              <Tooltip content={t('form.tooltips.personality')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
             </label>
             <textarea
               rows={6}
@@ -118,8 +120,8 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
 
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              Visibility
-              <Tooltip content="Who can see this persona" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              {t('form.fields.visibility')}
+              <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
             </label>
             <select
               value={form.visibility}
@@ -127,18 +129,18 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
               disabled={readOnly}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option value="PUBLIC">Public</option>
-              <option value="PRIVATE">Private</option>
+              <option value="PUBLIC">{t('form.options.public')}</option>
+              <option value="PRIVATE">{t('form.options.private')}</option>
             </select>
           </div>
 
           {!readOnly && (
             <div className="flex gap-3">
               <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save'}
+                {saving ? t('form.actions.saving') : t('form.actions.save')}
               </button>
               <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-                Cancel
+                {t('form.actions.cancel')}
               </button>
             </div>
           )}

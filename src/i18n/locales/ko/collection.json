@@ -1,0 +1,36 @@
+{
+  "browse": {
+    "title": "탐색",
+    "tabs": {
+      "adventures": "어드벤처",
+      "worlds": "세계",
+      "personas": "페르소나"
+    }
+  },
+  "myStuff": {
+    "title": "내 컨텐츠",
+    "tabs": {
+      "adventures": "어드벤처",
+      "worlds": "세계",
+      "personas": "페르소나"
+    }
+  },
+  "sharedWithMe": {
+    "title": "공유된 항목"
+  },
+  "card": {
+    "actions": {
+      "play": "플레이",
+      "edit": "편집",
+      "delete": "삭제",
+      "view": "보기",
+      "cancel": "취소"
+    },
+    "confirm": "확실합니까?"
+  },
+  "grid": {
+    "loading": "로딩 중...",
+    "empty": "아직 아무것도 없습니다.",
+    "loadMore": "더 불러오기"
+  }
+}

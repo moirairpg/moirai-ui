@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../../../utils/api';
 import { useAdventureCollection } from '../hooks/useAdventureCollection';
 import { useWorldCollection } from '../hooks/useWorldCollection';
@@ -59,16 +60,19 @@ function PersonaTab({ view }: TabProps) {
   );
 }
 
-const TABS: { id: CollectionTab; label: string }[] = [
-  { id: 'adventures', label: 'Adventures' },
-  { id: 'worlds', label: 'Worlds' },
-  { id: 'personas', label: 'Personas' },
-];
+type CollectionPageProps = { view: CollectionView };
 
-type CollectionPageProps = { view: CollectionView; title: string };
-
-export default function CollectionPage({ view, title }: CollectionPageProps) {
+export default function CollectionPage({ view }: CollectionPageProps) {
   const [activeTab, setActiveTab] = useState<CollectionTab>('adventures');
+  const { t } = useTranslation('collection');
+
+  const title = view === 'MY_STUFF' ? t('myStuff.title') : t('sharedWithMe.title');
+
+  const TABS: { id: CollectionTab; label: string }[] = [
+    { id: 'adventures', label: t('myStuff.tabs.adventures') },
+    { id: 'worlds', label: t('myStuff.tabs.worlds') },
+    { id: 'personas', label: t('myStuff.tabs.personas') },
+  ];
 
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">

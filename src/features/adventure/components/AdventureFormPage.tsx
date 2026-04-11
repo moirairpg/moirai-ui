@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, Info, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
@@ -34,7 +35,7 @@ const EMPTY: FormState = {
   isMultiplayer: false,
   adventureStart: '',
   modelConfiguration: { aiModel: 'GPT54_MINI', maxTokenLimit: 100, temperature: 0.8 },
-  contextAttributes: { nudge: '', authorsNote: '', scene: '', bump: '', bumpFrequency: 0 },
+  contextAttributes: { nudge: '', bump: '', bumpFrequency: 0 },
 };
 
 const EMPTY_ENTRY: LorebookEntry = { name: '', description: '', playerId: '' };
@@ -91,17 +92,27 @@ function LorebookEntryForm({
   onChange,
   onDone,
   onCancel,
+  namePlaceholder,
+  descriptionPlaceholder,
+  playerIdPlaceholder,
+  doneLabel,
+  cancelLabel,
 }: {
   value: LorebookEntry;
   onChange: (entry: LorebookEntry) => void;
   onDone: () => void;
   onCancel: () => void;
+  namePlaceholder: string;
+  descriptionPlaceholder: string;
+  playerIdPlaceholder: string;
+  doneLabel: string;
+  cancelLabel: string;
 }) {
   return (
     <div className="flex flex-col gap-2 rounded-md border border-border p-4">
       <input
         type="text"
-        placeholder="Name"
+        placeholder={namePlaceholder}
         value={value.name}
         onChange={(e) => onChange({ ...value, name: e.target.value })}
         className={INPUT_CLASS}
@@ -109,24 +120,24 @@ function LorebookEntryForm({
       />
       <textarea
         rows={3}
-        placeholder="Description"
+        placeholder={descriptionPlaceholder}
         value={value.description}
         onChange={(e) => onChange({ ...value, description: e.target.value })}
         className={TEXTAREA_CLASS}
       />
       <input
         type="text"
-        placeholder="Player ID (optional)"
+        placeholder={playerIdPlaceholder}
         value={value.playerId}
         onChange={(e) => onChange({ ...value, playerId: e.target.value })}
         className={INPUT_CLASS}
       />
       <div className="flex gap-2">
         <button type="button" onClick={onDone} disabled={!value.name.trim() || !value.description.trim()} className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-          Done
+          {doneLabel}
         </button>
         <button type="button" onClick={onCancel} className="rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted">
-          Cancel
+          {cancelLabel}
         </button>
       </div>
     </div>
@@ -136,6 +147,7 @@ function LorebookEntryForm({
 export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const navigate = useNavigate();
   const { adventureId } = useParams<{ adventureId: string }>();
+  const { t } = useTranslation('adventure');
   const [form, setForm] = useState<FormState>(EMPTY);
   const [worlds, setWorlds] = useState<SelectOption[]>([]);
   const [personas, setPersonas] = useState<SelectOption[]>([]);
@@ -151,7 +163,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
   const readOnly = mode === 'view';
-  const title = mode === 'create' ? 'New Adventure' : mode === 'edit' ? 'Edit Adventure' : 'Adventure';
+  const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
     const fetches: Promise<void>[] = [
@@ -189,7 +201,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
     Promise.all(fetches)
       .then(() => setLoading(false))
       .catch(() => {
-        setError('Failed to load data.');
+        setError(t('form.errors.loadFailed'));
         setLoading(false);
       });
   }, [mode, adventureId]);
@@ -303,13 +315,13 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         navigate(`/adventure/${adventureId}/view`);
       }
     } catch {
-      setError('Failed to save adventure.');
+      setError(t('form.errors.saveFailed'));
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">Loading...</div>;
+    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">{t('page.loading')}</div>;
   }
 
   return (
@@ -319,65 +331,65 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
             <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-              Back
+              {t('form.actions.back')}
             </button>
           </div>
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Name</label>
+            <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
             <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Description</label>
+            <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
             <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">World</label>
+            <label className="text-sm font-medium text-foreground">{t('form.fields.world')}</label>
             <CardPicker
               options={worlds}
               value={form.worldId}
               onChange={(id) => setForm((prev) => ({ ...prev, worldId: id }))}
               readOnly={readOnly}
-              emptyText="No worlds found. Create one first."
+              emptyText={t('form.empty.noWorlds')}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Persona</label>
+            <label className="text-sm font-medium text-foreground">{t('form.fields.persona')}</label>
             <CardPicker
               options={personas}
               value={form.personaId}
               onChange={(id) => setForm((prev) => ({ ...prev, personaId: id }))}
               readOnly={readOnly}
-              emptyText="No personas found. Create one first."
+              emptyText={t('form.empty.noPersonas')}
             />
           </div>
 
           <div className="flex gap-4">
             <div className="flex flex-1 flex-col gap-1.5">
               <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                Visibility
-                <Tooltip content="Who can see this adventure" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                {t('form.fields.visibility')}
+                <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
               </label>
               <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
-                <option value="PUBLIC">Public</option>
-                <option value="PRIVATE">Private</option>
+                <option value="PUBLIC">{t('form.options.public')}</option>
+                <option value="PRIVATE">{t('form.options.private')}</option>
               </select>
             </div>
 
             <div className="flex flex-1 flex-col gap-1.5">
               <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                Moderation
-                <Tooltip content="How tightly content is filtered — flagged messages are discarded entirely" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                {t('form.fields.moderation')}
+                <Tooltip content={t('form.tooltips.moderation')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
               </label>
               <select value={form.moderation} onChange={set('moderation')} disabled={readOnly} className={INPUT_CLASS}>
-                <option value="STRICT">Strict</option>
-                <option value="PERMISSIVE">Permissive</option>
-                <option value="DISABLED">Disabled</option>
+                <option value="STRICT">{t('form.options.strict')}</option>
+                <option value="PERMISSIVE">{t('form.options.permissive')}</option>
+                <option value="DISABLED">{t('form.options.disabled')}</option>
               </select>
             </div>
           </div>
@@ -385,13 +397,13 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center gap-2 text-sm font-medium text-foreground">
               <input type="checkbox" checked={form.isMultiplayer} onChange={set('isMultiplayer')} disabled={readOnly} className="h-4 w-4" />
-              Multiplayer
+              {t('form.fields.multiplayer')}
             </label>
           </div>
 
           {mode !== 'create' && (
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">Adventure Start</label>
+              <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
               <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
             </div>
           )}
@@ -399,7 +411,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           {mode !== 'create' && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">Lorebook</span>
+                <span className="text-sm font-medium text-foreground">{t('form.fields.lorebook')}</span>
                 {!readOnly && !addingNew && editingIndex === null && (
                   <button
                     type="button"
@@ -407,7 +419,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                     className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    Add Entry
+                    {t('form.actions.addEntry')}
                   </button>
                 )}
               </div>
@@ -418,12 +430,17 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                   onChange={setNewDraft}
                   onDone={commitNew}
                   onCancel={() => { setAddingNew(false); setNewDraft(EMPTY_ENTRY); }}
+                  namePlaceholder={t('form.placeholders.name')}
+                  descriptionPlaceholder={t('form.placeholders.description')}
+                  playerIdPlaceholder={t('form.placeholders.playerId')}
+                  doneLabel={t('form.actions.done')}
+                  cancelLabel={t('form.actions.cancel')}
                 />
               )}
 
               <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
                 {lorebook.length === 0 && !addingNew && (
-                  <p className="text-sm text-muted-foreground">No lorebook entries.</p>
+                  <p className="text-sm text-muted-foreground">{t('form.empty.noLorebook')}</p>
                 )}
 
                 {lorebook.map((entry, i) =>
@@ -434,6 +451,11 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                       onChange={setEditDraft}
                       onDone={commitEdit}
                       onCancel={() => setEditingIndex(null)}
+                      namePlaceholder={t('form.placeholders.name')}
+                      descriptionPlaceholder={t('form.placeholders.description')}
+                      playerIdPlaceholder={t('form.placeholders.playerId')}
+                      doneLabel={t('form.actions.done')}
+                      cancelLabel={t('form.actions.cancel')}
                     />
                   ) : (
                     <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
@@ -441,7 +463,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                         <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
                         <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
                         {entry.playerId && (
-                          <span className="text-xs text-muted-foreground">Player: {entry.playerId}</span>
+                          <span className="text-xs text-muted-foreground">{t('form.player')}{entry.playerId}</span>
                         )}
                       </div>
                       {!readOnly && (
@@ -467,19 +489,19 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               onClick={() => setAdvancedOpen((prev) => !prev)}
               className="flex w-full items-center justify-between rounded-md border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
             >
-              Advanced
+              {t('form.actions.advanced')}
               {advancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
 
             {advancedOpen && (
               <div className="flex flex-col gap-5 rounded-md border border-border p-4">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Model Configuration</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.fields.modelConfiguration')}</span>
 
                 <div className="flex gap-4">
                   <div className="flex flex-1 flex-col gap-1.5">
                     <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                      AI Model
-                      <Tooltip content="The AI model powering this adventure" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                      {t('form.fields.aiModel')}
+                      <Tooltip content={t('form.tooltips.aiModel')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                     </label>
                     <select value={form.modelConfiguration.aiModel} onChange={setModel('aiModel')} disabled={readOnly} className={INPUT_CLASS}>
                       <option value="GPT54">GPT-5.4</option>
@@ -490,27 +512,27 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
                   <div className="flex flex-1 flex-col gap-1.5">
                     <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                      Max Token Limit
-                      <Tooltip content="How long AI responses can be" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                      {t('form.fields.maxTokenLimit')}
+                      <Tooltip content={t('form.tooltips.maxTokenLimit')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                     </label>
                     <input type="number" min={100} value={form.modelConfiguration.maxTokenLimit} onChange={setModel('maxTokenLimit')} disabled={readOnly} className={INPUT_CLASS} />
                   </div>
 
                   <div className="flex flex-1 flex-col gap-1.5">
                     <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                      Temperature
-                      <Tooltip content="Lower = more consistent, higher = more creative" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                      {t('form.fields.temperature')}
+                      <Tooltip content={t('form.tooltips.temperature')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                     </label>
                     <input type="number" min={0.1} max={2.0} step={0.1} value={form.modelConfiguration.temperature} onChange={setModel('temperature')} disabled={readOnly} className={INPUT_CLASS} />
                   </div>
                 </div>
 
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Context Attributes</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.fields.contextAttributes')}</span>
 
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                    Nudge
-                    <Tooltip content="A quiet hint that guides how the AI behaves" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    {t('form.fields.nudge')}
+                    <Tooltip content={t('form.tooltips.nudge')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                   </label>
                   <textarea rows={3} value={form.contextAttributes.nudge} onChange={setCtx('nudge')} disabled={readOnly} className={TEXTAREA_CLASS} />
                 </div>
@@ -518,16 +540,16 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                    Bump
-                    <Tooltip content="Periodically reminds the AI of its personality and guides its behavior" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    {t('form.fields.bump')}
+                    <Tooltip content={t('form.tooltips.bump')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                   </label>
                   <textarea rows={3} value={form.contextAttributes.bump} onChange={setCtx('bump')} disabled={readOnly} className={TEXTAREA_CLASS} />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                    Bump Frequency
-                    <Tooltip content="How often the bump text repeats, in messages" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    {t('form.fields.bumpFrequency')}
+                    <Tooltip content={t('form.tooltips.bumpFrequency')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
                   </label>
                   <input type="number" value={form.contextAttributes.bumpFrequency} onChange={setCtx('bumpFrequency')} disabled={readOnly} className={INPUT_CLASS} />
                 </div>
@@ -541,10 +563,10 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         <div className="border-t border-border bg-background px-6 py-4">
           <div className="mx-auto w-full max-w-5xl flex gap-3">
             <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? t('form.actions.saving') : t('form.actions.save')}
             </button>
             <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-              Cancel
+              {t('form.actions.cancel')}
             </button>
           </div>
         </div>

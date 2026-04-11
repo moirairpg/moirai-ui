@@ -1,0 +1,51 @@
+{
+  "title": "Configurações",
+  "saveStatus": {
+    "success": "Configurações salvas com sucesso!"
+  },
+  "mainTabs": {
+    "account": "Conta",
+    "appearance": "Aparência",
+    "gameplay": "Jogabilidade"
+  },
+  "account": {
+    "language": "Idioma",
+    "languageLabel": "Idioma de exibição",
+    "languageDescription": "Escolha o idioma preferido para a interface"
+  },
+  "accountSettings": {
+    "title": "Conta",
+    "username": {
+      "label": "Conectado como"
+    },
+    "logout": {
+      "label": "Sair",
+      "description": "Encerrar sessão na conta",
+      "button": "Sair"
+    }
+  },
+  "appearanceSettings": {
+    "darkMode": {
+      "label": "Modo escuro",
+      "description": "Alternar entre temas claro e escuro"
+    },
+    "text": {
+      "title": "Texto",
+      "fontSize": {
+        "label": "Tamanho da fonte",
+        "description": "Tamanho do texto na visualização de aventura"
+      },
+      "scrollSpeed": {
+        "label": "Velocidade de rolagem",
+        "description": "Velocidade de rolagem do histórico de mensagens"
+      }
+    }
+  },
+  "gameplaySettings": {
+    "title": "Jogabilidade",
+    "spinnerPhrases": {
+      "label": "Frases de carregamento",
+      "description": "Mostrar frases enquanto a IA gera uma resposta"
+    }
+  }
+}

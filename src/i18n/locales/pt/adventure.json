@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "Nova Aventura", "edit": "Editar Aventura", "fallback": "Aventura" },
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição",
+      "world": "Mundo",
+      "persona": "Persona",
+      "visibility": "Visibilidade",
+      "moderation": "Moderação",
+      "multiplayer": "Multijogador",
+      "adventureStart": "Início da Aventura",
+      "lorebook": "Livro de Lore",
+      "aiModel": "Modelo de IA",
+      "maxTokenLimit": "Limite máximo de tokens",
+      "temperature": "Temperatura",
+      "nudge": "Dica",
+      "bump": "Lembrete",
+      "bumpFrequency": "Frequência de lembrete",
+      "contextAttributes": "Atributos de contexto",
+      "modelConfiguration": "Configuração do modelo"
+    },
+    "tooltips": {
+      "visibility": "Quem pode ver esta aventura",
+      "moderation": "O quão rigoroso é o filtro de conteúdo — mensagens sinalizadas são descartadas inteiramente",
+      "aiModel": "O modelo de IA que alimenta esta aventura",
+      "maxTokenLimit": "O tamanho máximo das respostas da IA",
+      "temperature": "Menor = mais consistente, maior = mais criativo",
+      "nudge": "Uma dica silenciosa que guia o comportamento da IA",
+      "bump": "Lembra periodicamente a IA de sua personalidade e guia seu comportamento",
+      "bumpFrequency": "Com que frequência o texto de lembrete se repete, em mensagens"
+    },
+    "options": {
+      "public": "Público",
+      "private": "Privado",
+      "strict": "Rigoroso",
+      "permissive": "Permissivo",
+      "disabled": "Desativado"
+    },
+    "placeholders": {
+      "name": "Nome",
+      "description": "Descrição",
+      "playerId": "ID do jogador (opcional)"
+    },
+    "empty": {
+      "noWorlds": "Nenhum mundo encontrado. Crie um primeiro.",
+      "noPersonas": "Nenhuma persona encontrada. Crie uma primeiro.",
+      "noLorebook": "Nenhuma entrada no livro de lore."
+    },
+    "actions": {
+      "back": "Voltar",
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "cancel": "Cancelar",
+      "done": "Concluído",
+      "addEntry": "Adicionar entrada",
+      "advanced": "Avançado"
+    },
+    "player": "Jogador: ",
+    "errors": {
+      "loadFailed": "Falha ao carregar dados.",
+      "saveFailed": "Falha ao salvar aventura."
+    }
+  },
+  "page": {
+    "inputPlaceholder": "O que você faz? (Enter para enviar, Shift+Enter para nova linha)",
+    "send": "Enviar",
+    "loading": "Carregando...",
+    "formatting": {
+      "bold": "Negrito",
+      "italic": "Itálico",
+      "strikethrough": "Tachado"
+    },
+    "generatingPhrases": [
+      "Tecendo a história...",
+      "Consultando o oráculo...",
+      "O mundo desperta...",
+      "O destino está sendo escrito...",
+      "A história se desenrola...",
+      "Sombras se movem na escuridão...",
+      "Os fios do destino se entrelaçam...",
+      "Forças ancestrais despertam..."
+    ]
+  }
+}

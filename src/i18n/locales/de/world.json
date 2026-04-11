@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "Neue Welt", "edit": "Welt bearbeiten", "fallback": "Welt" },
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "adventureStart": "Abenteuerbeginn",
+      "visibility": "Sichtbarkeit",
+      "lorebook": "Lore-Buch"
+    },
+    "tooltips": {
+      "adventureStart": "Wo die Geschichte für Abenteuer in dieser Welt beginnt",
+      "visibility": "Wer diese Welt sehen kann"
+    },
+    "options": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "placeholders": {
+      "name": "Name",
+      "description": "Beschreibung"
+    },
+    "empty": {
+      "noLorebook": "Keine Lore-Einträge."
+    },
+    "actions": {
+      "back": "Zurück",
+      "save": "Speichern",
+      "saving": "Wird gespeichert...",
+      "cancel": "Abbrechen",
+      "done": "Fertig",
+      "addEntry": "Eintrag hinzufügen"
+    },
+    "loading": "Wird geladen...",
+    "errors": {
+      "loadFailed": "Welt konnte nicht geladen werden.",
+      "saveFailed": "Welt konnte nicht gespeichert werden."
+    }
+  }
+}

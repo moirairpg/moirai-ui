@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Pencil, Play, Trash2 } from 'lucide-react';
 
 type AdventureCardProps = {
@@ -43,6 +44,7 @@ type EntityCardProps = AdventureCardProps | WorldCardProps | PersonaCardProps;
 export function EntityCard(props: EntityCardProps) {
   const [hovered, setHovered] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const { t } = useTranslation('collection');
 
   const bodyText = props.kind === 'persona' ? props.personality : props.description;
 
@@ -65,20 +67,20 @@ export function EntityCard(props: EntityCardProps) {
 
         {isConfirming && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
-            <p className="text-sm font-medium text-white">Are you sure?</p>
+            <p className="text-sm font-medium text-white">{t('card.confirm')}</p>
             <div className="flex gap-2">
               <button
                 onClick={handleConfirmDelete}
                 className="flex items-center gap-1 rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                Delete
+                {t('card.actions.delete')}
               </button>
               <button
                 onClick={handleCancel}
                 className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground hover:bg-accent/80"
               >
-                Cancel
+                {t('card.actions.cancel')}
               </button>
             </div>
           </div>
@@ -92,7 +94,7 @@ export function EntityCard(props: EntityCardProps) {
                 className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               >
                 <Play className="h-3.5 w-3.5" />
-                Play
+                {t('card.actions.play')}
               </button>
             )}
 
@@ -103,14 +105,14 @@ export function EntityCard(props: EntityCardProps) {
                   className="flex items-center gap-1 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground hover:bg-accent/80"
                 >
                   <Pencil className="h-3.5 w-3.5" />
-                  Edit
+                  {t('card.actions.edit')}
                 </button>
                 <button
                   onClick={handleDeleteClick}
                   className="flex items-center gap-1 rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  Delete
+                  {t('card.actions.delete')}
                 </button>
               </>
             ) : (
@@ -119,7 +121,7 @@ export function EntityCard(props: EntityCardProps) {
                 className="flex items-center gap-1 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground hover:bg-accent/80"
               >
                 <Eye className="h-3.5 w-3.5" />
-                View
+                {t('card.actions.view')}
               </button>
             )}
           </div>

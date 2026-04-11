@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "새 어드벤처", "edit": "어드벤처 편집", "fallback": "어드벤처" },
+    "fields": {
+      "name": "이름",
+      "description": "설명",
+      "world": "세계",
+      "persona": "페르소나",
+      "visibility": "공개 설정",
+      "moderation": "검열",
+      "multiplayer": "멀티플레이어",
+      "adventureStart": "어드벤처 시작",
+      "lorebook": "로어북",
+      "aiModel": "AI 모델",
+      "maxTokenLimit": "최대 토큰 제한",
+      "temperature": "온도",
+      "nudge": "힌트",
+      "bump": "리마인더",
+      "bumpFrequency": "리마인더 빈도",
+      "contextAttributes": "컨텍스트 속성",
+      "modelConfiguration": "모델 구성"
+    },
+    "tooltips": {
+      "visibility": "이 어드벤처를 볼 수 있는 사람",
+      "moderation": "콘텐츠 필터링의 엄격도 — 신고된 메시지는 완전히 삭제됩니다",
+      "aiModel": "이 어드벤처를 구동하는 AI 모델",
+      "maxTokenLimit": "AI 응답의 최대 길이",
+      "temperature": "낮을수록 일관성, 높을수록 창의성",
+      "nudge": "AI의 동작을 안내하는 조용한 힌트",
+      "bump": "AI에게 주기적으로 개성을 상기시키고 행동을 안내합니다",
+      "bumpFrequency": "리마인더 텍스트가 반복되는 빈도(메시지 수)"
+    },
+    "options": {
+      "public": "공개",
+      "private": "비공개",
+      "strict": "엄격",
+      "permissive": "관대",
+      "disabled": "비활성화"
+    },
+    "placeholders": {
+      "name": "이름",
+      "description": "설명",
+      "playerId": "플레이어 ID (선택사항)"
+    },
+    "empty": {
+      "noWorlds": "세계를 찾을 수 없습니다. 먼저 만들어 주세요.",
+      "noPersonas": "페르소나를 찾을 수 없습니다. 먼저 만들어 주세요.",
+      "noLorebook": "로어 항목이 없습니다."
+    },
+    "actions": {
+      "back": "뒤로",
+      "save": "저장",
+      "saving": "저장 중...",
+      "cancel": "취소",
+      "done": "완료",
+      "addEntry": "항목 추가",
+      "advanced": "고급"
+    },
+    "player": "플레이어: ",
+    "errors": {
+      "loadFailed": "데이터를 불러오지 못했습니다.",
+      "saveFailed": "어드벤처를 저장하지 못했습니다."
+    }
+  },
+  "page": {
+    "inputPlaceholder": "무엇을 하시겠습니까? (Enter로 전송, Shift+Enter로 줄 바꿈)",
+    "send": "전송",
+    "loading": "로딩 중...",
+    "formatting": {
+      "bold": "굵게",
+      "italic": "기울임꼴",
+      "strikethrough": "취소선"
+    },
+    "generatingPhrases": [
+      "이야기가 엮이고 있습니다...",
+      "신탁을 구하는 중...",
+      "세계가 움직이기 시작합니다...",
+      "운명이 쓰여지고 있습니다...",
+      "이야기가 펼쳐집니다...",
+      "어둠 속에서 그림자가 흔들립니다...",
+      "운명의 실이 얽혀듭니다...",
+      "고대의 힘이 깨어납니다..."
+    ]
+  }
+}

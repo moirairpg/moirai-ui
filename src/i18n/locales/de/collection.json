@@ -1,0 +1,36 @@
+{
+  "browse": {
+    "title": "Erkunden",
+    "tabs": {
+      "adventures": "Abenteuer",
+      "worlds": "Welten",
+      "personas": "Personas"
+    }
+  },
+  "myStuff": {
+    "title": "Meine Inhalte",
+    "tabs": {
+      "adventures": "Abenteuer",
+      "worlds": "Welten",
+      "personas": "Personas"
+    }
+  },
+  "sharedWithMe": {
+    "title": "Mit mir geteilt"
+  },
+  "card": {
+    "actions": {
+      "play": "Spielen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "view": "Ansehen",
+      "cancel": "Abbrechen"
+    },
+    "confirm": "Bist du sicher?"
+  },
+  "grid": {
+    "loading": "Wird geladen...",
+    "empty": "Noch nichts hier.",
+    "loadMore": "Mehr laden"
+  }
+}

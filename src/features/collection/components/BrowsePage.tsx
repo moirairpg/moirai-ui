@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../../../utils/api';
 import { useAdventureCollection } from '../hooks/useAdventureCollection';
 import { useWorldCollection } from '../hooks/useWorldCollection';
@@ -7,12 +8,6 @@ import { CardGrid } from './CardGrid';
 import { EntityCard } from './EntityCard';
 
 type BrowseTab = 'adventures' | 'worlds' | 'personas';
-
-const TABS: { id: BrowseTab; label: string }[] = [
-  { id: 'adventures', label: 'Adventures' },
-  { id: 'worlds', label: 'Worlds' },
-  { id: 'personas', label: 'Personas' },
-];
 
 function AdventuresTab() {
   const navigate = useNavigate();
@@ -65,14 +60,21 @@ function PersonasTab() {
 
 export default function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation('collection');
   const raw = searchParams.get('tab');
   const activeTab: BrowseTab = raw === 'worlds' || raw === 'personas' ? raw : 'adventures';
 
   const setTab = (tab: BrowseTab) => setSearchParams({ tab }, { replace: true });
 
+  const TABS: { id: BrowseTab; label: string }[] = [
+    { id: 'adventures', label: t('browse.tabs.adventures') },
+    { id: 'worlds', label: t('browse.tabs.worlds') },
+    { id: 'personas', label: t('browse.tabs.personas') },
+  ];
+
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
-      <h1 className="text-xl font-semibold text-foreground">Explore</h1>
+      <h1 className="text-xl font-semibold text-foreground">{t('browse.title')}</h1>
 
       <div className="flex gap-1 border-b border-border">
         {TABS.map((tab) => (

@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "新世界", "edit": "编辑世界", "fallback": "世界" },
+    "fields": {
+      "name": "名称",
+      "description": "描述",
+      "adventureStart": "冒险开始",
+      "visibility": "可见性",
+      "lorebook": "传说书"
+    },
+    "tooltips": {
+      "adventureStart": "此世界中冒险故事开始的地方",
+      "visibility": "谁可以看到这个世界"
+    },
+    "options": {
+      "public": "公开",
+      "private": "私密"
+    },
+    "placeholders": {
+      "name": "名称",
+      "description": "描述"
+    },
+    "empty": {
+      "noLorebook": "暂无传说条目。"
+    },
+    "actions": {
+      "back": "返回",
+      "save": "保存",
+      "saving": "保存中...",
+      "cancel": "取消",
+      "done": "完成",
+      "addEntry": "添加条目"
+    },
+    "loading": "加载中...",
+    "errors": {
+      "loadFailed": "世界加载失败。",
+      "saveFailed": "世界保存失败。"
+    }
+  }
+}

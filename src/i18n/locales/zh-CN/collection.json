@@ -1,0 +1,36 @@
+{
+  "browse": {
+    "title": "探索",
+    "tabs": {
+      "adventures": "冒险",
+      "worlds": "世界",
+      "personas": "角色"
+    }
+  },
+  "myStuff": {
+    "title": "我的内容",
+    "tabs": {
+      "adventures": "冒险",
+      "worlds": "世界",
+      "personas": "角色"
+    }
+  },
+  "sharedWithMe": {
+    "title": "与我共享"
+  },
+  "card": {
+    "actions": {
+      "play": "游玩",
+      "edit": "编辑",
+      "delete": "删除",
+      "view": "查看",
+      "cancel": "取消"
+    },
+    "confirm": "确定吗？"
+  },
+  "grid": {
+    "loading": "加载中...",
+    "empty": "暂无内容。",
+    "loadMore": "加载更多"
+  }
+}

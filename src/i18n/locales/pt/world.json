@@ -1,0 +1,40 @@
+{
+  "form": {
+    "title": { "new": "Novo Mundo", "edit": "Editar Mundo", "fallback": "Mundo" },
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição",
+      "adventureStart": "Início da Aventura",
+      "visibility": "Visibilidade",
+      "lorebook": "Livro de Lore"
+    },
+    "tooltips": {
+      "adventureStart": "Onde a história começa para as aventuras neste mundo",
+      "visibility": "Quem pode ver este mundo"
+    },
+    "options": {
+      "public": "Público",
+      "private": "Privado"
+    },
+    "placeholders": {
+      "name": "Nome",
+      "description": "Descrição"
+    },
+    "empty": {
+      "noLorebook": "Nenhuma entrada no livro de lore."
+    },
+    "actions": {
+      "back": "Voltar",
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "cancel": "Cancelar",
+      "done": "Concluído",
+      "addEntry": "Adicionar entrada"
+    },
+    "loading": "Carregando...",
+    "errors": {
+      "loadFailed": "Falha ao carregar mundo.",
+      "saveFailed": "Falha ao salvar mundo."
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { BookOpen, Globe, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { NavSection } from './NavSection';
 import { useMoirAISidebar } from '../hooks/useMoirAISidebar';
 import { useRecentAdventures } from '../hooks/useRecentAdventures';
@@ -28,6 +29,7 @@ export function MoirAISidebarNav({
   onCreatePersona,
   onBrowsePersonas,
 }: MoirAISidebarNavProps) {
+  const { t } = useTranslation('sidebar');
   const { expanded, toggle } = useMoirAISidebar();
   const { data: recentAdventures } = useRecentAdventures();
 
@@ -43,57 +45,57 @@ export function MoirAISidebarNav({
         onClick={onMyStuffClick}
         className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
       >
-        My stuff
+        {t('nav.myStuff')}
       </button>
 
       <button
         onClick={onSharedWithMeClick}
         className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
       >
-        Shared with me
+        {t('nav.sharedWithMe')}
       </button>
 
       <button
         onClick={onBrowse}
         className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
       >
-        Explore
+        {t('nav.explore')}
       </button>
 
       <div className="my-1.5 h-px bg-border/40" />
 
       <NavSection
-        label="Adventures"
+        label={t('nav.adventures')}
         icon={<BookOpen className="h-4 w-4 text-muted-foreground" />}
         isExpanded={expanded.has('adventures')}
         onToggle={() => toggle('adventures')}
         onCreateClick={onCreateAdventure}
         onBrowseClick={onBrowseAdventures}
         recentItems={recentAdventureItems}
-        createLabel="Create adventure"
-        browseLabel="Explore"
+        createLabel={t('nav.createAdventure')}
+        browseLabel={t('nav.explore')}
       />
 
       <NavSection
-        label="Worlds"
+        label={t('nav.worlds')}
         icon={<Globe className="h-4 w-4 text-muted-foreground" />}
         isExpanded={expanded.has('worlds')}
         onToggle={() => toggle('worlds')}
         onCreateClick={onCreateWorld}
         onBrowseClick={onBrowseWorlds}
-        createLabel="Create world"
-        browseLabel="Explore"
+        createLabel={t('nav.createWorld')}
+        browseLabel={t('nav.explore')}
       />
 
       <NavSection
-        label="Personas"
+        label={t('nav.personas')}
         icon={<User className="h-4 w-4 text-muted-foreground" />}
         isExpanded={expanded.has('personas')}
         onToggle={() => toggle('personas')}
         onCreateClick={onCreatePersona}
         onBrowseClick={onBrowsePersonas}
-        createLabel="Create persona"
-        browseLabel="Explore"
+        createLabel={t('nav.createPersona')}
+        browseLabel={t('nav.explore')}
       />
     </div>
   );

@@ -1,0 +1,9 @@
+{
+  "versionUpdate": {
+    "ariaLabels": {
+      "showSidebar": "Mostrar barra lateral"
+    }
+  },
+  "darkModeToggle": "Alternar modo escuro",
+  "selectAdventure": "Selecione uma aventura para começar."
+}

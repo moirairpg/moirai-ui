@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "新しいアドベンチャー", "edit": "アドベンチャーを編集", "fallback": "アドベンチャー" },
+    "fields": {
+      "name": "名前",
+      "description": "説明",
+      "world": "ワールド",
+      "persona": "ペルソナ",
+      "visibility": "公開設定",
+      "moderation": "モデレーション",
+      "multiplayer": "マルチプレイヤー",
+      "adventureStart": "アドベンチャー開始",
+      "lorebook": "ロアブック",
+      "aiModel": "AIモデル",
+      "maxTokenLimit": "最大トークン制限",
+      "temperature": "温度",
+      "nudge": "ヒント",
+      "bump": "リマインダー",
+      "bumpFrequency": "リマインダー頻度",
+      "contextAttributes": "コンテキスト属性",
+      "modelConfiguration": "モデル設定"
+    },
+    "tooltips": {
+      "visibility": "このアドベンチャーを見られる人",
+      "moderation": "コンテンツのフィルタリングの厳しさ — フラグの付いたメッセージは完全に破棄されます",
+      "aiModel": "このアドベンチャーを動かすAIモデル",
+      "maxTokenLimit": "AI応答の最大長",
+      "temperature": "低い = より一貫性、高い = よりクリエイティブ",
+      "nudge": "AIの動作を誘導する静かなヒント",
+      "bump": "AIに定期的にその個性を思い出させ、動作を誘導します",
+      "bumpFrequency": "バンプテキストが繰り返される頻度（メッセージ数）"
+    },
+    "options": {
+      "public": "公開",
+      "private": "非公開",
+      "strict": "厳格",
+      "permissive": "緩和",
+      "disabled": "無効"
+    },
+    "placeholders": {
+      "name": "名前",
+      "description": "説明",
+      "playerId": "プレイヤーID（任意）"
+    },
+    "empty": {
+      "noWorlds": "ワールドが見つかりません。先に作成してください。",
+      "noPersonas": "ペルソナが見つかりません。先に作成してください。",
+      "noLorebook": "ロアエントリがありません。"
+    },
+    "actions": {
+      "back": "戻る",
+      "save": "保存",
+      "saving": "保存中...",
+      "cancel": "キャンセル",
+      "done": "完了",
+      "addEntry": "エントリを追加",
+      "advanced": "詳細設定"
+    },
+    "player": "プレイヤー：",
+    "errors": {
+      "loadFailed": "データの読み込みに失敗しました。",
+      "saveFailed": "アドベンチャーの保存に失敗しました。"
+    }
+  },
+  "page": {
+    "inputPlaceholder": "何をしますか？（Enterで送信、Shift+Enterで改行）",
+    "send": "送信",
+    "loading": "読み込み中...",
+    "formatting": {
+      "bold": "太字",
+      "italic": "斜体",
+      "strikethrough": "取り消し線"
+    },
+    "generatingPhrases": [
+      "物語が紡がれています...",
+      "神託を求めています...",
+      "世界が動き出しています...",
+      "運命が記されています...",
+      "物語が展開しています...",
+      "闇の中で影が揺れています...",
+      "運命の糸が絡み合っています...",
+      "古の力が目覚めています..."
+    ]
+  }
+}

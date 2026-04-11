@@ -1,0 +1,85 @@
+{
+  "form": {
+    "title": { "new": "新冒险", "edit": "编辑冒险", "fallback": "冒险" },
+    "fields": {
+      "name": "名称",
+      "description": "描述",
+      "world": "世界",
+      "persona": "角色",
+      "visibility": "可见性",
+      "moderation": "审核",
+      "multiplayer": "多人游戏",
+      "adventureStart": "冒险开始",
+      "lorebook": "传说书",
+      "aiModel": "AI模型",
+      "maxTokenLimit": "最大Token限制",
+      "temperature": "温度",
+      "nudge": "提示",
+      "bump": "提醒",
+      "bumpFrequency": "提醒频率",
+      "contextAttributes": "上下文属性",
+      "modelConfiguration": "模型配置"
+    },
+    "tooltips": {
+      "visibility": "谁可以看到这个冒险",
+      "moderation": "内容过滤的严格程度 — 被标记的消息将被完全丢弃",
+      "aiModel": "驱动此冒险的AI模型",
+      "maxTokenLimit": "AI响应的最大长度",
+      "temperature": "越低越稳定，越高越有创意",
+      "nudge": "引导AI行为的无声提示",
+      "bump": "定期提醒AI其个性并引导其行为",
+      "bumpFrequency": "提醒文本重复的频率（以消息数计）"
+    },
+    "options": {
+      "public": "公开",
+      "private": "私密",
+      "strict": "严格",
+      "permissive": "宽松",
+      "disabled": "禁用"
+    },
+    "placeholders": {
+      "name": "名称",
+      "description": "描述",
+      "playerId": "玩家ID（可选）"
+    },
+    "empty": {
+      "noWorlds": "未找到世界，请先创建一个。",
+      "noPersonas": "未找到角色，请先创建一个。",
+      "noLorebook": "暂无传说条目。"
+    },
+    "actions": {
+      "back": "返回",
+      "save": "保存",
+      "saving": "保存中...",
+      "cancel": "取消",
+      "done": "完成",
+      "addEntry": "添加条目",
+      "advanced": "高级"
+    },
+    "player": "玩家：",
+    "errors": {
+      "loadFailed": "数据加载失败。",
+      "saveFailed": "冒险保存失败。"
+    }
+  },
+  "page": {
+    "inputPlaceholder": "你做什么？（Enter发送，Shift+Enter换行）",
+    "send": "发送",
+    "loading": "加载中...",
+    "formatting": {
+      "bold": "加粗",
+      "italic": "斜体",
+      "strikethrough": "删除线"
+    },
+    "generatingPhrases": [
+      "故事正在编织中...",
+      "正在请示神谕...",
+      "世界正在涌动...",
+      "命运正在书写...",
+      "故事正在展开...",
+      "暗影在黑暗中流动...",
+      "命运的丝线交织缠绕...",
+      "远古力量正在觉醒..."
+    ]
+  }
+}

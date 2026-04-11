@@ -1,0 +1,36 @@
+{
+  "browse": {
+    "title": "Обзор",
+    "tabs": {
+      "adventures": "Приключения",
+      "worlds": "Миры",
+      "personas": "Персонажи"
+    }
+  },
+  "myStuff": {
+    "title": "Моё",
+    "tabs": {
+      "adventures": "Приключения",
+      "worlds": "Миры",
+      "personas": "Персонажи"
+    }
+  },
+  "sharedWithMe": {
+    "title": "Со мной поделились"
+  },
+  "card": {
+    "actions": {
+      "play": "Играть",
+      "edit": "Изменить",
+      "delete": "Удалить",
+      "view": "Просмотр",
+      "cancel": "Отмена"
+    },
+    "confirm": "Вы уверены?"
+  },
+  "grid": {
+    "loading": "Загрузка...",
+    "empty": "Пока ничего нет.",
+    "loadMore": "Загрузить ещё"
+  }
+}

@@ -26,8 +26,8 @@ export default function App() {
                     <Routes>
                       <Route path="/" element={<AppContent />} />
                       <Route path="/adventure/play/:adventureId" element={<AppContent />} />
-                      <Route path="/my-stuff" element={<AppContent><CollectionPage view="MY_STUFF" title="My Stuff" /></AppContent>} />
-                      <Route path="/shared-with-me" element={<AppContent><CollectionPage view="SHARED_WITH_ME" title="Shared With Me" /></AppContent>} />
+                      <Route path="/my-stuff" element={<AppContent><CollectionPage view="MY_STUFF" /></AppContent>} />
+                      <Route path="/shared-with-me" element={<AppContent><CollectionPage view="SHARED_WITH_ME" /></AppContent>} />
                       <Route path="/explore" element={<AppContent><BrowsePage /></AppContent>} />
                       <Route path="/adventure/new" element={<AppContent><AdventureFormPage mode="create" /></AppContent>} />
                       <Route path="/adventure/:adventureId/edit" element={<AppContent><AdventureFormPage mode="edit" /></AppContent>} />

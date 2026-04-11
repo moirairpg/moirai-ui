@@ -1,0 +1,29 @@
+{
+  "form": {
+    "title": { "new": "Neue Persona", "edit": "Persona bearbeiten", "fallback": "Persona" },
+    "fields": {
+      "name": "Name",
+      "personality": "Persönlichkeit",
+      "visibility": "Sichtbarkeit"
+    },
+    "tooltips": {
+      "personality": "Wie diese Persona denkt, spricht und sich verhält",
+      "visibility": "Wer diese Persona sehen kann"
+    },
+    "options": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "actions": {
+      "back": "Zurück",
+      "save": "Speichern",
+      "saving": "Wird gespeichert...",
+      "cancel": "Abbrechen"
+    },
+    "loading": "Wird geladen...",
+    "errors": {
+      "loadFailed": "Persona konnte nicht geladen werden.",
+      "saveFailed": "Persona konnte nicht gespeichert werden."
+    }
+  }
+}
