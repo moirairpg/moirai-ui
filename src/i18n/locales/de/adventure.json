@@ -35,7 +35,8 @@
       "private": "Privat",
       "strict": "Streng",
       "permissive": "Permissiv",
-      "disabled": "Deaktiviert"
+      "disabled": "Deaktiviert",
+      "noWorld": "Keine Welt"
     },
     "placeholders": {
       "name": "Name",
@@ -54,7 +55,8 @@
       "cancel": "Abbrechen",
       "done": "Fertig",
       "addEntry": "Eintrag hinzufügen",
-      "advanced": "Erweitert"
+      "advanced": "Erweitert",
+      "importJson": "JSON importieren"
     },
     "player": "Spieler: ",
     "errors": {

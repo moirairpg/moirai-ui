@@ -29,7 +29,8 @@
       "saving": "保存中...",
       "cancel": "取消",
       "done": "完成",
-      "addEntry": "添加条目"
+      "addEntry": "添加条目",
+      "importJson": "导入 JSON"
     },
     "loading": "加载中...",
     "errors": {

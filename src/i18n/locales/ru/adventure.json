@@ -35,7 +35,8 @@
       "private": "Приватный",
       "strict": "Строгий",
       "permissive": "Мягкий",
-      "disabled": "Отключено"
+      "disabled": "Отключено",
+      "noWorld": "Без мира"
     },
     "placeholders": {
       "name": "Название",
@@ -54,7 +55,8 @@
       "cancel": "Отмена",
       "done": "Готово",
       "addEntry": "Добавить запись",
-      "advanced": "Расширенные"
+      "advanced": "Расширенные",
+      "importJson": "Импортировать JSON"
     },
     "player": "Игрок: ",
     "errors": {

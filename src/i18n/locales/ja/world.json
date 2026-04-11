@@ -29,7 +29,8 @@
       "saving": "保存中...",
       "cancel": "キャンセル",
       "done": "完了",
-      "addEntry": "エントリを追加"
+      "addEntry": "エントリを追加",
+      "importJson": "JSONをインポート"
     },
     "loading": "読み込み中...",
     "errors": {

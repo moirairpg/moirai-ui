@@ -35,7 +35,8 @@
       "private": "非公開",
       "strict": "厳格",
       "permissive": "緩和",
-      "disabled": "無効"
+      "disabled": "無効",
+      "noWorld": "ワールドなし"
     },
     "placeholders": {
       "name": "名前",
@@ -54,7 +55,8 @@
       "cancel": "キャンセル",
       "done": "完了",
       "addEntry": "エントリを追加",
-      "advanced": "詳細設定"
+      "advanced": "詳細設定",
+      "importJson": "JSONをインポート"
     },
     "player": "プレイヤー：",
     "errors": {

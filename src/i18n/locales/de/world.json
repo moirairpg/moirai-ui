@@ -29,7 +29,8 @@
       "saving": "Wird gespeichert...",
       "cancel": "Abbrechen",
       "done": "Fertig",
-      "addEntry": "Eintrag hinzufügen"
+      "addEntry": "Eintrag hinzufügen",
+      "importJson": "JSON importieren"
     },
     "loading": "Wird geladen...",
     "errors": {

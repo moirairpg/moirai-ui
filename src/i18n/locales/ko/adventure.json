@@ -35,7 +35,8 @@
       "private": "비공개",
       "strict": "엄격",
       "permissive": "관대",
-      "disabled": "비활성화"
+      "disabled": "비활성화",
+      "noWorld": "세계 없음"
     },
     "placeholders": {
       "name": "이름",
@@ -54,7 +55,8 @@
       "cancel": "취소",
       "done": "완료",
       "addEntry": "항목 추가",
-      "advanced": "고급"
+      "advanced": "고급",
+      "importJson": "JSON 가져오기"
     },
     "player": "플레이어: ",
     "errors": {

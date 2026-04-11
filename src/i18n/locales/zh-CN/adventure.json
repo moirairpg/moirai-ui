@@ -35,7 +35,8 @@
       "private": "私密",
       "strict": "严格",
       "permissive": "宽松",
-      "disabled": "禁用"
+      "disabled": "禁用",
+      "noWorld": "无世界"
     },
     "placeholders": {
       "name": "名称",
@@ -54,7 +55,8 @@
       "cancel": "取消",
       "done": "完成",
       "addEntry": "添加条目",
-      "advanced": "高级"
+      "advanced": "高级",
+      "importJson": "导入JSON"
     },
     "player": "玩家：",
     "errors": {

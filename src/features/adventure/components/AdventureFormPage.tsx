@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Info, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Eye, Info, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
 import { Tooltip } from '../../../shared/view/ui';
+import { useJsonImport, parseAdventureJson } from '../../../utils/jsonImport';
 
 type AdventureFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
-type SelectOption = { id: string; name: string };
+type SelectOption = { id: string; name: string; description?: string; visibility?: string };
 
 type LorebookEntry = { id?: string; name: string; description: string; playerId: string };
 
 type FormState = {
   name: string;
   description: string;
-  worldId: string;
+  worldId: string | null;
   personaId: string;
   visibility: string;
   moderation: string;
@@ -28,7 +29,7 @@ type FormState = {
 const EMPTY: FormState = {
   name: '',
   description: '',
-  worldId: '',
+  worldId: null,
   personaId: '',
   visibility: 'PUBLIC',
   moderation: 'STRICT',
@@ -39,6 +40,7 @@ const EMPTY: FormState = {
 };
 
 const EMPTY_ENTRY: LorebookEntry = { name: '', description: '', playerId: '' };
+const SNAPSHOT_KEY = 'adventure_form_snapshot';
 
 function CardPicker({
   options,
@@ -46,12 +48,20 @@ function CardPicker({
   onChange,
   readOnly,
   emptyText,
+  viewBasePath,
+  onView,
+  nullable,
+  noneLabel,
 }: {
   options: SelectOption[];
-  value: string;
-  onChange: (id: string) => void;
+  value: string | null;
+  onChange: (id: string | null) => void;
   readOnly: boolean;
   emptyText: string;
+  viewBasePath: string;
+  onView?: (id: string) => void;
+  nullable?: boolean;
+  noneLabel?: string;
 }) {
   if (readOnly) {
     const selected = options.find((o) => o.id === value);
@@ -60,25 +70,70 @@ function CardPicker({
     );
   }
 
-  if (options.length === 0) {
+  if (options.length === 0 && !nullable) {
     return <p className="text-sm text-muted-foreground">{emptyText}</p>;
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1">
-      {options.map((option) => (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {nullable && (
         <button
-          key={option.id}
           type="button"
-          onClick={() => onChange(option.id)}
-          className={`min-w-[160px] rounded-md border px-4 py-3 text-left text-sm font-medium transition-colors ${
-            value === option.id
+          onClick={() => onChange(null)}
+          className={`flex items-center justify-center rounded-lg border-2 border-dashed px-4 py-6 text-sm font-medium transition-colors ${
+            value === null
               ? 'border-primary bg-primary/10 text-foreground'
-              : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+              : 'border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'
           }`}
         >
-          {option.name}
+          {noneLabel ?? 'None'}
         </button>
+      )}
+      {options.length === 0 && nullable && (
+        <p className="col-span-full text-sm text-muted-foreground">{emptyText}</p>
+      )}
+      {options.map((option) => (
+        <div
+          key={option.id}
+          onClick={() => onChange(option.id)}
+          className={`relative flex flex-col overflow-hidden rounded-lg border-2 bg-card cursor-pointer transition-colors ${
+            value === option.id
+              ? 'border-primary'
+              : 'border-border hover:border-primary/50'
+          }`}
+        >
+          <div className="relative h-40 flex-shrink-0 bg-muted">
+            <img src="/images/placeholder_picture.png" alt="" className="h-full w-full object-cover" />
+            {onView ? (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onView(option.id); }}
+                className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-1 text-xs font-medium text-white hover:bg-black/80"
+              >
+                <Eye className="h-3 w-3" />
+              </button>
+            ) : (
+              <a
+                href={`${viewBasePath}/${option.id}/view`}
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-1 text-xs font-medium text-white hover:bg-black/80"
+              >
+                <Eye className="h-3 w-3" />
+              </a>
+            )}
+          </div>
+          <div className="flex flex-col gap-1 p-3">
+            <p className="truncate text-sm font-semibold text-foreground">{option.name}</p>
+            {option.description && (
+              <p className="line-clamp-2 text-xs text-muted-foreground">{option.description}</p>
+            )}
+            {option.visibility && (
+              <span className="mt-1 inline-flex w-fit items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                {option.visibility}
+              </span>
+            )}
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -146,12 +201,14 @@ function LorebookEntryForm({
 
 export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { adventureId } = useParams<{ adventureId: string }>();
   const { t } = useTranslation('adventure');
   const [form, setForm] = useState<FormState>(EMPTY);
   const [worlds, setWorlds] = useState<SelectOption[]>([]);
   const [personas, setPersonas] = useState<SelectOption[]>([]);
   const [lorebook, setLorebook] = useState<LorebookEntry[]>([]);
+  const [createLorebook, setCreateLorebook] = useState<LorebookEntry[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [addingNew, setAddingNew] = useState(false);
   const [newDraft, setNewDraft] = useState<LorebookEntry>(EMPTY_ENTRY);
@@ -161,17 +218,50 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [worldName, setWorldName] = useState<string | null>(null);
 
   const readOnly = mode === 'view';
   const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
+    let restoredFromSnapshot = false;
+
+    const rawSnapshot = sessionStorage.getItem(SNAPSHOT_KEY);
+    if (rawSnapshot) {
+      sessionStorage.removeItem(SNAPSHOT_KEY);
+      try {
+        const snapshot = JSON.parse(rawSnapshot) as {
+          form: FormState;
+          createLorebook: LorebookEntry[];
+          deletedIds: string[];
+          returnPath: string;
+          savedAt: number;
+        };
+        if (snapshot.returnPath === location.pathname && Date.now() - snapshot.savedAt < 1800000) {
+          setForm(snapshot.form);
+          setCreateLorebook(snapshot.createLorebook);
+          setDeletedIds(snapshot.deletedIds);
+          restoredFromSnapshot = true;
+        }
+      } catch (_) {
+        restoredFromSnapshot = false;
+      }
+    }
+
     const fetches: Promise<void>[] = [
-      apiFetch('/api/world?view=MY_STUFF&size=100').then((r) => r.json()).then((d) => setWorlds(d.data ?? [])),
-      apiFetch('/api/persona?view=MY_STUFF&size=100').then((r) => r.json()).then((d) => setPersonas(d.data ?? [])),
+      apiFetch('/api/world?view=MY_STUFF&size=100').then((r) => r.json()).then((d) =>
+        setWorlds((d.data ?? []).map((w: { id: string; name: string; description?: string; visibility?: string }) => ({
+          id: w.id, name: w.name, description: w.description, visibility: w.visibility,
+        })))
+      ),
+      apiFetch('/api/persona?view=MY_STUFF&size=100').then((r) => r.json()).then((d) =>
+        setPersonas((d.data ?? []).map((p: { id: string; name: string; personality?: string; visibility?: string }) => ({
+          id: p.id, name: p.name, description: p.personality, visibility: p.visibility,
+        })))
+      ),
     ];
 
-    if (mode !== 'create' && adventureId) {
+    if (!restoredFromSnapshot && mode !== 'create' && adventureId) {
       fetches.push(
         apiFetch(`/api/adventure/${adventureId}`)
           .then((r) => r.json())
@@ -179,7 +269,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             setForm({
               name: data.name,
               description: data.description,
-              worldId: data.worldId,
+              worldId: data.worldId ?? null,
               personaId: data.personaId,
               visibility: data.visibility,
               moderation: data.moderation,
@@ -206,6 +296,14 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
       });
   }, [mode, adventureId]);
 
+  useEffect(() => {
+    if (mode !== 'view' || !form.worldId) return;
+    apiFetch(`/api/world/${form.worldId}`)
+      .then((r) => r.json())
+      .then((w: { name: string }) => setWorldName(w.name))
+      .catch(() => {});
+  }, [mode, form.worldId]);
+
   const set = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -217,30 +315,97 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const setCtx = (field: keyof ContextAttributes) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, contextAttributes: { ...prev.contextAttributes, [field]: field === 'bumpFrequency' ? Number(e.target.value) : e.target.value } }));
 
+  const handleWorldChange = (id: string | null) => {
+    if (id === null) {
+      setForm((prev) => ({ ...prev, worldId: null, adventureStart: '' }));
+      setCreateLorebook([]);
+      return;
+    }
+
+    setForm((prev) => ({ ...prev, worldId: id }));
+
+    apiFetch(`/api/world/${id}`)
+      .then((res) => res.json())
+      .then((world) => {
+        setForm((prev) => ({ ...prev, adventureStart: world.adventureStart ?? '' }));
+        setCreateLorebook((world.lorebook ?? []).map((e: { name: string; description: string; playerId?: string }) => ({
+          name: e.name,
+          description: e.description,
+          playerId: e.playerId ?? '',
+        })));
+      })
+      .catch(() => {});
+  };
+
+  const handleWorldView = (id: string) => {
+    sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify({
+      form,
+      createLorebook,
+      deletedIds,
+      returnPath: location.pathname,
+      savedAt: Date.now(),
+    }));
+    navigate(`/world/${id}/view`);
+  };
+
+  const handleJsonImport = useJsonImport((raw) => {
+    const data = parseAdventureJson(raw);
+    setForm((prev) => ({
+      ...prev,
+      ...(data.name && { name: data.name }),
+      ...(data.description && { description: data.description }),
+      ...(data.adventureStart && { adventureStart: data.adventureStart }),
+      ...(data.visibility && { visibility: data.visibility }),
+      ...(data.moderation && { moderation: data.moderation }),
+      ...(typeof data.isMultiplayer === 'boolean' && { isMultiplayer: data.isMultiplayer }),
+      ...(data.modelConfiguration && { modelConfiguration: { ...prev.modelConfiguration, ...data.modelConfiguration } }),
+      ...(data.contextAttributes && { contextAttributes: { ...prev.contextAttributes, ...data.contextAttributes } }),
+    }));
+    if (data.lorebook.length) setCreateLorebook(data.lorebook.map((e) => ({ name: e.name, description: e.description, playerId: e.playerId ?? '' })));
+  });
+
   const commitNew = () => {
-    setLorebook((prev) => [...prev, { ...newDraft }]);
+    if (mode === 'create') {
+      setCreateLorebook((prev) => [...prev, { ...newDraft }]);
+    } else {
+      setLorebook((prev) => [...prev, { ...newDraft }]);
+    }
     setNewDraft(EMPTY_ENTRY);
     setAddingNew(false);
   };
 
   const startEdit = (index: number) => {
     setEditingIndex(index);
-    setEditDraft({ ...lorebook[index] });
+    setEditDraft({ ...(mode === 'create' ? createLorebook[index] : lorebook[index]) });
     setAddingNew(false);
   };
 
   const commitEdit = () => {
     if (editingIndex === null) return;
-    setLorebook((prev) => prev.map((e, i) => i === editingIndex ? { ...editDraft } : e));
+    if (mode === 'create') {
+      setCreateLorebook((prev) => prev.map((e, i) => i === editingIndex ? { ...editDraft } : e));
+    } else {
+      setLorebook((prev) => prev.map((e, i) => i === editingIndex ? { ...editDraft } : e));
+    }
     setEditingIndex(null);
   };
 
   const removeEntry = (index: number) => {
-    const entry = lorebook[index];
-    if (entry.id) setDeletedIds((prev) => [...prev, entry.id!]);
-    setLorebook((prev) => prev.filter((_, i) => i !== index));
+    if (mode === 'create') {
+      setCreateLorebook((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      const entry = lorebook[index];
+      if (entry.id) setDeletedIds((prev) => [...prev, entry.id!]);
+      setLorebook((prev) => prev.filter((_, i) => i !== index));
+    }
     if (editingIndex === index) setEditingIndex(null);
   };
+
+  const isValid = form.name.trim() !== ''
+    && form.adventureStart.trim() !== ''
+    && form.personaId !== ''
+    && form.visibility !== ''
+    && form.moderation !== '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -257,6 +422,12 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           visibility: form.visibility,
           moderation: form.moderation,
           isMultiplayer: form.isMultiplayer,
+          adventureStart: form.adventureStart,
+          lorebookEntries: createLorebook.map((e) => ({
+            name: e.name,
+            description: e.description,
+            playerId: e.playerId || null,
+          })),
           permissions: [],
           modelConfiguration: form.modelConfiguration,
           contextAttributes: form.contextAttributes,
@@ -272,7 +443,6 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         const body = {
           name: form.name,
           description: form.description,
-          worldId: form.worldId,
           personaId: form.personaId,
           visibility: form.visibility,
           moderation: form.moderation,
@@ -324,15 +494,25 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
     return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">{t('page.loading')}</div>;
   }
 
+  const activeLorebook = mode === 'create' ? createLorebook : lorebook;
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto px-6 py-8">
         <div className="mx-auto w-full max-w-5xl flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-            <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-              {t('form.actions.back')}
-            </button>
+            <div className="flex items-center gap-2">
+              {mode === 'create' && (
+                <label className="cursor-pointer rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted">
+                  {t('form.actions.importJson')}
+                  <input type="file" accept=".json" className="sr-only" onChange={handleJsonImport} />
+                </label>
+              )}
+              <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                {t('form.actions.back')}
+              </button>
+            </div>
           </div>
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
@@ -349,13 +529,25 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-foreground">{t('form.fields.world')}</label>
-            <CardPicker
-              options={worlds}
-              value={form.worldId}
-              onChange={(id) => setForm((prev) => ({ ...prev, worldId: id }))}
-              readOnly={readOnly}
-              emptyText={t('form.empty.noWorlds')}
-            />
+            {readOnly ? (
+              worldName ? (
+                <a href={`/world/${form.worldId}/view`} className="text-sm text-primary underline">
+                  {worldName}
+                </a>
+              ) : null
+            ) : (
+              <CardPicker
+                options={worlds}
+                value={form.worldId}
+                onChange={mode === 'create' ? handleWorldChange : (id) => setForm((prev) => ({ ...prev, worldId: id ?? '' }))}
+                readOnly={false}
+                emptyText={t('form.empty.noWorlds')}
+                viewBasePath="/world"
+                onView={handleWorldView}
+                nullable={mode === 'create'}
+                noneLabel={t('form.options.noWorld')}
+              />
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -363,9 +555,10 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             <CardPicker
               options={personas}
               value={form.personaId}
-              onChange={(id) => setForm((prev) => ({ ...prev, personaId: id }))}
+              onChange={(id) => setForm((prev) => ({ ...prev, personaId: id ?? '' }))}
               readOnly={readOnly}
               emptyText={t('form.empty.noPersonas')}
+              viewBasePath="/persona"
             />
           </div>
 
@@ -401,87 +594,83 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             </label>
           </div>
 
-          {mode !== 'create' && (
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
-              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
+            <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground">{t('form.fields.lorebook')}</span>
+              {!readOnly && !addingNew && editingIndex === null && (
+                <button
+                  type="button"
+                  onClick={() => setAddingNew(true)}
+                  className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {t('form.actions.addEntry')}
+                </button>
+              )}
             </div>
-          )}
 
-          {mode !== 'create' && (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">{t('form.fields.lorebook')}</span>
-                {!readOnly && !addingNew && editingIndex === null && (
-                  <button
-                    type="button"
-                    onClick={() => setAddingNew(true)}
-                    className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    {t('form.actions.addEntry')}
-                  </button>
-                )}
-              </div>
+            {addingNew && (
+              <LorebookEntryForm
+                value={newDraft}
+                onChange={setNewDraft}
+                onDone={commitNew}
+                onCancel={() => { setAddingNew(false); setNewDraft(EMPTY_ENTRY); }}
+                namePlaceholder={t('form.placeholders.name')}
+                descriptionPlaceholder={t('form.placeholders.description')}
+                playerIdPlaceholder={t('form.placeholders.playerId')}
+                doneLabel={t('form.actions.done')}
+                cancelLabel={t('form.actions.cancel')}
+              />
+            )}
 
-              {addingNew && (
-                <LorebookEntryForm
-                  value={newDraft}
-                  onChange={setNewDraft}
-                  onDone={commitNew}
-                  onCancel={() => { setAddingNew(false); setNewDraft(EMPTY_ENTRY); }}
-                  namePlaceholder={t('form.placeholders.name')}
-                  descriptionPlaceholder={t('form.placeholders.description')}
-                  playerIdPlaceholder={t('form.placeholders.playerId')}
-                  doneLabel={t('form.actions.done')}
-                  cancelLabel={t('form.actions.cancel')}
-                />
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
+              {activeLorebook.length === 0 && !addingNew && (
+                <p className="text-sm text-muted-foreground">{t('form.empty.noLorebook')}</p>
               )}
 
-              <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
-                {lorebook.length === 0 && !addingNew && (
-                  <p className="text-sm text-muted-foreground">{t('form.empty.noLorebook')}</p>
-                )}
-
-                {lorebook.map((entry, i) =>
-                  editingIndex === i ? (
-                    <LorebookEntryForm
-                      key={i}
-                      value={editDraft}
-                      onChange={setEditDraft}
-                      onDone={commitEdit}
-                      onCancel={() => setEditingIndex(null)}
-                      namePlaceholder={t('form.placeholders.name')}
-                      descriptionPlaceholder={t('form.placeholders.description')}
-                      playerIdPlaceholder={t('form.placeholders.playerId')}
-                      doneLabel={t('form.actions.done')}
-                      cancelLabel={t('form.actions.cancel')}
-                    />
-                  ) : (
-                    <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
-                        <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
-                        {entry.playerId && (
-                          <span className="text-xs text-muted-foreground">{t('form.player')}{entry.playerId}</span>
-                        )}
-                      </div>
-                      {!readOnly && (
-                        <div className="flex shrink-0 gap-1">
-                          <button type="button" onClick={() => startEdit(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted">
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                          <button type="button" onClick={() => removeEntry(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
+              {activeLorebook.map((entry, i) =>
+                editingIndex === i ? (
+                  <LorebookEntryForm
+                    key={i}
+                    value={editDraft}
+                    onChange={setEditDraft}
+                    onDone={commitEdit}
+                    onCancel={() => setEditingIndex(null)}
+                    namePlaceholder={t('form.placeholders.name')}
+                    descriptionPlaceholder={t('form.placeholders.description')}
+                    playerIdPlaceholder={t('form.placeholders.playerId')}
+                    doneLabel={t('form.actions.done')}
+                    cancelLabel={t('form.actions.cancel')}
+                  />
+                ) : (
+                  <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
+                      <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
+                      {entry.playerId && (
+                        <span className="text-xs text-muted-foreground">{t('form.player')}{entry.playerId}</span>
                       )}
                     </div>
-                  )
-                )}
-              </div>
+                    {!readOnly && (
+                      <div className="flex shrink-0 gap-1">
+                        <button type="button" onClick={() => startEdit(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted">
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button type="button" onClick={() => removeEntry(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              )}
             </div>
-          )}
+          </div>
 
           <div className="flex flex-col gap-3">
             <button
@@ -562,7 +751,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
       {!readOnly && (
         <div className="border-t border-border bg-background px-6 py-4">
           <div className="mx-auto w-full max-w-5xl flex gap-3">
-            <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+            <button type="submit" disabled={saving || !isValid} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
               {saving ? t('form.actions.saving') : t('form.actions.save')}
             </button>
             <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">

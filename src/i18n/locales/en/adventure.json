@@ -35,7 +35,8 @@
       "private": "Private",
       "strict": "Strict",
       "permissive": "Permissive",
-      "disabled": "Disabled"
+      "disabled": "Disabled",
+      "noWorld": "No World"
     },
     "placeholders": {
       "name": "Name",
@@ -54,7 +55,8 @@
       "cancel": "Cancel",
       "done": "Done",
       "addEntry": "Add Entry",
-      "advanced": "Advanced"
+      "advanced": "Advanced",
+      "importJson": "Import JSON"
     },
     "player": "Player: ",
     "errors": {

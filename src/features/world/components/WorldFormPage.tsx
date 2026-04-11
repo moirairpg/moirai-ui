@@ -5,6 +5,7 @@ import { Info, Pencil, Trash2, Plus } from 'lucide-react';
 import type { WorldDetails } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
 import { Tooltip } from '../../../shared/view/ui';
+import { useJsonImport, parseWorldJson } from '../../../utils/jsonImport';
 
 type WorldFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
@@ -129,6 +130,18 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     if (editingIndex === index) setEditingIndex(null);
   };
 
+  const handleJsonImport = useJsonImport((raw) => {
+    const data = parseWorldJson(raw);
+    setForm((prev) => ({
+      ...prev,
+      ...(data.name && { name: data.name }),
+      ...(data.description && { description: data.description }),
+      ...(data.adventureStart && { adventureStart: data.adventureStart }),
+      ...(data.visibility && { visibility: data.visibility }),
+    }));
+    if (data.lorebook.length) setLorebook(data.lorebook.map(({ name, description }) => ({ name, description })));
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -176,9 +189,17 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         <div className="mx-auto w-full max-w-5xl flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-            <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-              {t('form.actions.back')}
-            </button>
+            <div className="flex items-center gap-2">
+              {mode === 'create' && (
+                <label className="cursor-pointer rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted">
+                  {t('form.actions.importJson')}
+                  <input type="file" accept=".json" className="sr-only" onChange={handleJsonImport} />
+                </label>
+              )}
+              <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                {t('form.actions.back')}
+              </button>
+            </div>
           </div>
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}

@@ -31,7 +31,7 @@ export type AdventureDetails = {
   name: string;
   description: string;
   adventureStart: string;
-  worldId: string;
+  worldId: string | null;
   personaId: string;
   visibility: string;
   moderation: string;
