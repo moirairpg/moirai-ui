@@ -17,12 +17,13 @@ export default function AppContent({ children }: AppContentProps) {
     onMyStuffClick: () => navigate('/my-stuff'),
     onSharedWithMeClick: () => navigate('/shared-with-me'),
     onCreateAdventure: () => navigate('/adventure/new'),
-    onBrowseAdventures: () => navigate('/adventures/browse'),
+    onBrowseAdventures: () => navigate('/explore?tab=adventures'),
     onAdventureClick: (id: string) => navigate(`/adventure/play/${id}`),
     onCreateWorld: () => navigate('/world/new'),
-    onBrowseWorlds: () => navigate('/worlds/browse'),
+    onBrowseWorlds: () => navigate('/explore?tab=worlds'),
     onCreatePersona: () => navigate('/persona/new'),
-    onBrowsePersonas: () => navigate('/personas/browse'),
+    onBrowsePersonas: () => navigate('/explore?tab=personas'),
+    onBrowse: () => navigate('/explore'),
   };
 
   const content = adventureId

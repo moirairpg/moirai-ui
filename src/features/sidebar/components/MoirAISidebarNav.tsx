@@ -6,6 +6,7 @@ import { useRecentAdventures } from '../hooks/useRecentAdventures';
 export type MoirAISidebarNavProps = {
   onMyStuffClick: () => void;
   onSharedWithMeClick: () => void;
+  onBrowse: () => void;
   onCreateAdventure: () => void;
   onBrowseAdventures: () => void;
   onAdventureClick: (id: string) => void;
@@ -18,6 +19,7 @@ export type MoirAISidebarNavProps = {
 export function MoirAISidebarNav({
   onMyStuffClick,
   onSharedWithMeClick,
+  onBrowse,
   onCreateAdventure,
   onBrowseAdventures,
   onAdventureClick,
@@ -51,6 +53,13 @@ export function MoirAISidebarNav({
         Shared with me
       </button>
 
+      <button
+        onClick={onBrowse}
+        className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
+      >
+        Explore
+      </button>
+
       <div className="my-1.5 h-px bg-border/40" />
 
       <NavSection
@@ -62,7 +71,7 @@ export function MoirAISidebarNav({
         onBrowseClick={onBrowseAdventures}
         recentItems={recentAdventureItems}
         createLabel="Create adventure"
-        browseLabel="Browse"
+        browseLabel="Explore"
       />
 
       <NavSection
@@ -73,7 +82,7 @@ export function MoirAISidebarNav({
         onCreateClick={onCreateWorld}
         onBrowseClick={onBrowseWorlds}
         createLabel="Create world"
-        browseLabel="Browse"
+        browseLabel="Explore"
       />
 
       <NavSection
@@ -84,7 +93,7 @@ export function MoirAISidebarNav({
         onCreateClick={onCreatePersona}
         onBrowseClick={onBrowsePersonas}
         createLabel="Create persona"
-        browseLabel="Browse"
+        browseLabel="Explore"
       />
     </div>
   );

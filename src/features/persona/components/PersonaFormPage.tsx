@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Info } from 'lucide-react';
 import type { PersonaDetails } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
+import { Tooltip } from '../../../shared/view/ui';
 
 type PersonaFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
@@ -78,7 +80,7 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto">
-      <div className="mx-auto w-full max-w-2xl px-6 py-8">
+      <div className="mx-auto w-full max-w-5xl px-6 py-8">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
@@ -101,7 +103,10 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Personality</label>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              Personality
+              <Tooltip content="How this persona thinks, speaks, and behaves" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+            </label>
             <textarea
               rows={6}
               value={form.personality}
@@ -112,7 +117,10 @@ export default function PersonaFormPage({ mode }: PersonaFormPageProps) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Visibility</label>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              Visibility
+              <Tooltip content="Who can see this persona" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+            </label>
             <select
               value={form.visibility}
               onChange={set('visibility')}

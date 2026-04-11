@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
+import { Tooltip } from '../../../shared/view/ui';
 
 type AdventureFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
 type SelectOption = { id: string; name: string };
+
+type LorebookEntry = { id?: string; name: string; description: string; playerId: string };
 
 type FormState = {
   name: string;
@@ -30,12 +33,105 @@ const EMPTY: FormState = {
   moderation: 'STRICT',
   isMultiplayer: false,
   adventureStart: '',
-  modelConfiguration: { aiModel: 'GPT54_MINI', maxTokenLimit: 100, temperature: 1.0 },
+  modelConfiguration: { aiModel: 'GPT54_MINI', maxTokenLimit: 100, temperature: 0.8 },
   contextAttributes: { nudge: '', authorsNote: '', scene: '', bump: '', bumpFrequency: 0 },
 };
 
+const EMPTY_ENTRY: LorebookEntry = { name: '', description: '', playerId: '' };
+
+function CardPicker({
+  options,
+  value,
+  onChange,
+  readOnly,
+  emptyText,
+}: {
+  options: SelectOption[];
+  value: string;
+  onChange: (id: string) => void;
+  readOnly: boolean;
+  emptyText: string;
+}) {
+  if (readOnly) {
+    const selected = options.find((o) => o.id === value);
+    return (
+      <div className={`${INPUT_CLASS} cursor-not-allowed opacity-50`}>{selected?.name ?? '—'}</div>
+    );
+  }
+
+  if (options.length === 0) {
+    return <p className="text-sm text-muted-foreground">{emptyText}</p>;
+  }
+
+  return (
+    <div className="flex gap-2 overflow-x-auto pb-1">
+      {options.map((option) => (
+        <button
+          key={option.id}
+          type="button"
+          onClick={() => onChange(option.id)}
+          className={`min-w-[160px] rounded-md border px-4 py-3 text-left text-sm font-medium transition-colors ${
+            value === option.id
+              ? 'border-primary bg-primary/10 text-foreground'
+              : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          {option.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 const INPUT_CLASS = 'rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50';
 const TEXTAREA_CLASS = `resize-none ${INPUT_CLASS}`;
+
+function LorebookEntryForm({
+  value,
+  onChange,
+  onDone,
+  onCancel,
+}: {
+  value: LorebookEntry;
+  onChange: (entry: LorebookEntry) => void;
+  onDone: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-md border border-border p-4">
+      <input
+        type="text"
+        placeholder="Name"
+        value={value.name}
+        onChange={(e) => onChange({ ...value, name: e.target.value })}
+        className={INPUT_CLASS}
+        autoFocus
+      />
+      <textarea
+        rows={3}
+        placeholder="Description"
+        value={value.description}
+        onChange={(e) => onChange({ ...value, description: e.target.value })}
+        className={TEXTAREA_CLASS}
+      />
+      <input
+        type="text"
+        placeholder="Player ID (optional)"
+        value={value.playerId}
+        onChange={(e) => onChange({ ...value, playerId: e.target.value })}
+        className={INPUT_CLASS}
+      />
+      <div className="flex gap-2">
+        <button type="button" onClick={onDone} disabled={!value.name.trim() || !value.description.trim()} className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+          Done
+        </button>
+        <button type="button" onClick={onCancel} className="rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const navigate = useNavigate();
@@ -43,13 +139,18 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [worlds, setWorlds] = useState<SelectOption[]>([]);
   const [personas, setPersonas] = useState<SelectOption[]>([]);
+  const [lorebook, setLorebook] = useState<LorebookEntry[]>([]);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  const [addingNew, setAddingNew] = useState(false);
+  const [newDraft, setNewDraft] = useState<LorebookEntry>(EMPTY_ENTRY);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState<LorebookEntry>(EMPTY_ENTRY);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
   const readOnly = mode === 'view';
-
   const title = mode === 'create' ? 'New Adventure' : mode === 'edit' ? 'Edit Adventure' : 'Adventure';
 
   useEffect(() => {
@@ -75,6 +176,12 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               modelConfiguration: data.modelConfiguration,
               contextAttributes: data.contextAttributes,
             });
+            setLorebook((data.lorebook ?? []).map((e) => ({
+              id: e.id,
+              name: e.name,
+              description: e.description,
+              playerId: e.playerId ?? '',
+            })));
           })
       );
     }
@@ -97,6 +204,31 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const setCtx = (field: keyof ContextAttributes) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, contextAttributes: { ...prev.contextAttributes, [field]: field === 'bumpFrequency' ? Number(e.target.value) : e.target.value } }));
+
+  const commitNew = () => {
+    setLorebook((prev) => [...prev, { ...newDraft }]);
+    setNewDraft(EMPTY_ENTRY);
+    setAddingNew(false);
+  };
+
+  const startEdit = (index: number) => {
+    setEditingIndex(index);
+    setEditDraft({ ...lorebook[index] });
+    setAddingNew(false);
+  };
+
+  const commitEdit = () => {
+    if (editingIndex === null) return;
+    setLorebook((prev) => prev.map((e, i) => i === editingIndex ? { ...editDraft } : e));
+    setEditingIndex(null);
+  };
+
+  const removeEntry = (index: number) => {
+    const entry = lorebook[index];
+    if (entry.id) setDeletedIds((prev) => [...prev, entry.id!]);
+    setLorebook((prev) => prev.filter((_, i) => i !== index));
+    if (editingIndex === index) setEditingIndex(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +275,31 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });
+
+        await Promise.all([
+          ...deletedIds.map((id) =>
+            apiFetch(`/api/adventure/${adventureId}/lorebook/${id}`, { method: 'DELETE' })
+          ),
+          ...lorebook
+            .filter((e) => !e.id)
+            .map((e) =>
+              apiFetch(`/api/adventure/${adventureId}/lorebook`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: e.name, description: e.description, playerId: e.playerId || null }),
+              })
+            ),
+          ...lorebook
+            .filter((e) => !!e.id)
+            .map((e) =>
+              apiFetch(`/api/adventure/${adventureId}/lorebook/${e.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: e.name, description: e.description, playerId: e.playerId || null }),
+              })
+            ),
+        ]);
+
         navigate(`/adventure/${adventureId}/view`);
       }
     } catch {
@@ -156,18 +313,18 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto">
-      <div className="mx-auto w-full max-w-2xl px-6 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-          <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-            Back
-          </button>
-        </div>
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto px-6 py-8">
+        <div className="mx-auto w-full max-w-5xl flex flex-col gap-5">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+            <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+              Back
+            </button>
+          </div>
 
-        {error && <div className="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
+          {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-foreground">Name</label>
             <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
@@ -180,39 +337,49 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-foreground">World</label>
-            <select value={form.worldId} onChange={set('worldId')} disabled={readOnly} className={INPUT_CLASS}>
-              <option value="">Select a world</option>
-              {worlds.map((w) => (
-                <option key={w.id} value={w.id}>{w.name}</option>
-              ))}
-            </select>
+            <CardPicker
+              options={worlds}
+              value={form.worldId}
+              onChange={(id) => setForm((prev) => ({ ...prev, worldId: id }))}
+              readOnly={readOnly}
+              emptyText="No worlds found. Create one first."
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-foreground">Persona</label>
-            <select value={form.personaId} onChange={set('personaId')} disabled={readOnly} className={INPUT_CLASS}>
-              <option value="">Select a persona</option>
-              {personas.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+            <CardPicker
+              options={personas}
+              value={form.personaId}
+              onChange={(id) => setForm((prev) => ({ ...prev, personaId: id }))}
+              readOnly={readOnly}
+              emptyText="No personas found. Create one first."
+            />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Visibility</label>
-            <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
-              <option value="PUBLIC">Public</option>
-              <option value="PRIVATE">Private</option>
-            </select>
-          </div>
+          <div className="flex gap-4">
+            <div className="flex flex-1 flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                Visibility
+                <Tooltip content="Who can see this adventure" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              </label>
+              <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
+                <option value="PUBLIC">Public</option>
+                <option value="PRIVATE">Private</option>
+              </select>
+            </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Moderation</label>
-            <select value={form.moderation} onChange={set('moderation')} disabled={readOnly} className={INPUT_CLASS}>
-              <option value="STRICT">Strict</option>
-              <option value="PERMISSIVE">Permissive</option>
-              <option value="DISABLED">Disabled</option>
-            </select>
+            <div className="flex flex-1 flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                Moderation
+                <Tooltip content="How tightly content is filtered — flagged messages are discarded entirely" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              </label>
+              <select value={form.moderation} onChange={set('moderation')} disabled={readOnly} className={INPUT_CLASS}>
+                <option value="STRICT">Strict</option>
+                <option value="PERMISSIVE">Permissive</option>
+                <option value="DISABLED">Disabled</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -226,6 +393,71 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">Adventure Start</label>
               <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
+          )}
+
+          {mode !== 'create' && (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-foreground">Lorebook</span>
+                {!readOnly && !addingNew && editingIndex === null && (
+                  <button
+                    type="button"
+                    onClick={() => setAddingNew(true)}
+                    className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Add Entry
+                  </button>
+                )}
+              </div>
+
+              {addingNew && (
+                <LorebookEntryForm
+                  value={newDraft}
+                  onChange={setNewDraft}
+                  onDone={commitNew}
+                  onCancel={() => { setAddingNew(false); setNewDraft(EMPTY_ENTRY); }}
+                />
+              )}
+
+              <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
+                {lorebook.length === 0 && !addingNew && (
+                  <p className="text-sm text-muted-foreground">No lorebook entries.</p>
+                )}
+
+                {lorebook.map((entry, i) =>
+                  editingIndex === i ? (
+                    <LorebookEntryForm
+                      key={i}
+                      value={editDraft}
+                      onChange={setEditDraft}
+                      onDone={commitEdit}
+                      onCancel={() => setEditingIndex(null)}
+                    />
+                  ) : (
+                    <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
+                        <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
+                        {entry.playerId && (
+                          <span className="text-xs text-muted-foreground">Player: {entry.playerId}</span>
+                        )}
+                      </div>
+                      {!readOnly && (
+                        <div className="flex shrink-0 gap-1">
+                          <button type="button" onClick={() => startEdit(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted">
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button type="button" onClick={() => removeEntry(i)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           )}
 
@@ -243,67 +475,80 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               <div className="flex flex-col gap-5 rounded-md border border-border p-4">
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Model Configuration</span>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">AI Model</label>
-                  <select value={form.modelConfiguration.aiModel} onChange={setModel('aiModel')} disabled={readOnly} className={INPUT_CLASS}>
-                    <option value="GPT54">GPT-4</option>
-                    <option value="GPT54_MINI">GPT-4 Mini</option>
-                    <option value="GPT54_NANO">GPT-4 Nano</option>
-                  </select>
-                </div>
+                <div className="flex gap-4">
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      AI Model
+                      <Tooltip content="The AI model powering this adventure" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    </label>
+                    <select value={form.modelConfiguration.aiModel} onChange={setModel('aiModel')} disabled={readOnly} className={INPUT_CLASS}>
+                      <option value="GPT54">GPT-5.4</option>
+                      <option value="GPT54_MINI">GPT-5.4 Mini</option>
+                      <option value="GPT54_NANO">GPT-5.4 Nano</option>
+                    </select>
+                  </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Max Token Limit</label>
-                  <input type="number" min={100} value={form.modelConfiguration.maxTokenLimit} onChange={setModel('maxTokenLimit')} disabled={readOnly} className={INPUT_CLASS} />
-                </div>
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      Max Token Limit
+                      <Tooltip content="How long AI responses can be" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    </label>
+                    <input type="number" min={100} value={form.modelConfiguration.maxTokenLimit} onChange={setModel('maxTokenLimit')} disabled={readOnly} className={INPUT_CLASS} />
+                  </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Temperature</label>
-                  <input type="number" min={0.1} max={2.0} step={0.1} value={form.modelConfiguration.temperature} onChange={setModel('temperature')} disabled={readOnly} className={INPUT_CLASS} />
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      Temperature
+                      <Tooltip content="Lower = more consistent, higher = more creative" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                    </label>
+                    <input type="number" min={0.1} max={2.0} step={0.1} value={form.modelConfiguration.temperature} onChange={setModel('temperature')} disabled={readOnly} className={INPUT_CLASS} />
+                  </div>
                 </div>
 
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Context Attributes</span>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Nudge</label>
+                  <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                    Nudge
+                    <Tooltip content="A quiet hint that guides how the AI behaves" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                  </label>
                   <textarea rows={3} value={form.contextAttributes.nudge} onChange={setCtx('nudge')} disabled={readOnly} className={TEXTAREA_CLASS} />
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Author's Note</label>
-                  <textarea rows={3} value={form.contextAttributes.authorsNote} onChange={setCtx('authorsNote')} disabled={readOnly} className={TEXTAREA_CLASS} />
-                </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Scene</label>
-                  <textarea rows={3} value={form.contextAttributes.scene} onChange={setCtx('scene')} disabled={readOnly} className={TEXTAREA_CLASS} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Bump</label>
+                  <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                    Bump
+                    <Tooltip content="Periodically reminds the AI of its personality and guides its behavior" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                  </label>
                   <textarea rows={3} value={form.contextAttributes.bump} onChange={setCtx('bump')} disabled={readOnly} className={TEXTAREA_CLASS} />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-foreground">Bump Frequency</label>
+                  <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                    Bump Frequency
+                    <Tooltip content="How often the bump text repeats, in messages" position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                  </label>
                   <input type="number" value={form.contextAttributes.bumpFrequency} onChange={setCtx('bumpFrequency')} disabled={readOnly} className={INPUT_CLASS} />
                 </div>
               </div>
             )}
           </div>
-
-          {!readOnly && (
-            <div className="flex gap-3">
-              <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save'}
-              </button>
-              <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-                Cancel
-              </button>
-            </div>
-          )}
-        </form>
+        </div>
       </div>
-    </div>
+
+      {!readOnly && (
+        <div className="border-t border-border bg-background px-6 py-4">
+          <div className="mx-auto w-full max-w-5xl flex gap-3">
+            <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+              {saving ? 'Saving...' : 'Save'}
+            </button>
+            <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </form>
   );
 }

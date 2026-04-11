@@ -6,7 +6,7 @@ import { WebSocketProvider } from './contexts/WebSocketContext';
 import AppContent from './components/app/AppContent';
 import AuthErrorPage from './components/auth/view/AuthErrorPage';
 import CollectionPage from './features/collection/components/CollectionPage';
-import { AdventureBrowsePage, WorldBrowsePage, PersonaBrowsePage } from './features/collection/components/BrowsePage';
+import BrowsePage from './features/collection/components/BrowsePage';
 import AdventureFormPage from './features/adventure/components/AdventureFormPage';
 import WorldFormPage from './features/world/components/WorldFormPage';
 import PersonaFormPage from './features/persona/components/PersonaFormPage';
@@ -28,9 +28,7 @@ export default function App() {
                       <Route path="/adventure/play/:adventureId" element={<AppContent />} />
                       <Route path="/my-stuff" element={<AppContent><CollectionPage view="MY_STUFF" title="My Stuff" /></AppContent>} />
                       <Route path="/shared-with-me" element={<AppContent><CollectionPage view="SHARED_WITH_ME" title="Shared With Me" /></AppContent>} />
-                      <Route path="/adventures/browse" element={<AppContent><AdventureBrowsePage /></AppContent>} />
-                      <Route path="/worlds/browse" element={<AppContent><WorldBrowsePage /></AppContent>} />
-                      <Route path="/personas/browse" element={<AppContent><PersonaBrowsePage /></AppContent>} />
+                      <Route path="/explore" element={<AppContent><BrowsePage /></AppContent>} />
                       <Route path="/adventure/new" element={<AppContent><AdventureFormPage mode="create" /></AppContent>} />
                       <Route path="/adventure/:adventureId/edit" element={<AppContent><AdventureFormPage mode="edit" /></AppContent>} />
                       <Route path="/adventure/:adventureId/view" element={<AppContent><AdventureFormPage mode="view" /></AppContent>} />
