@@ -18,15 +18,6 @@ export type WorldSummary = {
   canWrite: boolean;
 };
 
-export type PersonaSummary = {
-  id: string;
-  name: string;
-  personality: string;
-  visibility: string;
-  creationDate: string;
-  canWrite: boolean;
-};
-
 export type PaginatedResult<T> = {
   data: T[];
   items: number;
@@ -36,4 +27,4 @@ export type PaginatedResult<T> = {
 };
 
 export type CollectionView = 'MY_STUFF' | 'SHARED_WITH_ME' | 'EXPLORE';
-export type CollectionTab = 'adventures' | 'worlds' | 'personas';
+export type CollectionTab = 'adventures' | 'worlds';

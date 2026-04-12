@@ -6,11 +6,15 @@
       "description": "Описание",
       "adventureStart": "Начало приключения",
       "visibility": "Видимость",
-      "lorebook": "Лорбук"
+      "lorebook": "Лорбук",
+      "narratorName": "Имя рассказчика",
+      "narratorPersonality": "Личность рассказчика"
     },
     "tooltips": {
       "adventureStart": "Где начинается история для приключений в этом мире",
-      "visibility": "Кто может видеть этот мир"
+      "visibility": "Кто может видеть этот мир",
+      "narratorName": "Имя рассказчика по умолчанию для приключений в этом мире",
+      "narratorPersonality": "Инструкции, определяющие, как рассказчик говорит и рассказывает историю"
     },
     "options": {
       "public": "Публичный",
@@ -32,6 +36,13 @@
       "addEntry": "Добавить запись",
       "importJson": "Импортировать JSON"
     },
+    "sections": {
+      "basicData": "Основные данные",
+      "storyNarration": "Повествование",
+      "visibilityControl": "Видимость и управление",
+      "lorebook": "Лорбук"
+    },
+    "optional": "необязательно",
     "loading": "Загрузка...",
     "errors": {
       "loadFailed": "Не удалось загрузить мир.",

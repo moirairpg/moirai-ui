@@ -16,8 +16,6 @@
     "adventures": "アドベンチャー",
     "createAdventure": "アドベンチャー作成",
     "worlds": "ワールド",
-    "createWorld": "ワールド作成",
-    "personas": "ペルソナ",
-    "createPersona": "ペルソナ作成"
+    "createWorld": "ワールド作成"
   }
 }

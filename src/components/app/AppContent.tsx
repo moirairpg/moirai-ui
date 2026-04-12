@@ -23,18 +23,16 @@ export default function AppContent({ children }: AppContentProps) {
     onAdventureClick: (id: string) => navigate(`/adventure/play/${id}`),
     onCreateWorld: () => navigate('/world/new'),
     onBrowseWorlds: () => navigate('/explore?tab=worlds'),
-    onCreatePersona: () => navigate('/persona/new'),
-    onBrowsePersonas: () => navigate('/explore?tab=personas'),
     onBrowse: () => navigate('/explore'),
   };
 
-  const content = adventureId
+  const content = children ?? (adventureId
     ? <AdventurePage adventureId={adventureId} />
-    : children ?? (
+    : (
         <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">
           {t('selectAdventure')}
         </div>
-      );
+      ));
 
   return (
     <div className="fixed inset-0 flex bg-background">

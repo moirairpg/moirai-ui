@@ -6,11 +6,15 @@
       "description": "説明",
       "adventureStart": "アドベンチャー開始",
       "visibility": "公開設定",
-      "lorebook": "ロアブック"
+      "lorebook": "ロアブック",
+      "narratorName": "ナレーター名",
+      "narratorPersonality": "ナレーターの個性"
     },
     "tooltips": {
       "adventureStart": "このワールドのアドベンチャーでストーリーが始まる場所",
-      "visibility": "このワールドを見られる人"
+      "visibility": "このワールドを見られる人",
+      "narratorName": "このワールドのアドベンチャーのデフォルトナレーターを識別する名前",
+      "narratorPersonality": "ナレーターの話し方と物語の語り方を定義する指示"
     },
     "options": {
       "public": "公開",
@@ -32,6 +36,13 @@
       "addEntry": "エントリを追加",
       "importJson": "JSONをインポート"
     },
+    "sections": {
+      "basicData": "基本データ",
+      "storyNarration": "物語",
+      "visibilityControl": "公開設定と制御",
+      "lorebook": "ロアブック"
+    },
+    "optional": "任意",
     "loading": "読み込み中...",
     "errors": {
       "loadFailed": "ワールドの読み込みに失敗しました。",

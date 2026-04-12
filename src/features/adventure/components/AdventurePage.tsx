@@ -63,23 +63,35 @@ function applyFormat(
 
 export default function AdventurePage({ adventureId }: AdventurePageProps) {
   const { t } = useTranslation('adventure');
-  const [personaName, setPersonaName] = useState<string | undefined>(undefined);
+  const [narratorName, setNarratorName] = useState<string | undefined>(undefined);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setPersonaName(undefined);
+    setNarratorName(undefined);
     apiFetch(`/api/adventure/${adventureId}`)
       .then((res) => res.json())
-      .then((adv: { personaId: string }) =>
-        apiFetch(`/api/persona/${adv.personaId}`).then((res) => res.json()),
-      )
-      .then((persona: { name: string }) => setPersonaName(persona.name))
+      .then((adv: { narratorName: string | null }) => setNarratorName(adv.narratorName ?? undefined))
       .catch(() => {});
+    textareaRef.current?.focus();
   }, [adventureId]);
 
-  const { messages, appendMessage, fetchMore, hasMore, isFetchingMore } = useAdventureMessages(adventureId, personaName);
+  useEffect(() => {
+    if (!isGenerating) textareaRef.current?.focus();
+  }, [isGenerating]);
+
+  useEffect(() => {
+    const onFocus = () => { if (!textareaRef.current?.disabled) textareaRef.current?.focus(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onFocus);
+    };
+  }, []);
+
+  const { messages, appendMessage, fetchMore, hasMore, isFetchingMore } = useAdventureMessages(adventureId, narratorName);
   const { sendMessage, lastMessage } = useAdventureWebSocket(adventureId);
 
   useEffect(() => {
@@ -87,13 +99,13 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
     const isUser = lastMessage.role === 'USER';
     const msg: AdventureMessage = {
       id: lastMessage.id,
-      role: isUser ? 'user' : 'persona',
+      role: isUser ? 'user' : 'narrator',
       content: stripSaidPrefix(lastMessage.content),
-      personaName: !isUser ? personaName : undefined,
+      narratorName: !isUser ? narratorName : undefined,
     };
     appendMessage(msg);
     setIsGenerating(false);
-  }, [lastMessage, appendMessage, personaName]);
+  }, [lastMessage, appendMessage, narratorName]);
 
   const submit = useCallback(() => {
     const trimmed = input.trim();

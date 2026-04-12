@@ -17,7 +17,8 @@ type FormState = {
   name: string;
   description: string;
   worldId: string | null;
-  personaId: string;
+  narratorName: string;
+  narratorPersonality: string;
   visibility: string;
   moderation: string;
   isMultiplayer: boolean;
@@ -30,8 +31,9 @@ const EMPTY: FormState = {
   name: '',
   description: '',
   worldId: null,
-  personaId: '',
-  visibility: 'PUBLIC',
+  narratorName: '',
+  narratorPersonality: '',
+  visibility: 'PRIVATE',
   moderation: 'STRICT',
   isMultiplayer: false,
   adventureStart: '',
@@ -206,7 +208,6 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const { t } = useTranslation('adventure');
   const [form, setForm] = useState<FormState>(EMPTY);
   const [worlds, setWorlds] = useState<SelectOption[]>([]);
-  const [personas, setPersonas] = useState<SelectOption[]>([]);
   const [lorebook, setLorebook] = useState<LorebookEntry[]>([]);
   const [createLorebook, setCreateLorebook] = useState<LorebookEntry[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
@@ -254,11 +255,6 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           id: w.id, name: w.name, description: w.description, visibility: w.visibility,
         })))
       ),
-      apiFetch('/api/persona?view=MY_STUFF&size=100').then((r) => r.json()).then((d) =>
-        setPersonas((d.data ?? []).map((p: { id: string; name: string; personality?: string; visibility?: string }) => ({
-          id: p.id, name: p.name, description: p.personality, visibility: p.visibility,
-        })))
-      ),
     ];
 
     if (!restoredFromSnapshot && mode !== 'create' && adventureId) {
@@ -270,7 +266,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               name: data.name,
               description: data.description,
               worldId: data.worldId ?? null,
-              personaId: data.personaId,
+              narratorName: data.narratorName ?? '',
+              narratorPersonality: data.narratorPersonality ?? '',
               visibility: data.visibility,
               moderation: data.moderation,
               isMultiplayer: data.isMultiplayer,
@@ -317,7 +314,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const handleWorldChange = (id: string | null) => {
     if (id === null) {
-      setForm((prev) => ({ ...prev, worldId: null, adventureStart: '' }));
+      setForm((prev) => ({ ...prev, worldId: null, adventureStart: '', narratorName: '', narratorPersonality: '' }));
       setCreateLorebook([]);
       return;
     }
@@ -327,7 +324,14 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
     apiFetch(`/api/world/${id}`)
       .then((res) => res.json())
       .then((world) => {
-        setForm((prev) => ({ ...prev, adventureStart: world.adventureStart ?? '' }));
+        setForm((prev) => ({
+          ...prev,
+          name: world.name ?? '',
+          description: world.description ?? '',
+          adventureStart: world.adventureStart ?? '',
+          narratorName: world.narratorName ?? '',
+          narratorPersonality: world.narratorPersonality ?? '',
+        }));
         setCreateLorebook((world.lorebook ?? []).map((e: { name: string; description: string; playerId?: string }) => ({
           name: e.name,
           description: e.description,
@@ -356,6 +360,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
       ...(data.description && { description: data.description }),
       ...(data.adventureStart && { adventureStart: data.adventureStart }),
       ...(data.visibility && { visibility: data.visibility }),
+      ...(data.narratorName && { narratorName: data.narratorName }),
+      ...(data.narratorPersonality && { narratorPersonality: data.narratorPersonality }),
       ...(data.moderation && { moderation: data.moderation }),
       ...(typeof data.isMultiplayer === 'boolean' && { isMultiplayer: data.isMultiplayer }),
       ...(data.modelConfiguration && { modelConfiguration: { ...prev.modelConfiguration, ...data.modelConfiguration } }),
@@ -403,7 +409,6 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const isValid = form.name.trim() !== ''
     && form.adventureStart.trim() !== ''
-    && form.personaId !== ''
     && form.visibility !== ''
     && form.moderation !== '';
 
@@ -418,12 +423,13 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           name: form.name,
           description: form.description,
           worldId: form.worldId,
-          personaId: form.personaId,
+          narratorName: form.narratorName || null,
+          narratorPersonality: form.narratorPersonality || null,
           visibility: form.visibility,
           moderation: form.moderation,
           isMultiplayer: form.isMultiplayer,
           adventureStart: form.adventureStart,
-          lorebookEntries: createLorebook.map((e) => ({
+          lorebook: createLorebook.map((e) => ({
             name: e.name,
             description: e.description,
             playerId: e.playerId || null,
@@ -438,12 +444,14 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           body: JSON.stringify(body),
         });
         const data = await res.json();
-        navigate(`/adventure/${data.id}/view`);
+        window.dispatchEvent(new Event('adventure-list-changed'));
+        navigate(`/adventure/play/${data.id}`);
       } else {
         const body = {
           name: form.name,
           description: form.description,
-          personaId: form.personaId,
+          narratorName: form.narratorName || null,
+          narratorPersonality: form.narratorPersonality || null,
           visibility: form.visibility,
           moderation: form.moderation,
           isMultiplayer: form.isMultiplayer,
@@ -517,91 +525,126 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
-            <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.basicData')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
+              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
+              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
+              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
-            <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
-          </div>
+          {mode !== 'edit' && (
+            <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('form.fields.world')}
+                <Tooltip content={t('form.tooltips.world')} position="top" className="normal-case"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              </span>
+              {readOnly ? (
+                worldName ? (
+                  <a href={`/world/${form.worldId}/view`} className="text-sm text-primary underline">
+                    {worldName}
+                  </a>
+                ) : null
+              ) : (
+                <CardPicker
+                  options={worlds}
+                  value={form.worldId}
+                  onChange={handleWorldChange}
+                  readOnly={false}
+                  emptyText={t('form.empty.noWorlds')}
+                  viewBasePath="/world"
+                  onView={handleWorldView}
+                  nullable
+                  noneLabel={t('form.options.noWorld')}
+                />
+              )}
+            </div>
+          )}
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.world')}</label>
-            {readOnly ? (
-              worldName ? (
-                <a href={`/world/${form.worldId}/view`} className="text-sm text-primary underline">
-                  {worldName}
-                </a>
-              ) : null
-            ) : (
-              <CardPicker
-                options={worlds}
-                value={form.worldId}
-                onChange={mode === 'create' ? handleWorldChange : (id) => setForm((prev) => ({ ...prev, worldId: id ?? '' }))}
-                readOnly={false}
-                emptyText={t('form.empty.noWorlds')}
-                viewBasePath="/world"
-                onView={handleWorldView}
-                nullable={mode === 'create'}
-                noneLabel={t('form.options.noWorld')}
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.storyNarration')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {t('form.fields.narratorName')}
+                <Tooltip content={t('form.tooltips.narratorName')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                <span className="text-xs text-muted-foreground">({t('form.optional')})</span>
+              </label>
+              <input
+                type="text"
+                value={form.narratorName}
+                onChange={set('narratorName')}
+                disabled={readOnly}
+                className={INPUT_CLASS}
               />
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.persona')}</label>
-            <CardPicker
-              options={personas}
-              value={form.personaId}
-              onChange={(id) => setForm((prev) => ({ ...prev, personaId: id ?? '' }))}
-              readOnly={readOnly}
-              emptyText={t('form.empty.noPersonas')}
-              viewBasePath="/persona"
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <div className="flex flex-1 flex-col gap-1.5">
-              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                {t('form.fields.visibility')}
-                <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
-              </label>
-              <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
-                <option value="PUBLIC">{t('form.options.public')}</option>
-                <option value="PRIVATE">{t('form.options.private')}</option>
-              </select>
             </div>
 
-            <div className="flex flex-1 flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                {t('form.fields.moderation')}
-                <Tooltip content={t('form.tooltips.moderation')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                {t('form.fields.narratorPersonality')}
+                <Tooltip content={t('form.tooltips.narratorPersonality')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                <span className="text-xs text-muted-foreground">({t('form.optional')})</span>
               </label>
-              <select value={form.moderation} onChange={set('moderation')} disabled={readOnly} className={INPUT_CLASS}>
-                <option value="STRICT">{t('form.options.strict')}</option>
-                <option value="PERMISSIVE">{t('form.options.permissive')}</option>
-                <option value="DISABLED">{t('form.options.disabled')}</option>
-              </select>
+              <textarea
+                rows={4}
+                value={form.narratorPersonality}
+                onChange={set('narratorPersonality')}
+                disabled={readOnly}
+                className={TEXTAREA_CLASS}
+              />
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-              <input type="checkbox" checked={form.isMultiplayer} onChange={set('isMultiplayer')} disabled={readOnly} className="h-4 w-4" />
-              {t('form.fields.multiplayer')}
-            </label>
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.visibilityControl')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <input type="checkbox" checked={form.isMultiplayer} onChange={set('isMultiplayer')} disabled={readOnly} className="h-4 w-4" />
+                {t('form.fields.multiplayer')}
+              </label>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex flex-1 flex-col gap-1.5">
+                <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  {t('form.fields.visibility')}
+                  <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                </label>
+                <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
+                  <option value="PUBLIC">{t('form.options.public')}</option>
+                  <option value="PRIVATE">{t('form.options.private')}</option>
+                </select>
+              </div>
+
+              <div className="flex flex-1 flex-col gap-1.5">
+                <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  {t('form.fields.moderation')}
+                  <Tooltip content={t('form.tooltips.moderation')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                </label>
+                <select value={form.moderation} onChange={set('moderation')} disabled={readOnly} className={INPUT_CLASS}>
+                  <option value="STRICT">{t('form.options.strict')}</option>
+                  <option value="PERMISSIVE">{t('form.options.permissive')}</option>
+                  <option value="DISABLED">{t('form.options.disabled')}</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
-            <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
-          </div>
-
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">{t('form.fields.lorebook')}</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.lorebook')}</span>
               {!readOnly && !addingNew && editingIndex === null && (
                 <button
                   type="button"

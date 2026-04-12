@@ -1,4 +1,4 @@
-import { BookOpen, Globe, User } from 'lucide-react';
+import { BookOpen, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavSection } from './NavSection';
 import { useMoirAISidebar } from '../hooks/useMoirAISidebar';
@@ -13,8 +13,6 @@ export type MoirAISidebarNavProps = {
   onAdventureClick: (id: string) => void;
   onCreateWorld: () => void;
   onBrowseWorlds: () => void;
-  onCreatePersona: () => void;
-  onBrowsePersonas: () => void;
 };
 
 export function MoirAISidebarNav({
@@ -26,8 +24,6 @@ export function MoirAISidebarNav({
   onAdventureClick,
   onCreateWorld,
   onBrowseWorlds,
-  onCreatePersona,
-  onBrowsePersonas,
 }: MoirAISidebarNavProps) {
   const { t } = useTranslation('sidebar');
   const { expanded, toggle } = useMoirAISidebar();
@@ -87,16 +83,6 @@ export function MoirAISidebarNav({
         browseLabel={t('nav.explore')}
       />
 
-      <NavSection
-        label={t('nav.personas')}
-        icon={<User className="h-4 w-4 text-muted-foreground" />}
-        isExpanded={expanded.has('personas')}
-        onToggle={() => toggle('personas')}
-        onCreateClick={onCreatePersona}
-        onBrowseClick={onBrowsePersonas}
-        createLabel={t('nav.createPersona')}
-        browseLabel={t('nav.explore')}
-      />
     </div>
   );
 }

@@ -5,7 +5,8 @@
       "name": "Name",
       "description": "Description",
       "world": "World",
-      "persona": "Persona",
+      "narratorName": "Narrator Name",
+      "narratorPersonality": "Narrator Personality",
       "visibility": "Visibility",
       "moderation": "Moderation",
       "multiplayer": "Multiplayer",
@@ -21,11 +22,14 @@
       "modelConfiguration": "Model Configuration"
     },
     "tooltips": {
+      "world": "Sets the starting scene, lore, and narrator for this adventure",
       "visibility": "Who can see this adventure",
       "moderation": "How tightly content is filtered — flagged messages are discarded entirely",
       "aiModel": "The AI model powering this adventure",
       "maxTokenLimit": "How long AI responses can be",
       "temperature": "Lower = more consistent, higher = more creative",
+      "narratorName": "Name used to identify this narrator in the story",
+      "narratorPersonality": "Instructions that define how the narrator speaks and tells the story",
       "nudge": "A quiet hint that guides how the AI behaves",
       "bump": "Periodically reminds the AI of its personality and guides its behavior",
       "bumpFrequency": "How often the bump text repeats, in messages"
@@ -57,6 +61,13 @@
       "addEntry": "Add Entry",
       "advanced": "Advanced",
       "importJson": "Import JSON"
+    },
+    "optional": "optional",
+    "sections": {
+      "basicData": "Basic Data",
+      "storyNarration": "Story Narration",
+      "visibilityControl": "Visibility & Control",
+      "lorebook": "Lorebook"
     },
     "player": "Player: ",
     "errors": {

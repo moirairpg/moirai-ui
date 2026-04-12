@@ -16,9 +16,11 @@ type FormState = {
   description: string;
   adventureStart: string;
   visibility: string;
+  narratorName: string;
+  narratorPersonality: string;
 };
 
-const EMPTY: FormState = { name: '', description: '', adventureStart: '', visibility: 'PUBLIC' };
+const EMPTY: FormState = { name: '', description: '', adventureStart: '', visibility: 'PRIVATE', narratorName: '', narratorPersonality: '' };
 const EMPTY_ENTRY: LorebookEntry = { name: '', description: '' };
 
 const INPUT_CLASS = 'rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50';
@@ -94,7 +96,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     apiFetch(`/api/world/${worldId}`)
       .then((r) => r.json())
       .then((data: WorldDetails) => {
-        setForm({ name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility });
+        setForm({ name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility, narratorName: data.narratorName ?? '', narratorPersonality: data.narratorPersonality ?? '' });
         setLorebook((data.lorebook ?? []).map((e) => ({ id: e.id, name: e.name, description: e.description })));
         setLoading(false);
       })
@@ -138,6 +140,8 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
       ...(data.description && { description: data.description }),
       ...(data.adventureStart && { adventureStart: data.adventureStart }),
       ...(data.visibility && { visibility: data.visibility }),
+      ...(data.narratorName && { narratorName: data.narratorName }),
+      ...(data.narratorPersonality && { narratorPersonality: data.narratorPersonality }),
     }));
     if (data.lorebook.length) setLorebook(data.lorebook.map(({ name, description }) => ({ name, description })));
   });
@@ -153,6 +157,8 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         description: form.description,
         adventureStart: form.adventureStart,
         visibility: form.visibility,
+        narratorName: form.narratorName || null,
+        narratorPersonality: form.narratorPersonality || null,
         permissions: [],
         lorebook: lorebook.map(({ name, description }) => ({ name, description })),
       };
@@ -204,38 +210,68 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
-            <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.basicData')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
+              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
+              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {t('form.fields.adventureStart')}
+                <Tooltip content={t('form.tooltips.adventureStart')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              </label>
+              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
-            <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.storyNarration')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {t('form.fields.narratorName')}
+                <Tooltip content={t('form.tooltips.narratorName')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                <span className="text-xs text-muted-foreground">({t('form.optional')})</span>
+              </label>
+              <input type="text" value={form.narratorName} onChange={set('narratorName')} disabled={readOnly} className={INPUT_CLASS} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {t('form.fields.narratorPersonality')}
+                <Tooltip content={t('form.tooltips.narratorPersonality')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                <span className="text-xs text-muted-foreground">({t('form.optional')})</span>
+              </label>
+              <textarea rows={4} value={form.narratorPersonality} onChange={set('narratorPersonality')} disabled={readOnly} className={TEXTAREA_CLASS} />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              {t('form.fields.adventureStart')}
-              <Tooltip content={t('form.tooltips.adventureStart')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
-            </label>
-            <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.visibilityControl')}</span>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                {t('form.fields.visibility')}
+                <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+              </label>
+              <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
+                <option value="PUBLIC">{t('form.options.public')}</option>
+                <option value="PRIVATE">{t('form.options.private')}</option>
+              </select>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              {t('form.fields.visibility')}
-              <Tooltip content={t('form.tooltips.visibility')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
-            </label>
-            <select value={form.visibility} onChange={set('visibility')} disabled={readOnly} className={INPUT_CLASS}>
-              <option value="PUBLIC">{t('form.options.public')}</option>
-              <option value="PRIVATE">{t('form.options.private')}</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-5 rounded-md border border-border p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">{t('form.fields.lorebook')}</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.lorebook')}</span>
               {!readOnly && !addingNew && editingIndex === null && (
                 <button
                   type="button"

@@ -8,7 +8,6 @@ import enSidebar from './locales/en/sidebar.json';
 import enAuth from './locales/en/auth.json';
 import enAdventure from './locales/en/adventure.json';
 import enWorld from './locales/en/world.json';
-import enPersona from './locales/en/persona.json';
 import enCollection from './locales/en/collection.json';
 
 import koCommon from './locales/ko/common.json';
@@ -17,7 +16,6 @@ import koSidebar from './locales/ko/sidebar.json';
 import koAuth from './locales/ko/auth.json';
 import koAdventure from './locales/ko/adventure.json';
 import koWorld from './locales/ko/world.json';
-import koPersona from './locales/ko/persona.json';
 import koCollection from './locales/ko/collection.json';
 
 import zhCommon from './locales/zh-CN/common.json';
@@ -26,7 +24,6 @@ import zhSidebar from './locales/zh-CN/sidebar.json';
 import zhAuth from './locales/zh-CN/auth.json';
 import zhAdventure from './locales/zh-CN/adventure.json';
 import zhWorld from './locales/zh-CN/world.json';
-import zhPersona from './locales/zh-CN/persona.json';
 import zhCollection from './locales/zh-CN/collection.json';
 
 import jaCommon from './locales/ja/common.json';
@@ -35,7 +32,6 @@ import jaSidebar from './locales/ja/sidebar.json';
 import jaAuth from './locales/ja/auth.json';
 import jaAdventure from './locales/ja/adventure.json';
 import jaWorld from './locales/ja/world.json';
-import jaPersona from './locales/ja/persona.json';
 import jaCollection from './locales/ja/collection.json';
 
 import ruCommon from './locales/ru/common.json';
@@ -44,7 +40,6 @@ import ruSidebar from './locales/ru/sidebar.json';
 import ruAuth from './locales/ru/auth.json';
 import ruAdventure from './locales/ru/adventure.json';
 import ruWorld from './locales/ru/world.json';
-import ruPersona from './locales/ru/persona.json';
 import ruCollection from './locales/ru/collection.json';
 
 import deCommon from './locales/de/common.json';
@@ -53,7 +48,6 @@ import deSidebar from './locales/de/sidebar.json';
 import deAuth from './locales/de/auth.json';
 import deAdventure from './locales/de/adventure.json';
 import deWorld from './locales/de/world.json';
-import dePersona from './locales/de/persona.json';
 import deCollection from './locales/de/collection.json';
 
 import ptCommon from './locales/pt/common.json';
@@ -62,7 +56,6 @@ import ptSidebar from './locales/pt/sidebar.json';
 import ptAuth from './locales/pt/auth.json';
 import ptAdventure from './locales/pt/adventure.json';
 import ptWorld from './locales/pt/world.json';
-import ptPersona from './locales/pt/persona.json';
 import ptCollection from './locales/pt/collection.json';
 
 import { languages } from './languages.js';
@@ -91,7 +84,6 @@ i18n
         auth: enAuth,
         adventure: enAdventure,
         world: enWorld,
-        persona: enPersona,
         collection: enCollection,
       },
       ko: {
@@ -101,7 +93,6 @@ i18n
         auth: koAuth,
         adventure: koAdventure,
         world: koWorld,
-        persona: koPersona,
         collection: koCollection,
       },
       'zh-CN': {
@@ -111,7 +102,6 @@ i18n
         auth: zhAuth,
         adventure: zhAdventure,
         world: zhWorld,
-        persona: zhPersona,
         collection: zhCollection,
       },
       ja: {
@@ -121,7 +111,6 @@ i18n
         auth: jaAuth,
         adventure: jaAdventure,
         world: jaWorld,
-        persona: jaPersona,
         collection: jaCollection,
       },
       ru: {
@@ -131,7 +120,6 @@ i18n
         auth: ruAuth,
         adventure: ruAdventure,
         world: ruWorld,
-        persona: ruPersona,
         collection: ruCollection,
       },
       de: {
@@ -141,7 +129,6 @@ i18n
         auth: deAuth,
         adventure: deAdventure,
         world: deWorld,
-        persona: dePersona,
         collection: deCollection,
       },
       pt: {
@@ -151,7 +138,6 @@ i18n
         auth: ptAuth,
         adventure: ptAdventure,
         world: ptWorld,
-        persona: ptPersona,
         collection: ptCollection,
       },
     },
@@ -162,7 +148,7 @@ i18n
 
     debug: import.meta.env.DEV,
 
-    ns: ['common', 'settings', 'sidebar', 'auth', 'adventure', 'world', 'persona', 'collection'],
+    ns: ['common', 'settings', 'sidebar', 'auth', 'adventure', 'world', 'collection'],
     defaultNS: 'common',
 
     keySeparator: '.',

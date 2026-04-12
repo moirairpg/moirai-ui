@@ -16,8 +16,6 @@
     "adventures": "Приключения",
     "createAdventure": "Создать приключение",
     "worlds": "Миры",
-    "createWorld": "Создать мир",
-    "personas": "Персонажи",
-    "createPersona": "Создать персонажа"
+    "createWorld": "Создать мир"
   }
 }

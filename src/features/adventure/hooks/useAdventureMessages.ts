@@ -29,18 +29,18 @@ function stripSaidPrefix(content: string): string {
   return content.replace(saidPrefixRegex, '').replace(/"$/, '');
 }
 
-function toAdventureMessage(m: MessageSummary, personaName: string | undefined): AdventureMessage {
+function toAdventureMessage(m: MessageSummary, narratorName: string | undefined): AdventureMessage {
   return {
     id: m.id,
-    role: m.role === 'user' ? 'user' : 'persona',
+    role: m.role === 'user' ? 'user' : 'narrator',
     content: stripSaidPrefix(m.content),
-    personaName: m.role !== 'user' ? personaName : undefined,
+    narratorName: m.role !== 'user' ? narratorName : undefined,
   };
 }
 
 export function useAdventureMessages(
   adventureId: string,
-  personaName: string | undefined,
+  narratorName: string | undefined,
 ): UseAdventureMessagesResult {
   const [messages, setMessages] = useState<AdventureMessage[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -59,7 +59,7 @@ export function useAdventureMessages(
         const reversed = [...data.data].reverse();
         const mapped = reversed.map((m) => {
           knownIds.current.add(m.id);
-          return toAdventureMessage(m, personaName);
+          return toAdventureMessage(m, narratorName);
         });
         setMessages(mapped);
       })
@@ -67,13 +67,13 @@ export function useAdventureMessages(
   }, [adventureId]);
 
   useEffect(() => {
-    if (!personaName) return;
+    if (!narratorName) return;
     setMessages((prev) =>
       prev.map((m) =>
-        m.role === 'persona' && !m.personaName ? { ...m, personaName } : m,
+        m.role === 'narrator' && !m.narratorName ? { ...m, narratorName } : m,
       ),
     );
-  }, [personaName]);
+  }, [narratorName]);
 
   const fetchMore = useCallback(() => {
     if (isFetchingMore || messages.length === 0) return;
@@ -89,13 +89,13 @@ export function useAdventureMessages(
           .filter((m) => !knownIds.current.has(m.id))
           .map((m) => {
             knownIds.current.add(m.id);
-            return toAdventureMessage(m, personaName);
+            return toAdventureMessage(m, narratorName);
           });
         setMessages((prev) => [...newMessages, ...prev]);
       })
       .catch(() => {})
       .finally(() => setIsFetchingMore(false));
-  }, [adventureId, messages, isFetchingMore, personaName]);
+  }, [adventureId, messages, isFetchingMore, narratorName]);
 
   const appendMessage = useCallback((message: AdventureMessage) => {
     if (knownIds.current.has(message.id)) return;

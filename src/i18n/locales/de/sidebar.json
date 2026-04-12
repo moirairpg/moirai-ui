@@ -16,8 +16,6 @@
     "adventures": "Abenteuer",
     "createAdventure": "Abenteuer erstellen",
     "worlds": "Welten",
-    "createWorld": "Welt erstellen",
-    "personas": "Personas",
-    "createPersona": "Persona erstellen"
+    "createWorld": "Welt erstellen"
   }
 }

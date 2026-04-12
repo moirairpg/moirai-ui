@@ -16,8 +16,6 @@
     "adventures": "어드벤처",
     "createAdventure": "어드벤처 만들기",
     "worlds": "세계",
-    "createWorld": "세계 만들기",
-    "personas": "페르소나",
-    "createPersona": "페르소나 만들기"
+    "createWorld": "세계 만들기"
   }
 }

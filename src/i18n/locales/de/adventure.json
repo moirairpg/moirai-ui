@@ -5,7 +5,8 @@
       "name": "Name",
       "description": "Beschreibung",
       "world": "Welt",
-      "persona": "Persona",
+      "narratorName": "Erzählername",
+      "narratorPersonality": "Erzählerpersönlichkeit",
       "visibility": "Sichtbarkeit",
       "moderation": "Moderation",
       "multiplayer": "Mehrspieler",
@@ -21,11 +22,14 @@
       "modelConfiguration": "Modellkonfiguration"
     },
     "tooltips": {
+      "world": "Legt die Anfangsszene, das Lore und den Erzähler für dieses Abenteuer fest",
       "visibility": "Wer dieses Abenteuer sehen kann",
       "moderation": "Wie streng Inhalte gefiltert werden — markierte Nachrichten werden vollständig verworfen",
       "aiModel": "Das KI-Modell, das dieses Abenteuer antreibt",
       "maxTokenLimit": "Wie lang KI-Antworten sein können",
       "temperature": "Niedriger = konsistenter, höher = kreativer",
+      "narratorName": "Name, der diesen Erzähler in der Geschichte identifiziert",
+      "narratorPersonality": "Anweisungen, die definieren, wie der Erzähler spricht und die Geschichte erzählt",
       "nudge": "Ein leiser Hinweis, der das Verhalten der KI lenkt",
       "bump": "Erinnert die KI regelmäßig an ihre Persönlichkeit und lenkt ihr Verhalten",
       "bumpFrequency": "Wie oft der Erinnerungstext wiederholt wird, in Nachrichten"
@@ -57,6 +61,13 @@
       "addEntry": "Eintrag hinzufügen",
       "advanced": "Erweitert",
       "importJson": "JSON importieren"
+    },
+    "optional": "optional",
+    "sections": {
+      "basicData": "Grunddaten",
+      "storyNarration": "Erzählung",
+      "visibilityControl": "Sichtbarkeit & Kontrolle",
+      "lorebook": "Lore-Buch"
     },
     "player": "Spieler: ",
     "errors": {

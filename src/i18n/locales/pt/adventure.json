@@ -5,7 +5,8 @@
       "name": "Nome",
       "description": "Descrição",
       "world": "Mundo",
-      "persona": "Persona",
+      "narratorName": "Nome do Narrador",
+      "narratorPersonality": "Personalidade do Narrador",
       "visibility": "Visibilidade",
       "moderation": "Moderação",
       "multiplayer": "Multijogador",
@@ -21,11 +22,14 @@
       "modelConfiguration": "Configuração do modelo"
     },
     "tooltips": {
+      "world": "Define a cena inicial, o lore e o narrador desta aventura",
       "visibility": "Quem pode ver esta aventura",
       "moderation": "O quão rigoroso é o filtro de conteúdo — mensagens sinalizadas são descartadas inteiramente",
       "aiModel": "O modelo de IA que alimenta esta aventura",
       "maxTokenLimit": "O tamanho máximo das respostas da IA",
       "temperature": "Menor = mais consistente, maior = mais criativo",
+      "narratorName": "Nome usado para identificar o narrador desta história",
+      "narratorPersonality": "Instruções que definem como o narrador fala e conta a história",
       "nudge": "Uma dica silenciosa que guia o comportamento da IA",
       "bump": "Lembra periodicamente a IA de sua personalidade e guia seu comportamento",
       "bumpFrequency": "Com que frequência o texto de lembrete se repete, em mensagens"
@@ -57,6 +61,13 @@
       "addEntry": "Adicionar entrada",
       "advanced": "Avançado",
       "importJson": "Importar JSON"
+    },
+    "optional": "opcional",
+    "sections": {
+      "basicData": "Dados Básicos",
+      "storyNarration": "Narração",
+      "visibilityControl": "Visibilidade e Controle",
+      "lorebook": "Livro de Lore"
     },
     "player": "Jogador: ",
     "errors": {

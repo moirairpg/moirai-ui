@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../../../utils/api';
 import { useAdventureCollection } from '../hooks/useAdventureCollection';
 import { useWorldCollection } from '../hooks/useWorldCollection';
-import { usePersonaCollection } from '../hooks/usePersonaCollection';
 import { CardGrid } from './CardGrid';
 import { EntityCard } from './EntityCard';
 import type { CollectionView, CollectionTab } from '../types';
@@ -17,7 +16,7 @@ function AdventureTab({ view }: TabProps) {
   const handlePlay = (id: string) => navigate(`/adventure/play/${id}`);
   const handleView = (id: string) => navigate(`/adventure/${id}/view`);
   const handleEdit = (id: string) => navigate(`/adventure/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
+  const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => { removeItem(id); window.dispatchEvent(new Event('adventure-list-changed')); }).catch(() => {});
 
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
@@ -44,22 +43,6 @@ function WorldTab({ view }: TabProps) {
   );
 }
 
-function PersonaTab({ view }: TabProps) {
-  const navigate = useNavigate();
-  const { items, isLoading, hasMore, loadMore, removeItem } = usePersonaCollection(view);
-  const handleView = (id: string) => navigate(`/persona/${id}/view`);
-  const handleEdit = (id: string) => navigate(`/persona/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/persona/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
-
-  return (
-    <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
-      {items.map((p) => (
-        <EntityCard key={p.id} kind="persona" id={p.id} name={p.name} personality={p.personality} visibility={p.visibility} canWrite={p.canWrite} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
-      ))}
-    </CardGrid>
-  );
-}
-
 type CollectionPageProps = { view: CollectionView };
 
 export default function CollectionPage({ view }: CollectionPageProps) {
@@ -71,7 +54,6 @@ export default function CollectionPage({ view }: CollectionPageProps) {
   const TABS: { id: CollectionTab; label: string }[] = [
     { id: 'adventures', label: t('myStuff.tabs.adventures') },
     { id: 'worlds', label: t('myStuff.tabs.worlds') },
-    { id: 'personas', label: t('myStuff.tabs.personas') },
   ];
 
   return (
@@ -96,7 +78,6 @@ export default function CollectionPage({ view }: CollectionPageProps) {
 
       {activeTab === 'adventures' && <AdventureTab view={view} />}
       {activeTab === 'worlds' && <WorldTab view={view} />}
-      {activeTab === 'personas' && <PersonaTab view={view} />}
     </div>
   );
 }

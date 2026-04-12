@@ -5,7 +5,8 @@
       "name": "名称",
       "description": "描述",
       "world": "世界",
-      "persona": "角色",
+      "narratorName": "叙述者名称",
+      "narratorPersonality": "叙述者性格",
       "visibility": "可见性",
       "moderation": "审核",
       "multiplayer": "多人游戏",
@@ -21,11 +22,14 @@
       "modelConfiguration": "模型配置"
     },
     "tooltips": {
+      "world": "为此冒险设置开场场景、传说和叙述者",
       "visibility": "谁可以看到这个冒险",
       "moderation": "内容过滤的严格程度 — 被标记的消息将被完全丢弃",
       "aiModel": "驱动此冒险的AI模型",
       "maxTokenLimit": "AI响应的最大长度",
       "temperature": "越低越稳定，越高越有创意",
+      "narratorName": "用于在故事中标识该叙述者的名称",
+      "narratorPersonality": "定义叙述者如何讲述故事的指令",
       "nudge": "引导AI行为的无声提示",
       "bump": "定期提醒AI其个性并引导其行为",
       "bumpFrequency": "提醒文本重复的频率（以消息数计）"
@@ -57,6 +61,13 @@
       "addEntry": "添加条目",
       "advanced": "高级",
       "importJson": "导入JSON"
+    },
+    "optional": "可选",
+    "sections": {
+      "basicData": "基本信息",
+      "storyNarration": "故事叙述",
+      "visibilityControl": "可见性与控制",
+      "lorebook": "传说书"
     },
     "player": "玩家：",
     "errors": {

@@ -5,7 +5,8 @@
       "name": "名前",
       "description": "説明",
       "world": "ワールド",
-      "persona": "ペルソナ",
+      "narratorName": "ナレーター名",
+      "narratorPersonality": "ナレーターの個性",
       "visibility": "公開設定",
       "moderation": "モデレーション",
       "multiplayer": "マルチプレイヤー",
@@ -21,11 +22,14 @@
       "modelConfiguration": "モデル設定"
     },
     "tooltips": {
+      "world": "このアドベンチャーの開始シーン、ロア、ナレーターを設定します",
       "visibility": "このアドベンチャーを見られる人",
       "moderation": "コンテンツのフィルタリングの厳しさ — フラグの付いたメッセージは完全に破棄されます",
       "aiModel": "このアドベンチャーを動かすAIモデル",
       "maxTokenLimit": "AI応答の最大長",
       "temperature": "低い = より一貫性、高い = よりクリエイティブ",
+      "narratorName": "このナレーターを物語で識別するために使用される名前",
+      "narratorPersonality": "ナレーターの話し方と物語の語り方を定義する指示",
       "nudge": "AIの動作を誘導する静かなヒント",
       "bump": "AIに定期的にその個性を思い出させ、動作を誘導します",
       "bumpFrequency": "バンプテキストが繰り返される頻度（メッセージ数）"
@@ -57,6 +61,13 @@
       "addEntry": "エントリを追加",
       "advanced": "詳細設定",
       "importJson": "JSONをインポート"
+    },
+    "optional": "任意",
+    "sections": {
+      "basicData": "基本データ",
+      "storyNarration": "物語",
+      "visibilityControl": "公開設定と制御",
+      "lorebook": "ロアブック"
     },
     "player": "プレイヤー：",
     "errors": {

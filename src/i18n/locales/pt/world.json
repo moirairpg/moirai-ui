@@ -6,11 +6,15 @@
       "description": "Descrição",
       "adventureStart": "Início da Aventura",
       "visibility": "Visibilidade",
-      "lorebook": "Livro de Lore"
+      "lorebook": "Livro de Lore",
+      "narratorName": "Nome do Narrador",
+      "narratorPersonality": "Personalidade do Narrador"
     },
     "tooltips": {
       "adventureStart": "Onde a história começa para as aventuras neste mundo",
-      "visibility": "Quem pode ver este mundo"
+      "visibility": "Quem pode ver este mundo",
+      "narratorName": "Nome usado para identificar o narrador padrão das aventuras neste mundo",
+      "narratorPersonality": "Instruções que definem como o narrador fala e conta a história"
     },
     "options": {
       "public": "Público",
@@ -32,6 +36,13 @@
       "addEntry": "Adicionar entrada",
       "importJson": "Importar JSON"
     },
+    "sections": {
+      "basicData": "Dados Básicos",
+      "storyNarration": "Narração",
+      "visibilityControl": "Visibilidade e Controle",
+      "lorebook": "Livro de Lore"
+    },
+    "optional": "opcional",
     "loading": "Carregando...",
     "errors": {
       "loadFailed": "Falha ao carregar mundo.",

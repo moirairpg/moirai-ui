@@ -5,6 +5,8 @@ type WorldImport = {
   description: string;
   adventureStart: string;
   visibility: string;
+  narratorName: string;
+  narratorPersonality: string;
   lorebook: LorebookImportEntry[];
 };
 
@@ -32,19 +34,21 @@ function parseLorebookEntries(val: unknown): LorebookImportEntry[] {
 }
 
 export function parseWorldJson(raw: unknown): WorldImport {
-  if (typeof raw !== 'object' || raw === null) return { name: '', description: '', adventureStart: '', visibility: '', lorebook: [] };
+  if (typeof raw !== 'object' || raw === null) return { name: '', description: '', adventureStart: '', visibility: '', narratorName: '', narratorPersonality: '', lorebook: [] };
   const j = raw as Record<string, unknown>;
   return {
     name: str(j.name),
     description: str(j.description),
     adventureStart: str(j.adventureStart),
     visibility: str(j.visibility),
+    narratorName: str(j.narratorName),
+    narratorPersonality: str(j.narratorPersonality),
     lorebook: parseLorebookEntries(j.lorebook),
   };
 }
 
 export function parseAdventureJson(raw: unknown): AdventureImport {
-  if (typeof raw !== 'object' || raw === null) return { name: '', description: '', adventureStart: '', visibility: '', lorebook: [], moderation: '' };
+  if (typeof raw !== 'object' || raw === null) return { name: '', description: '', adventureStart: '', visibility: '', narratorName: '', narratorPersonality: '', lorebook: [], moderation: '' };
   const j = raw as Record<string, unknown>;
   const mc = typeof j.modelConfiguration === 'object' && j.modelConfiguration !== null
     ? j.modelConfiguration as Record<string, unknown>
@@ -57,6 +61,8 @@ export function parseAdventureJson(raw: unknown): AdventureImport {
     description: str(j.description),
     adventureStart: str(j.adventureStart),
     visibility: str(j.visibility),
+    narratorName: str(j.narratorName),
+    narratorPersonality: str(j.narratorPersonality),
     lorebook: parseLorebookEntries(j.lorebookEntries ?? j.lorebook),
     moderation: str(j.moderation),
     ...(typeof j.isMultiplayer === 'boolean' && { isMultiplayer: j.isMultiplayer }),

@@ -10,6 +10,6 @@ export default {
     "subject-empty": [2, "never"],
     "type-case": [0],
     "subject-case": [0],
-    "body-max-line-length": [2, "always", 100],
+    "body-max-line-length": [0],
   },
 };

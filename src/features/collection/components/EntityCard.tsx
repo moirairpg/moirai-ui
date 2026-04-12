@@ -27,26 +27,14 @@ type WorldCardProps = {
   onDelete: (id: string) => void;
 };
 
-type PersonaCardProps = {
-  kind: 'persona';
-  id: string;
-  name: string;
-  personality: string;
-  visibility: string;
-  canWrite: boolean;
-  onView: (id: string) => void;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-};
-
-type EntityCardProps = AdventureCardProps | WorldCardProps | PersonaCardProps;
+type EntityCardProps = AdventureCardProps | WorldCardProps;
 
 export function EntityCard(props: EntityCardProps) {
   const [hovered, setHovered] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const { t } = useTranslation('collection');
 
-  const bodyText = props.kind === 'persona' ? props.personality : props.description;
+  const bodyText = props.description;
 
   const handleDeleteClick = () => setIsConfirming(true);
   const handleConfirmDelete = () => { setIsConfirming(false); props.onDelete(props.id); };

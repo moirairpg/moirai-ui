@@ -6,11 +6,15 @@
       "description": "Description",
       "adventureStart": "Adventure Start",
       "visibility": "Visibility",
-      "lorebook": "Lorebook"
+      "lorebook": "Lorebook",
+      "narratorName": "Narrator Name",
+      "narratorPersonality": "Narrator Personality"
     },
     "tooltips": {
       "adventureStart": "Where the story begins for adventures in this world",
-      "visibility": "Who can see this world"
+      "visibility": "Who can see this world",
+      "narratorName": "Name used to identify the default narrator for adventures in this world",
+      "narratorPersonality": "Instructions that define how the narrator speaks and tells the story"
     },
     "options": {
       "public": "Public",
@@ -32,6 +36,13 @@
       "addEntry": "Add Entry",
       "importJson": "Import JSON"
     },
+    "sections": {
+      "basicData": "Basic Data",
+      "storyNarration": "Story Narration",
+      "visibilityControl": "Visibility & Control",
+      "lorebook": "Lorebook"
+    },
+    "optional": "optional",
     "loading": "Loading...",
     "errors": {
       "loadFailed": "Failed to load world.",

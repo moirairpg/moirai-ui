@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../../../utils/api';
 import { useAdventureCollection } from '../hooks/useAdventureCollection';
 import { useWorldCollection } from '../hooks/useWorldCollection';
-import { usePersonaCollection } from '../hooks/usePersonaCollection';
 import { CardGrid } from './CardGrid';
 import { EntityCard } from './EntityCard';
 
-type BrowseTab = 'adventures' | 'worlds' | 'personas';
+type BrowseTab = 'adventures' | 'worlds';
 
 function AdventuresTab() {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ function AdventuresTab() {
   const handlePlay = (id: string) => navigate(`/adventure/play/${id}`);
   const handleView = (id: string) => navigate(`/adventure/${id}/view`);
   const handleEdit = (id: string) => navigate(`/adventure/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
+  const handleDelete = (id: string) => apiFetch(`/api/adventure/${id}`, { method: 'DELETE' }).then(() => { removeItem(id); window.dispatchEvent(new Event('adventure-list-changed')); }).catch(() => {});
 
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
@@ -42,34 +41,17 @@ function WorldsTab() {
   );
 }
 
-function PersonasTab() {
-  const navigate = useNavigate();
-  const { items, isLoading, hasMore, loadMore, removeItem } = usePersonaCollection('EXPLORE');
-  const handleView = (id: string) => navigate(`/persona/${id}/view`);
-  const handleEdit = (id: string) => navigate(`/persona/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/persona/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
-
-  return (
-    <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
-      {items.map((p) => (
-        <EntityCard key={p.id} kind="persona" id={p.id} name={p.name} personality={p.personality} visibility={p.visibility} canWrite={p.canWrite} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
-      ))}
-    </CardGrid>
-  );
-}
-
 export default function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation('collection');
   const raw = searchParams.get('tab');
-  const activeTab: BrowseTab = raw === 'worlds' || raw === 'personas' ? raw : 'adventures';
+  const activeTab: BrowseTab = raw === 'worlds' ? raw : 'adventures';
 
   const setTab = (tab: BrowseTab) => setSearchParams({ tab }, { replace: true });
 
   const TABS: { id: BrowseTab; label: string }[] = [
     { id: 'adventures', label: t('browse.tabs.adventures') },
     { id: 'worlds', label: t('browse.tabs.worlds') },
-    { id: 'personas', label: t('browse.tabs.personas') },
   ];
 
   return (
@@ -94,7 +76,6 @@ export default function BrowsePage() {
 
       {activeTab === 'adventures' && <AdventuresTab />}
       {activeTab === 'worlds' && <WorldsTab />}
-      {activeTab === 'personas' && <PersonasTab />}
     </div>
   );
 }

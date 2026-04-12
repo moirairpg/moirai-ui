@@ -5,7 +5,8 @@
       "name": "이름",
       "description": "설명",
       "world": "세계",
-      "persona": "페르소나",
+      "narratorName": "나레이터 이름",
+      "narratorPersonality": "나레이터 개성",
       "visibility": "공개 설정",
       "moderation": "검열",
       "multiplayer": "멀티플레이어",
@@ -21,11 +22,14 @@
       "modelConfiguration": "모델 구성"
     },
     "tooltips": {
+      "world": "이 어드벤처의 시작 장면, 로어, 나레이터를 설정합니다",
       "visibility": "이 어드벤처를 볼 수 있는 사람",
       "moderation": "콘텐츠 필터링의 엄격도 — 신고된 메시지는 완전히 삭제됩니다",
       "aiModel": "이 어드벤처를 구동하는 AI 모델",
       "maxTokenLimit": "AI 응답의 최대 길이",
       "temperature": "낮을수록 일관성, 높을수록 창의성",
+      "narratorName": "이야기에서 이 나레이터를 식별하는 데 사용되는 이름",
+      "narratorPersonality": "나레이터가 이야기하는 방식을 정의하는 지침",
       "nudge": "AI의 동작을 안내하는 조용한 힌트",
       "bump": "AI에게 주기적으로 개성을 상기시키고 행동을 안내합니다",
       "bumpFrequency": "리마인더 텍스트가 반복되는 빈도(메시지 수)"
@@ -57,6 +61,13 @@
       "addEntry": "항목 추가",
       "advanced": "고급",
       "importJson": "JSON 가져오기"
+    },
+    "optional": "선택사항",
+    "sections": {
+      "basicData": "기본 데이터",
+      "storyNarration": "이야기 서술",
+      "visibilityControl": "공개 설정 및 제어",
+      "lorebook": "로어북"
     },
     "player": "플레이어: ",
     "errors": {

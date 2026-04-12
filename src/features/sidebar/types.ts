@@ -32,7 +32,8 @@ export type AdventureDetails = {
   description: string;
   adventureStart: string;
   worldId: string | null;
-  personaId: string;
+  narratorName: string | null;
+  narratorPersonality: string | null;
   visibility: string;
   moderation: string;
   isMultiplayer: boolean;
@@ -58,6 +59,8 @@ export type WorldDetails = {
   name: string;
   description: string;
   adventureStart: string;
+  narratorName: string | null;
+  narratorPersonality: string | null;
   visibility: string;
   permissions: Permission[];
   lorebook: WorldLorebookEntry[];
@@ -65,12 +68,3 @@ export type WorldDetails = {
   lastUpdateDate: string;
 };
 
-export type PersonaDetails = {
-  id: string;
-  name: string;
-  personality: string;
-  visibility: string;
-  permissions: Permission[];
-  creationDate: string;
-  lastUpdateDate: string;
-};

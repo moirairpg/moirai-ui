@@ -6,11 +6,15 @@
       "description": "Beschreibung",
       "adventureStart": "Abenteuerbeginn",
       "visibility": "Sichtbarkeit",
-      "lorebook": "Lore-Buch"
+      "lorebook": "Lore-Buch",
+      "narratorName": "Erzählername",
+      "narratorPersonality": "Erzählerpersönlichkeit"
     },
     "tooltips": {
       "adventureStart": "Wo die Geschichte für Abenteuer in dieser Welt beginnt",
-      "visibility": "Wer diese Welt sehen kann"
+      "visibility": "Wer diese Welt sehen kann",
+      "narratorName": "Name, der den Standarderzähler für Abenteuer in dieser Welt identifiziert",
+      "narratorPersonality": "Anweisungen, die definieren, wie der Erzähler spricht und die Geschichte erzählt"
     },
     "options": {
       "public": "Öffentlich",
@@ -32,6 +36,13 @@
       "addEntry": "Eintrag hinzufügen",
       "importJson": "JSON importieren"
     },
+    "sections": {
+      "basicData": "Grunddaten",
+      "storyNarration": "Erzählung",
+      "visibilityControl": "Sichtbarkeit & Kontrolle",
+      "lorebook": "Lore-Buch"
+    },
+    "optional": "optional",
     "loading": "Wird geladen...",
     "errors": {
       "loadFailed": "Welt konnte nicht geladen werden.",

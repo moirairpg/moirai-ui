@@ -16,8 +16,6 @@
     "adventures": "冒险",
     "createAdventure": "创建冒险",
     "worlds": "世界",
-    "createWorld": "创建世界",
-    "personas": "角色",
-    "createPersona": "创建角色"
+    "createWorld": "创建世界"
   }
 }
