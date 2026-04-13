@@ -80,6 +80,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
   const { t } = useTranslation('world');
   const [form, setForm] = useState<FormState>(EMPTY);
   const [lorebook, setLorebook] = useState<LorebookEntry[]>([]);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [addingNew, setAddingNew] = useState(false);
   const [newDraft, setNewDraft] = useState<LorebookEntry>(EMPTY_ENTRY);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -128,6 +129,8 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
   };
 
   const removeEntry = (index: number) => {
+    const entry = lorebook[index];
+    if (entry.id) setDeletedIds((prev) => [...prev, entry.id!]);
     setLorebook((prev) => prev.filter((_, i) => i !== index));
     if (editingIndex === index) setEditingIndex(null);
   };
@@ -152,7 +155,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     setError('');
 
     try {
-      const body = {
+      const baseBody = {
         name: form.name,
         description: form.description,
         adventureStart: form.adventureStart,
@@ -160,14 +163,13 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         narratorName: form.narratorName || null,
         narratorPersonality: form.narratorPersonality || null,
         permissions: [],
-        lorebook: lorebook.map(({ name, description }) => ({ name, description })),
       };
 
       if (mode === 'create') {
         const res = await apiFetch('/api/world', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          body: JSON.stringify({ ...baseBody, lorebook: lorebook.map(({ name, description }) => ({ name, description })) }),
         });
         const data = await res.json();
         navigate(`/world/${data.id}/view`);
@@ -175,8 +177,33 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         await apiFetch(`/api/world/${worldId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          body: JSON.stringify(baseBody),
         });
+
+        await Promise.all([
+          ...deletedIds.map((id) =>
+            apiFetch(`/api/world/${worldId}/lorebook/${id}`, { method: 'DELETE' })
+          ),
+          ...lorebook
+            .filter((e) => !e.id)
+            .map((e) =>
+              apiFetch(`/api/world/${worldId}/lorebook`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: e.name, description: e.description }),
+              })
+            ),
+          ...lorebook
+            .filter((e) => !!e.id)
+            .map((e) =>
+              apiFetch(`/api/world/${worldId}/lorebook/${e.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: e.name, description: e.description }),
+              })
+            ),
+        ]);
+
         navigate(`/world/${worldId}/view`);
       }
     } catch {

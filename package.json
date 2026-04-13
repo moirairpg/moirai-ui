@@ -35,6 +35,7 @@
     "react-i18next": "^16.5.3",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^6.8.1",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^3.3.1"
   },

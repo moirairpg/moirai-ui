@@ -9,6 +9,10 @@ type AdventureMessagesPaneProps = {
   hasMore: boolean;
   isFetchingMore: boolean;
   onFetchMore: () => void;
+  editingMessageId?: string | null;
+  onContextMenu?: (e: React.MouseEvent, message: AdventureMessage) => void;
+  onEditConfirm?: (messageId: string, newContent: string) => void;
+  onEditCancel?: () => void;
 };
 
 export function AdventureMessagesPane({
@@ -17,6 +21,10 @@ export function AdventureMessagesPane({
   hasMore,
   isFetchingMore,
   onFetchMore,
+  editingMessageId,
+  onContextMenu,
+  onEditConfirm,
+  onEditCancel,
 }: AdventureMessagesPaneProps) {
   const { t } = useTranslation('adventure');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -27,7 +35,6 @@ export function AdventureMessagesPane({
   const randomPhrase = () => phrases[Math.floor(Math.random() * phrases.length)];
   const [currentPhrase, setCurrentPhrase] = useState<string>(() => randomPhrase());
 
-  // Scroll to bottom when new messages are appended
   useEffect(() => {
     if (isPrependingRef.current) return;
     if (scrollRef.current) {
@@ -35,7 +42,6 @@ export function AdventureMessagesPane({
     }
   }, [messages.length]);
 
-  // Preserve scroll position after prepending older messages
   useLayoutEffect(() => {
     if (prevScrollHeightRef.current === null) return;
     if (scrollRef.current) {
@@ -78,7 +84,14 @@ export function AdventureMessagesPane({
 
         <div className="space-y-0.5">
           {messages.map((message) => (
-            <AdventureMessageBlock key={message.id} message={message} />
+            <AdventureMessageBlock
+              key={message.id}
+              message={message}
+              isEditing={editingMessageId === message.id}
+              onContextMenu={(e) => onContextMenu?.(e, message)}
+              onEditConfirm={(newContent) => onEditConfirm?.(message.id, newContent)}
+              onEditCancel={onEditCancel}
+            />
           ))}
         </div>
       </div>
@@ -89,6 +102,7 @@ export function AdventureMessagesPane({
           <span>{currentPhrase}</span>
         </div>
       )}
+
     </div>
   );
 }

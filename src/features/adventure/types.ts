@@ -5,4 +5,5 @@ export type AdventureMessage = {
   role: AdventureMessageRole;
   content: string;
   narratorName?: string;
+  authorUsername?: string;
 };
