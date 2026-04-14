@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, Pencil, Play, Trash2 } from 'lucide-react';
+import defaultImage from '../../../assets/default-images/default_world01.jpg';
 
 type AdventureCardProps = {
   kind: 'adventure';
@@ -48,7 +49,7 @@ export function EntityCard(props: EntityCardProps) {
         onMouseLeave={() => { if (!isConfirming) setHovered(false); }}
       >
         <img
-          src="/images/placeholder_picture.png"
+          src={defaultImage}
           alt=""
           className="h-full w-full object-cover"
         />

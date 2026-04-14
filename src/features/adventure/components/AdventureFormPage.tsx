@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import defaultImage from '../../../assets/default-images/default_world01.jpg';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, Eye, Info, Pencil, Plus, Trash2 } from 'lucide-react';
@@ -105,7 +106,7 @@ function CardPicker({
           }`}
         >
           <div className="relative h-40 flex-shrink-0 bg-muted">
-            <img src="/images/placeholder_picture.png" alt="" className="h-full w-full object-cover" />
+            <img src={defaultImage} alt="" className="h-full w-full object-cover" />
             {onView ? (
               <button
                 type="button"

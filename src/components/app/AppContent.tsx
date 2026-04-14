@@ -1,29 +1,29 @@
 import type { ReactNode } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Sidebar from '../sidebar/view/Sidebar';
 import AdventurePage from '../../features/adventure/components/AdventurePage';
 import { useDeviceSettings } from '../../hooks/useDeviceSettings';
+import type { MoirAISidebarNavProps } from '../../features/sidebar/components/MoirAISidebarNav';
 
 type AppContentProps = {
   children?: ReactNode;
 };
 
 export default function AppContent({ children }: AppContentProps) {
-  const navigate = useNavigate();
   const { adventureId } = useParams<{ adventureId?: string }>();
   const { isMobile } = useDeviceSettings({ trackPWA: false });
   const { t } = useTranslation('common');
 
-  const navProps = {
-    onMyStuffClick: () => navigate('/my-stuff'),
-    onSharedWithMeClick: () => navigate('/shared-with-me'),
-    onCreateAdventure: () => navigate('/adventure/new'),
-    onBrowseAdventures: () => navigate('/explore?tab=adventures'),
-    onAdventureClick: (id: string) => navigate(`/adventure/play/${id}`),
-    onCreateWorld: () => navigate('/world/new'),
-    onBrowseWorlds: () => navigate('/explore?tab=worlds'),
-    onBrowse: () => navigate('/explore'),
+  const navProps: MoirAISidebarNavProps = {
+    myStuffPath: '/my-stuff',
+    sharedWithMePath: '/shared-with-me',
+    explorePath: '/explore',
+    createAdventurePath: '/adventure/new',
+    browseAdventuresPath: '/explore?tab=adventures',
+    adventureBasePath: '/adventure/play',
+    createWorldPath: '/world/new',
+    browseWorldsPath: '/explore?tab=worlds',
   };
 
   const content = children ?? (adventureId

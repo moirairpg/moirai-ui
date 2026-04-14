@@ -1,12 +1,13 @@
 import { PanelLeftClose } from 'lucide-react';
 import type { TFunction } from 'i18next';
+import { Link } from 'react-router-dom';
 import { Button } from '../../../../shared/view/ui';
 import { IS_PLATFORM } from '../../../../constants/config';
 
 type SidebarHeaderProps = {
   isPWA: boolean;
   isMobile: boolean;
-  onCreateAdventure: () => void;
+  createAdventurePath: string;
   onCollapseSidebar: () => void;
   t: TFunction;
 };
@@ -14,7 +15,7 @@ type SidebarHeaderProps = {
 export default function SidebarHeader({
   isPWA,
   isMobile,
-  onCreateAdventure,
+  createAdventurePath,
   onCollapseSidebar,
   t,
 }: SidebarHeaderProps) {
@@ -41,7 +42,9 @@ export default function SidebarHeader({
               <LogoBlock />
             </a>
           ) : (
-            <LogoBlock />
+            <Link to="/" className="flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-80">
+              <LogoBlock />
+            </Link>
           )}
 
           <div className="flex flex-shrink-0 items-center gap-0.5">
@@ -74,7 +77,9 @@ export default function SidebarHeader({
               <LogoBlock />
             </a>
           ) : (
-            <LogoBlock />
+            <Link to="/" className="flex min-w-0 items-center gap-2.5 transition-opacity active:opacity-70">
+              <LogoBlock />
+            </Link>
           )}
 
           <div className="flex flex-shrink-0 gap-1.5" />

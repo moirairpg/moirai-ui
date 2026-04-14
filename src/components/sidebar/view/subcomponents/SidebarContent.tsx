@@ -26,7 +26,7 @@ export default function SidebarContent({
       <SidebarHeader
         isPWA={isPWA}
         isMobile={isMobile}
-        onCreateAdventure={navProps.onCreateAdventure}
+        createAdventurePath={navProps.createAdventurePath}
         onCollapseSidebar={onCollapseSidebar}
         t={t}
       />

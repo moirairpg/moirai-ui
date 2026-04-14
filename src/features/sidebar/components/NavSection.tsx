@@ -1,14 +1,15 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 type NavSectionProps = {
   label: string;
   icon: ReactNode;
   isExpanded: boolean;
   onToggle: () => void;
-  onCreateClick: () => void;
-  onBrowseClick: () => void;
-  recentItems?: { id: string; label: string; onClick: () => void }[];
+  createPath: string;
+  browsePath: string;
+  recentItems?: { id: string; label: string; href: string }[];
   createLabel: string;
   browseLabel: string;
 };
@@ -18,12 +19,15 @@ export function NavSection({
   icon,
   isExpanded,
   onToggle,
-  onCreateClick,
-  onBrowseClick,
+  createPath,
+  browsePath,
   recentItems,
   createLabel,
   browseLabel,
 }: NavSectionProps) {
+  const itemClass =
+    'flex w-full items-center rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground';
+
   return (
     <div>
       <button
@@ -41,31 +45,25 @@ export function NavSection({
 
       {isExpanded && (
         <div className="ml-4 mt-0.5 space-y-0.5 border-l border-border/40 pl-3">
-          <button
-            onClick={onCreateClick}
-            className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
-          >
+          <Link to={createPath} className={itemClass}>
             {createLabel}
-          </button>
+          </Link>
 
-          <button
-            onClick={onBrowseClick}
-            className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
-          >
+          <Link to={browsePath} className={itemClass}>
             {browseLabel}
-          </button>
+          </Link>
 
           {recentItems && recentItems.length > 0 && (
             <>
               <div className="my-1 h-px bg-border/30" />
               {recentItems.map((item) => (
-                <button
+                <Link
                   key={item.id}
-                  onClick={item.onClick}
-                  className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+                  to={item.href}
+                  className={`${itemClass} text-left`}
                 >
                   <span className="truncate">{item.label}</span>
-                </button>
+                </Link>
               ))}
             </>
           )}

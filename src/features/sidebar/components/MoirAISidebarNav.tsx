@@ -1,29 +1,30 @@
 import { BookOpen, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { NavSection } from './NavSection';
 import { useMoirAISidebar } from '../hooks/useMoirAISidebar';
 import { useRecentAdventures } from '../hooks/useRecentAdventures';
 
 export type MoirAISidebarNavProps = {
-  onMyStuffClick: () => void;
-  onSharedWithMeClick: () => void;
-  onBrowse: () => void;
-  onCreateAdventure: () => void;
-  onBrowseAdventures: () => void;
-  onAdventureClick: (id: string) => void;
-  onCreateWorld: () => void;
-  onBrowseWorlds: () => void;
+  myStuffPath: string;
+  sharedWithMePath: string;
+  explorePath: string;
+  createAdventurePath: string;
+  browseAdventuresPath: string;
+  adventureBasePath: string;
+  createWorldPath: string;
+  browseWorldsPath: string;
 };
 
 export function MoirAISidebarNav({
-  onMyStuffClick,
-  onSharedWithMeClick,
-  onBrowse,
-  onCreateAdventure,
-  onBrowseAdventures,
-  onAdventureClick,
-  onCreateWorld,
-  onBrowseWorlds,
+  myStuffPath,
+  sharedWithMePath,
+  explorePath,
+  createAdventurePath,
+  browseAdventuresPath,
+  adventureBasePath,
+  createWorldPath,
+  browseWorldsPath,
 }: MoirAISidebarNavProps) {
   const { t } = useTranslation('sidebar');
   const { expanded, toggle } = useMoirAISidebar();
@@ -32,31 +33,25 @@ export function MoirAISidebarNav({
   const recentAdventureItems = (recentAdventures ?? []).map((a) => ({
     id: a.id,
     label: a.name,
-    onClick: () => onAdventureClick(a.id),
+    href: `${adventureBasePath}/${a.id}`,
   }));
+
+  const linkClass =
+    'flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50';
 
   return (
     <div className="space-y-0.5 px-1.5 py-2">
-      <button
-        onClick={onMyStuffClick}
-        className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
-      >
+      <Link to={myStuffPath} className={linkClass}>
         {t('nav.myStuff')}
-      </button>
+      </Link>
 
-      <button
-        onClick={onSharedWithMeClick}
-        className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
-      >
+      <Link to={sharedWithMePath} className={linkClass}>
         {t('nav.sharedWithMe')}
-      </button>
+      </Link>
 
-      <button
-        onClick={onBrowse}
-        className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
-      >
+      <Link to={explorePath} className={linkClass}>
         {t('nav.explore')}
-      </button>
+      </Link>
 
       <div className="my-1.5 h-px bg-border/40" />
 
@@ -65,8 +60,8 @@ export function MoirAISidebarNav({
         icon={<BookOpen className="h-4 w-4 text-muted-foreground" />}
         isExpanded={expanded.has('adventures')}
         onToggle={() => toggle('adventures')}
-        onCreateClick={onCreateAdventure}
-        onBrowseClick={onBrowseAdventures}
+        createPath={createAdventurePath}
+        browsePath={browseAdventuresPath}
         recentItems={recentAdventureItems}
         createLabel={t('nav.createAdventure')}
         browseLabel={t('nav.explore')}
@@ -77,12 +72,11 @@ export function MoirAISidebarNav({
         icon={<Globe className="h-4 w-4 text-muted-foreground" />}
         isExpanded={expanded.has('worlds')}
         onToggle={() => toggle('worlds')}
-        onCreateClick={onCreateWorld}
-        onBrowseClick={onBrowseWorlds}
+        createPath={createWorldPath}
+        browsePath={browseWorldsPath}
         createLabel={t('nav.createWorld')}
         browseLabel={t('nav.explore')}
       />
-
     </div>
   );
 }
