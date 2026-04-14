@@ -143,7 +143,7 @@ function CardPicker({
 }
 
 const INPUT_CLASS = 'rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50';
-const TEXTAREA_CLASS = `resize-none ${INPUT_CLASS}`;
+const TEXTAREA_CLASS = `resize-y ${INPUT_CLASS}`;
 
 function LorebookEntryForm({
   value,
