@@ -46,7 +46,10 @@ export function AdventureMessageBlock({
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
-              onEditConfirm?.(editValue);
+              if (editValue !== message.content) onEditConfirm?.(editValue);
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              onEditCancel?.();
             }
           }}
           autoFocus
@@ -54,7 +57,7 @@ export function AdventureMessageBlock({
         <div className="mt-1 flex gap-2">
           <button
             type="button"
-            onClick={() => onEditConfirm?.(editValue)}
+            onClick={() => { if (editValue !== message.content) onEditConfirm?.(editValue); }}
             className="rounded bg-primary px-3 py-1 text-xs font-medium text-primary-foreground"
           >
             Confirm

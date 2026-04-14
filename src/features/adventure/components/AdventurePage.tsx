@@ -17,10 +17,10 @@ type AdventurePageProps = {
   adventureId: string;
 };
 
-const saidPrefixRegex = /^.+? said[,:]?\s*"?/;
+const saidPrefixRegex = /^.+? said[,:]?\s*/;
 
 function stripSaidPrefix(content: string): string {
-  return content.replace(saidPrefixRegex, '').replace(/"$/, '');
+  return content.replace(saidPrefixRegex, '');
 }
 
 type FormatButton = {

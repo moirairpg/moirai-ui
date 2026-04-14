@@ -69,7 +69,7 @@ export function AdventureMessagesPane({
       setCurrentPhrase(randomPhrase());
     }, 3000);
     return () => clearInterval(interval);
-  }, [isGenerating, phrases]);
+  }, [isGenerating]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

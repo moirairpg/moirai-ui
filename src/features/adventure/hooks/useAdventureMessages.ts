@@ -34,10 +34,10 @@ type UseAdventureMessagesResult = {
   removeMessagesFromIdInclusive: (id: string) => void;
 };
 
-const saidPrefixRegex = /^.+? said[,:]?\s*"?/;
+const saidPrefixRegex = /^.+? said[,:]?\s*/;
 
 function stripSaidPrefix(content: string): string {
-  return content.replace(saidPrefixRegex, '').replace(/"$/, '');
+  return content.replace(saidPrefixRegex, '');
 }
 
 function toAdventureMessage(m: MessageSummary, narratorName: string | undefined): AdventureMessage {
