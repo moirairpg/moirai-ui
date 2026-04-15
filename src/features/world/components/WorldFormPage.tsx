@@ -177,32 +177,17 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         await apiFetch(`/api/world/${worldId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(baseBody),
+          body: JSON.stringify({
+            ...baseBody,
+            lorebookEntriesToAdd: lorebook
+              .filter((e) => !e.id)
+              .map(({ name, description }) => ({ name, description })),
+            lorebookEntriesToUpdate: lorebook
+              .filter((e) => !!e.id)
+              .map(({ id, name, description }) => ({ id, name, description })),
+            lorebookEntriesToDelete: deletedIds,
+          }),
         });
-
-        await Promise.all([
-          ...deletedIds.map((id) =>
-            apiFetch(`/api/world/${worldId}/lorebook/${id}`, { method: 'DELETE' })
-          ),
-          ...lorebook
-            .filter((e) => !e.id)
-            .map((e) =>
-              apiFetch(`/api/world/${worldId}/lorebook`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: e.name, description: e.description }),
-              })
-            ),
-          ...lorebook
-            .filter((e) => !!e.id)
-            .map((e) =>
-              apiFetch(`/api/world/${worldId}/lorebook/${e.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: e.name, description: e.description }),
-              })
-            ),
-        ]);
 
         navigate(`/world/${worldId}/view`);
       }

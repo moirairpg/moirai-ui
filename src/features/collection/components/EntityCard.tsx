@@ -1,7 +1,7 @@
+import defaultImage from '../../../assets/default-images/default_world01.jpg';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, Pencil, Play, Trash2 } from 'lucide-react';
-import defaultImage from '../../../assets/default-images/default_world01.jpg';
 
 type AdventureCardProps = {
   kind: 'adventure';

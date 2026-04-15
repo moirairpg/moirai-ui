@@ -464,32 +464,17 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         await apiFetch(`/api/adventure/${adventureId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            ...body,
+            lorebookEntriesToAdd: lorebook
+              .filter((e) => !e.id)
+              .map(({ name, description, playerId }) => ({ name, description, playerId: playerId || null })),
+            lorebookEntriesToUpdate: lorebook
+              .filter((e) => !!e.id)
+              .map(({ id, name, description, playerId }) => ({ id, name, description, playerId: playerId || null })),
+            lorebookEntriesToDelete: deletedIds,
+          }),
         });
-
-        await Promise.all([
-          ...deletedIds.map((id) =>
-            apiFetch(`/api/adventure/${adventureId}/lorebook/${id}`, { method: 'DELETE' })
-          ),
-          ...lorebook
-            .filter((e) => !e.id)
-            .map((e) =>
-              apiFetch(`/api/adventure/${adventureId}/lorebook`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: e.name, description: e.description, playerId: e.playerId || null }),
-              })
-            ),
-          ...lorebook
-            .filter((e) => !!e.id)
-            .map((e) =>
-              apiFetch(`/api/adventure/${adventureId}/lorebook/${e.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: e.name, description: e.description, playerId: e.playerId || null }),
-              })
-            ),
-        ]);
 
         navigate(`/adventure/${adventureId}/view`);
       }

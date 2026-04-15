@@ -35,7 +35,7 @@ export function AdventureMessageBlock({
     );
   }
 
-  if (isEditing && message.role !== 'system') {
+  if (isEditing) {
     return (
       <div className="py-1">
         <textarea
