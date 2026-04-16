@@ -1,0 +1,45 @@
+name: Create feature
+
+on:
+  workflow_dispatch:
+    inputs:
+      feature_name:
+        description: "Feature name (e.g. my-feature)"
+        required: true
+        type: string
+
+jobs:
+  create-feature:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "22"
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create feature branch
+        run: |
+          git checkout -b feature/${{ inputs.feature_name }}
+
+      - name: Set feature version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          NUMERIC_VERSION=${CURRENT_VERSION%-SNAPSHOT}
+          FEATURE_VERSION="${NUMERIC_VERSION}-${{ inputs.feature_name }}-SNAPSHOT"
+          npm pkg set version="$FEATURE_VERSION"
+          git add package.json
+          git commit -m "feature: set version $FEATURE_VERSION"
+          git push origin feature/${{ inputs.feature_name }}
