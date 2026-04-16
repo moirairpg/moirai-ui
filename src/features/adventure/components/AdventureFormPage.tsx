@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import defaultImage from '../../../assets/default-images/default_world01.jpg';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, Eye, Info, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
-import { Tooltip } from '../../../shared/view/ui';
+import { api } from '../../../utils/api';
+import { EntityBanner, Tooltip } from '../../../shared/view/ui';
 import { useJsonImport, parseAdventureJson } from '../../../utils/jsonImport';
+import { buildImagePrompt } from '../../../utils/imagePrompt';
 
 type AdventureFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
-type SelectOption = { id: string; name: string; description?: string; visibility?: string };
+type SelectOption = { id: string; name: string; description?: string; visibility?: string; imageUrl?: string | null };
 
 type LorebookEntry = { id?: string; name: string; description: string; playerId: string };
 
@@ -43,7 +44,6 @@ const EMPTY: FormState = {
 };
 
 const EMPTY_ENTRY: LorebookEntry = { name: '', description: '', playerId: '' };
-const SNAPSHOT_KEY = 'adventure_form_snapshot';
 
 function CardPicker({
   options,
@@ -106,7 +106,9 @@ function CardPicker({
           }`}
         >
           <div className="relative h-40 flex-shrink-0 bg-muted">
-            <img src={defaultImage} alt="" className="h-full w-full object-cover" />
+            {option.imageUrl && (
+              <img src={option.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            )}
             {onView ? (
               <button
                 type="button"
@@ -221,6 +223,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const [saving, setSaving] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [worldName, setWorldName] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const readOnly = mode === 'view';
   const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
@@ -228,32 +232,20 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   useEffect(() => {
     let restoredFromSnapshot = false;
 
-    const rawSnapshot = sessionStorage.getItem(SNAPSHOT_KEY);
-    if (rawSnapshot) {
-      sessionStorage.removeItem(SNAPSHOT_KEY);
-      try {
-        const snapshot = JSON.parse(rawSnapshot) as {
-          form: FormState;
-          createLorebook: LorebookEntry[];
-          deletedIds: string[];
-          returnPath: string;
-          savedAt: number;
-        };
-        if (snapshot.returnPath === location.pathname && Date.now() - snapshot.savedAt < 1800000) {
-          setForm(snapshot.form);
-          setCreateLorebook(snapshot.createLorebook);
-          setDeletedIds(snapshot.deletedIds);
-          restoredFromSnapshot = true;
-        }
-      } catch (_) {
-        restoredFromSnapshot = false;
+    if (mode === 'create') {
+      const snapshot = location.state?.snapshot as { form: FormState; createLorebook: LorebookEntry[]; deletedIds: string[] } | undefined;
+      if (snapshot) {
+        setForm(snapshot.form);
+        setCreateLorebook(snapshot.createLorebook);
+        setDeletedIds(snapshot.deletedIds);
+        restoredFromSnapshot = true;
       }
     }
 
     const fetches: Promise<void>[] = [
       apiFetch('/api/world?view=MY_STUFF&size=100').then((r) => r.json()).then((d) =>
-        setWorlds((d.data ?? []).map((w: { id: string; name: string; description?: string; visibility?: string }) => ({
-          id: w.id, name: w.name, description: w.description, visibility: w.visibility,
+        setWorlds((d.data ?? []).map((w: { id: string; name: string; description?: string; visibility?: string; imageUrl?: string | null }) => ({
+          id: w.id, name: w.name, description: w.description, visibility: w.visibility, imageUrl: w.imageUrl,
         })))
       ),
     ];
@@ -282,6 +274,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               description: e.description,
               playerId: e.playerId ?? '',
             })));
+            setImageUrl(data.imageUrl ?? null);
           })
       );
     }
@@ -338,18 +331,14 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           description: e.description,
           playerId: e.playerId ?? '',
         })));
+        setImageUrl(world.imageUrl ?? null);
+        setImageFile(null);
       })
       .catch(() => {});
   };
 
   const handleWorldView = (id: string) => {
-    sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify({
-      form,
-      createLorebook,
-      deletedIds,
-      returnPath: location.pathname,
-      savedAt: Date.now(),
-    }));
+    navigate(location.pathname, { replace: true, state: { snapshot: { form, createLorebook, deletedIds } } });
     navigate(`/world/${id}/view`);
   };
 
@@ -413,6 +402,30 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
     && form.visibility !== ''
     && form.moderation !== '';
 
+  const handleImageUpload = (file: File) => {
+    setImageFile(file);
+    setImageUrl(URL.createObjectURL(file));
+  };
+
+  const handleImageRemove = async () => {
+    if (!adventureId) return;
+    await api.adventure.removeImage(adventureId);
+    setImageUrl(null);
+    setImageFile(null);
+  };
+
+  const handleImageGenerate = async () => {
+    const prompt = buildImagePrompt({
+      name: form.name,
+      description: form.description,
+      adventureStart: form.adventureStart,
+    });
+    const blob = await api.imageGenerations.generate(prompt);
+    const file = new File([blob], 'generated.png', { type: 'image/png' });
+    setImageFile(file);
+    setImageUrl(URL.createObjectURL(blob));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -428,7 +441,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           narratorPersonality: form.narratorPersonality || null,
           visibility: form.visibility,
           moderation: form.moderation,
-          isMultiplayer: form.isMultiplayer,
+          isMultiplayer: false,
           adventureStart: form.adventureStart,
           lorebook: createLorebook.map((e) => ({
             name: e.name,
@@ -445,8 +458,23 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           body: JSON.stringify(body),
         });
         const data = await res.json();
+        const id = data.id;
+        if (imageFile) {
+          const uploadRes = await api.adventure.uploadImage(id, imageFile);
+          if (!uploadRes.ok) throw new Error();
+        } else {
+          const prompt = buildImagePrompt({
+            name: form.name,
+            description: form.description,
+            adventureStart: form.adventureStart,
+          });
+          const blob = await api.imageGenerations.generate(prompt);
+          const file = new File([blob], 'generated.png', { type: 'image/png' });
+          const uploadRes = await api.adventure.uploadImage(id, file);
+          if (!uploadRes.ok) throw new Error();
+        }
         window.dispatchEvent(new Event('adventure-list-changed'));
-        navigate(`/adventure/play/${data.id}`);
+        navigate(`/adventure/play/${id}`);
       } else {
         const body = {
           name: form.name,
@@ -455,7 +483,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           narratorPersonality: form.narratorPersonality || null,
           visibility: form.visibility,
           moderation: form.moderation,
-          isMultiplayer: form.isMultiplayer,
+          isMultiplayer: false,
           adventureStart: form.adventureStart,
           permissions: [],
           modelConfiguration: form.modelConfiguration,
@@ -511,13 +539,25 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
+          <EntityBanner
+            imageUrl={imageUrl}
+            name={form.name}
+            mode={mode}
+            canGenerate={mode !== 'view' && !!form.name && !!form.description}
+            onUpload={handleImageUpload}
+            onRemove={handleImageRemove}
+            onGenerate={handleImageGenerate}
+          />
+
           <div className="flex flex-col gap-5 rounded-md border border-border p-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.basicData')}</span>
 
+            {mode !== 'view' && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
               <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
             </div>
+            )}
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
@@ -594,13 +634,6 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
           <div className="flex flex-col gap-5 rounded-md border border-border p-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.visibilityControl')}</span>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <input type="checkbox" checked={form.isMultiplayer} onChange={set('isMultiplayer')} disabled={readOnly} className="h-4 w-4" />
-                {t('form.fields.multiplayer')}
-              </label>
-            </div>
 
             <div className="flex gap-4">
               <div className="flex flex-1 flex-col gap-1.5">

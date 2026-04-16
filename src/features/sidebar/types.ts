@@ -37,6 +37,7 @@ export type AdventureDetails = {
   visibility: string;
   moderation: string;
   isMultiplayer: boolean;
+  imageUrl: string | null;
   creationDate: string;
   lastUpdateDate: string;
   modelConfiguration: ModelConfiguration;
@@ -62,6 +63,7 @@ export type WorldDetails = {
   narratorName: string | null;
   narratorPersonality: string | null;
   visibility: string;
+  imageUrl: string | null;
   permissions: Permission[];
   lorebook: WorldLorebookEntry[];
   creationDate: string;

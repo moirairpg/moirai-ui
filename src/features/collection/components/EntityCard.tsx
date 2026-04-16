@@ -1,4 +1,3 @@
-import defaultImage from '../../../assets/default-images/default_world01.jpg';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, Pencil, Play, Trash2 } from 'lucide-react';
@@ -9,6 +8,7 @@ type AdventureCardProps = {
   name: string;
   description: string;
   visibility: string;
+  imageUrl?: string | null;
   canWrite: boolean;
   onPlay: (id: string) => void;
   onView: (id: string) => void;
@@ -22,6 +22,7 @@ type WorldCardProps = {
   name: string;
   description: string;
   visibility: string;
+  imageUrl?: string | null;
   canWrite: boolean;
   onView: (id: string) => void;
   onEdit: (id: string) => void;
@@ -48,12 +49,9 @@ export function EntityCard(props: EntityCardProps) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => { if (!isConfirming) setHovered(false); }}
       >
-        <img
-          src={defaultImage}
-          alt=""
-          className="h-full w-full object-cover"
-        />
-
+        {props.imageUrl && (
+          <img src={props.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        )}
         {isConfirming && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
             <p className="text-sm font-medium text-white">{t('card.confirm')}</p>

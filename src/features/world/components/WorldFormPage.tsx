@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Info, Pencil, Trash2, Plus } from 'lucide-react';
 import type { WorldDetails } from '../../sidebar/types';
 import { apiFetch } from '../../../utils/api';
-import { Tooltip } from '../../../shared/view/ui';
+import { api } from '../../../utils/api';
+import { EntityBanner, Tooltip } from '../../../shared/view/ui';
 import { useJsonImport, parseWorldJson } from '../../../utils/jsonImport';
+import { buildImagePrompt } from '../../../utils/imagePrompt';
 
 type WorldFormPageProps = { mode: 'view' | 'edit' | 'create' };
 
@@ -88,17 +90,29 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
   const [loading, setLoading] = useState(mode !== 'create');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const readOnly = mode === 'view';
   const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
-    if (mode === 'create') return;
+    if (mode === 'create') {
+      setForm(EMPTY);
+      setLorebook([]);
+      setImageUrl(null);
+      return;
+    }
+    setForm(EMPTY);
+    setLorebook([]);
+    setImageUrl(null);
+    setLoading(true);
     apiFetch(`/api/world/${worldId}`)
       .then((r) => r.json())
       .then((data: WorldDetails) => {
         setForm({ name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility, narratorName: data.narratorName ?? '', narratorPersonality: data.narratorPersonality ?? '' });
         setLorebook((data.lorebook ?? []).map((e) => ({ id: e.id, name: e.name, description: e.description })));
+        setImageUrl(data.imageUrl ?? null);
         setLoading(false);
       })
       .catch(() => {
@@ -149,6 +163,30 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     if (data.lorebook.length) setLorebook(data.lorebook.map(({ name, description }) => ({ name, description })));
   });
 
+  const handleImageUpload = (file: File) => {
+    setImageFile(file);
+    setImageUrl(URL.createObjectURL(file));
+  };
+
+  const handleImageRemove = async () => {
+    if (!worldId) return;
+    await api.world.removeImage(worldId);
+    setImageUrl(null);
+    setImageFile(null);
+  };
+
+  const handleImageGenerate = async () => {
+    const prompt = buildImagePrompt({
+      name: form.name,
+      description: form.description,
+      adventureStart: form.adventureStart,
+    });
+    const blob = await api.imageGenerations.generate(prompt);
+    const file = new File([blob], 'generated.png', { type: 'image/png' });
+    setImageFile(file);
+    setImageUrl(URL.createObjectURL(blob));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -172,7 +210,22 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
           body: JSON.stringify({ ...baseBody, lorebook: lorebook.map(({ name, description }) => ({ name, description })) }),
         });
         const data = await res.json();
-        navigate(`/world/${data.id}/view`);
+        const id = data.id;
+        if (imageFile) {
+          const uploadRes = await api.world.uploadImage(id, imageFile);
+          if (!uploadRes.ok) throw new Error();
+        } else {
+          const prompt = buildImagePrompt({
+            name: form.name,
+            description: form.description,
+            adventureStart: form.adventureStart,
+          });
+          const blob = await api.imageGenerations.generate(prompt);
+          const file = new File([blob], 'generated.png', { type: 'image/png' });
+          const uploadRes = await api.world.uploadImage(id, file);
+          if (!uploadRes.ok) throw new Error();
+        }
+        navigate(`/world/${id}/view`);
       } else {
         await apiFetch(`/api/world/${worldId}`, {
           method: 'PUT',
@@ -222,13 +275,25 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
 
           {error && <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
+          <EntityBanner
+            imageUrl={imageUrl}
+            name={form.name}
+            mode={mode}
+            canGenerate={mode !== 'view' && !!form.name && !!form.description}
+            onUpload={handleImageUpload}
+            onRemove={handleImageRemove}
+            onGenerate={handleImageGenerate}
+          />
+
           <div className="flex flex-col gap-5 rounded-md border border-border p-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.basicData')}</span>
 
+            {mode !== 'view' && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
               <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
             </div>
+            )}
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>

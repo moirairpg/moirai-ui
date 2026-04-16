@@ -21,7 +21,7 @@ function AdventureTab({ view }: TabProps) {
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
       {items.map((a) => (
-        <EntityCard key={a.id} kind="adventure" id={a.id} name={a.name} description={a.description} visibility={a.visibility} canWrite={a.canWrite} onPlay={handlePlay} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
+        <EntityCard key={a.id} kind="adventure" id={a.id} name={a.name} description={a.description} visibility={a.visibility} imageUrl={a.imageUrl} canWrite={a.canWrite} onPlay={handlePlay} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
       ))}
     </CardGrid>
   );
@@ -37,7 +37,7 @@ function WorldTab({ view }: TabProps) {
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
       {items.map((w) => (
-        <EntityCard key={w.id} kind="world" id={w.id} name={w.name} description={w.description} visibility={w.visibility} canWrite={w.canWrite} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
+        <EntityCard key={w.id} kind="world" id={w.id} name={w.name} description={w.description} visibility={w.visibility} imageUrl={w.imageUrl} canWrite={w.canWrite} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
       ))}
     </CardGrid>
   );

@@ -6,6 +6,7 @@ export type AdventureSummary = {
   personaName: string;
   visibility: string;
   creationDate: string;
+  imageUrl: string | null;
   canWrite: boolean;
 };
 
@@ -15,6 +16,7 @@ export type WorldSummary = {
   description: string;
   visibility: string;
   creationDate: string;
+  imageUrl: string | null;
   canWrite: boolean;
 };
 
