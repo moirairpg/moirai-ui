@@ -1,33 +1,46 @@
-name: Build MoirAI on push
-
+name: Build MoirAI-UI on push
 on:
   push:
     branches:
       - '**'
   workflow_dispatch:
-
+env:
+  FORCE_COLOR: 2
+  NODE: 22
+  CI: ""
 jobs:
-  MoirAI:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout branch
         uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0
-
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: "22"
-
+          node-version: '22'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
       - name: Typecheck
         run: yarn typecheck
-
       - name: Lint
         run: yarn lint
-
       - name: Build
         run: yarn build
+      - name: Test container build image
+        if: github.ref != 'refs/heads/develop'
+        run: docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+      - name: Login to GitHub Container Registry
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ vars.DOCKER_REPO_ADDR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image to GitHub Container Registry
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+          docker push ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge
