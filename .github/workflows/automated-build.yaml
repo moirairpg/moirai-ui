@@ -1,8 +1,8 @@
 name: Build MoirAI-UI on push
 on:
-  push:
-    branches:
-      - '**'
+  # push:
+  #   branches:
+  #     - '**'
   workflow_dispatch:
 env:
   FORCE_COLOR: 2
