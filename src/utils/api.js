@@ -3,6 +3,18 @@ const apiFetch = (url, options = {}) =>
 
 export { apiFetch };
 
+export const extractApiError = async (res) => {
+  try {
+    const data = await res.json();
+    const parts = [];
+    if (data.message) parts.push(data.message);
+    if (Array.isArray(data.details) && data.details.length > 0) parts.push(data.details.join(', '));
+    return parts.length > 0 ? parts.join(' — ') : null;
+  } catch {
+    return null;
+  }
+};
+
 export const api = {
   auth: {
     user: () => apiFetch('/api/auth/user'),

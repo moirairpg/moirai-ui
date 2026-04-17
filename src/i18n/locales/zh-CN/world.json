@@ -22,7 +22,8 @@
     },
     "placeholders": {
       "name": "名称",
-      "description": "描述"
+      "description": "描述",
+      "filterLorebook": "按名称筛选..."
     },
     "empty": {
       "noLorebook": "暂无传说条目。"
@@ -34,7 +35,8 @@
       "cancel": "取消",
       "done": "完成",
       "addEntry": "添加条目",
-      "importJson": "导入 JSON"
+      "importJson": "导入 JSON",
+      "clearLorebook": "清空传说书"
     },
     "sections": {
       "basicData": "基本信息",

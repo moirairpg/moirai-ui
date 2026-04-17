@@ -22,7 +22,8 @@
     },
     "placeholders": {
       "name": "Name",
-      "description": "Beschreibung"
+      "description": "Beschreibung",
+      "filterLorebook": "Nach Name filtern..."
     },
     "empty": {
       "noLorebook": "Keine Lore-Einträge."
@@ -34,7 +35,8 @@
       "cancel": "Abbrechen",
       "done": "Fertig",
       "addEntry": "Eintrag hinzufügen",
-      "importJson": "JSON importieren"
+      "importJson": "JSON importieren",
+      "clearLorebook": "Lore-Buch leeren"
     },
     "sections": {
       "basicData": "Grunddaten",

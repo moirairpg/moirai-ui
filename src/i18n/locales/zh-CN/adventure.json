@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "名称",
       "description": "描述",
-      "playerId": "玩家ID（可选）"
+      "playerId": "玩家ID（可选）",
+      "filterWorlds": "按名称筛选...",
+      "filterLorebook": "按名称筛选..."
     },
     "empty": {
       "noWorlds": "未找到世界，请先创建一个。",
@@ -60,7 +62,9 @@
       "done": "完成",
       "addEntry": "添加条目",
       "advanced": "高级",
-      "importJson": "导入JSON"
+      "importJson": "导入JSON",
+      "clearWorld": "清除世界",
+      "clearLorebook": "清空传说书"
     },
     "optional": "可选",
     "sections": {

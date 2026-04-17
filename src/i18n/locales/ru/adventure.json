@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "Название",
       "description": "Описание",
-      "playerId": "ID игрока (необязательно)"
+      "playerId": "ID игрока (необязательно)",
+      "filterWorlds": "Фильтр по названию...",
+      "filterLorebook": "Фильтр по названию..."
     },
     "empty": {
       "noWorlds": "Миры не найдены. Сначала создайте мир.",
@@ -60,7 +62,9 @@
       "done": "Готово",
       "addEntry": "Добавить запись",
       "advanced": "Расширенные",
-      "importJson": "Импортировать JSON"
+      "importJson": "Импортировать JSON",
+      "clearWorld": "Убрать мир",
+      "clearLorebook": "Очистить лорбук"
     },
     "optional": "необязательно",
     "sections": {

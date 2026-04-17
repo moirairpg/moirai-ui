@@ -3,8 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Info, Pencil, Trash2, Plus } from 'lucide-react';
 import type { WorldDetails } from '../../sidebar/types';
-import { apiFetch } from '../../../utils/api';
-import { api } from '../../../utils/api';
+import { apiFetch, api, extractApiError } from '../../../utils/api';
 import { EntityBanner, Tooltip } from '../../../shared/view/ui';
 import { useJsonImport, parseWorldJson } from '../../../utils/jsonImport';
 import { buildImagePrompt } from '../../../utils/imagePrompt';
@@ -92,20 +91,34 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
   const [saving, setSaving] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uiImagePositionX, setUiImagePositionX] = useState(0.5);
+  const [uiImagePositionY, setUiImagePositionY] = useState(0.5);
+  const [submitted, setSubmitted] = useState(false);
+  const [lorebookFilter, setLorebookFilter] = useState('');
 
   const readOnly = mode === 'view';
+  const isValid = form.name.trim() !== '' && form.description.trim() !== '' && form.adventureStart.trim() !== '';
+  const errorBorder = (value: string) => submitted && !value.trim() ? ' border-red-500' : '';
   const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
+    setSaving(false);
+    setSubmitted(false);
+    setError('');
+    setLorebookFilter('');
     if (mode === 'create') {
       setForm(EMPTY);
       setLorebook([]);
       setImageUrl(null);
+      setUiImagePositionX(0.5);
+      setUiImagePositionY(0.5);
       return;
     }
     setForm(EMPTY);
     setLorebook([]);
     setImageUrl(null);
+    setUiImagePositionX(0.5);
+    setUiImagePositionY(0.5);
     setLoading(true);
     apiFetch(`/api/world/${worldId}`)
       .then((r) => r.json())
@@ -113,6 +126,8 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         setForm({ name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility, narratorName: data.narratorName ?? '', narratorPersonality: data.narratorPersonality ?? '' });
         setLorebook((data.lorebook ?? []).map((e) => ({ id: e.id, name: e.name, description: e.description })));
         setImageUrl(data.imageUrl ?? null);
+        setUiImagePositionX(data.uiImagePositionX ?? 0.5);
+        setUiImagePositionY(data.uiImagePositionY ?? 0.5);
         setLoading(false);
       })
       .catch(() => {
@@ -189,8 +204,10 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    setSubmitted(true);
     setError('');
+    if (!isValid) return;
+    setSaving(true);
 
     try {
       const baseBody = {
@@ -201,6 +218,8 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         narratorName: form.narratorName || null,
         narratorPersonality: form.narratorPersonality || null,
         permissions: [],
+        uiImagePositionX,
+        uiImagePositionY,
       };
 
       if (mode === 'create') {
@@ -209,11 +228,12 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...baseBody, lorebook: lorebook.map(({ name, description }) => ({ name, description })) }),
         });
+        if (!res.ok) throw new Error(await extractApiError(res) ?? t('form.errors.saveFailed'));
         const data = await res.json();
         const id = data.id;
         if (imageFile) {
           const uploadRes = await api.world.uploadImage(id, imageFile);
-          if (!uploadRes.ok) throw new Error();
+          if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
         } else {
           const prompt = buildImagePrompt({
             name: form.name,
@@ -223,11 +243,11 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
           const blob = await api.imageGenerations.generate(prompt);
           const file = new File([blob], 'generated.png', { type: 'image/png' });
           const uploadRes = await api.world.uploadImage(id, file);
-          if (!uploadRes.ok) throw new Error();
+          if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
         }
         navigate(`/world/${id}/view`);
       } else {
-        await apiFetch(`/api/world/${worldId}`, {
+        const updateRes = await apiFetch(`/api/world/${worldId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -241,23 +261,23 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
             lorebookEntriesToDelete: deletedIds,
           }),
         });
-
+        if (!updateRes.ok) throw new Error(await extractApiError(updateRes) ?? t('form.errors.saveFailed'));
         navigate(`/world/${worldId}/view`);
       }
-    } catch {
-      setError(t('form.errors.saveFailed'));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t('form.errors.saveFailed'));
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">{t('form.loading')}</div>;
+    return <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">{t('form.loading')}</div>;
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto px-6 py-8">
-        <div className="mx-auto w-full max-w-5xl flex flex-col gap-5">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
             <div className="flex items-center gap-2">
@@ -280,6 +300,9 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
             name={form.name}
             mode={mode}
             canGenerate={mode !== 'view' && !!form.name && !!form.description}
+            uiImagePositionX={uiImagePositionX}
+            uiImagePositionY={uiImagePositionY}
+            onUiImagePositionChange={(x, y) => { setUiImagePositionX(x); setUiImagePositionY(y); }}
             onUpload={handleImageUpload}
             onRemove={handleImageRemove}
             onGenerate={handleImageGenerate}
@@ -291,13 +314,13 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
             {mode !== 'view' && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
-              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={`${INPUT_CLASS}${errorBorder(form.name)}`} />
             </div>
             )}
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
-              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
+              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={`${TEXTAREA_CLASS}${errorBorder(form.description)}`} />
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -305,7 +328,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
                 {t('form.fields.adventureStart')}
                 <Tooltip content={t('form.tooltips.adventureStart')} position="top"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
               </label>
-              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={`${TEXTAREA_CLASS}${errorBorder(form.adventureStart)}`} />
             </div>
           </div>
 
@@ -347,17 +370,37 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
           </div>
 
           <div className="flex flex-col gap-5 rounded-md border border-border p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.lorebook')}</span>
-              {!readOnly && !addingNew && editingIndex === null && (
-                <button
-                  type="button"
-                  onClick={() => setAddingNew(true)}
-                  className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  {t('form.actions.addEntry')}
-                </button>
+              {!readOnly && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={lorebookFilter}
+                    onChange={(e) => setLorebookFilter(e.target.value)}
+                    placeholder={t('form.placeholders.filterLorebook')}
+                    className="w-40 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                  {lorebook.length > 0 && !addingNew && editingIndex === null && (
+                    <button
+                      type="button"
+                      onClick={() => { setLorebook([]); setLorebookFilter(''); }}
+                      className="rounded-md border border-border px-2 py-1 text-xs font-medium text-foreground hover:bg-muted"
+                    >
+                      {t('form.actions.clearLorebook')}
+                    </button>
+                  )}
+                  {!addingNew && editingIndex === null && (
+                    <button
+                      type="button"
+                      onClick={() => setAddingNew(true)}
+                      className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      {t('form.actions.addEntry')}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -374,12 +417,12 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
               />
             )}
 
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
+            <div className="flex max-h-64 flex-col gap-2 overflow-y-auto">
               {lorebook.length === 0 && !addingNew && (
                 <p className="text-sm text-muted-foreground">{t('form.empty.noLorebook')}</p>
               )}
 
-              {lorebook.map((entry, i) =>
+              {lorebook.map((entry, i) => ({ entry, i })).filter(({ entry }) => !lorebookFilter || entry.name.toLowerCase().includes(lorebookFilter.toLowerCase())).map(({ entry, i }) =>
                 editingIndex === i ? (
                   <LorebookEntryForm
                     key={i}
@@ -394,9 +437,9 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
                   />
                 ) : (
                   <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                      <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
-                      <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
+                    <div className="flex min-w-0 flex-col gap-0.5">
+                      <span className="truncate text-sm font-medium text-foreground">{entry.name}</span>
+                      <span className="line-clamp-2 text-sm text-muted-foreground">{entry.description}</span>
                     </div>
                     {!readOnly && (
                       <div className="flex shrink-0 gap-1">
@@ -418,7 +461,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
 
       {!readOnly && (
         <div className="border-t border-border bg-background px-6 py-4">
-          <div className="mx-auto w-full max-w-5xl flex gap-3">
+          <div className="mx-auto flex w-full max-w-5xl gap-3">
             <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
               {saving ? t('form.actions.saving') : t('form.actions.save')}
             </button>

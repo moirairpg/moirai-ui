@@ -22,7 +22,8 @@
     },
     "placeholders": {
       "name": "Название",
-      "description": "Описание"
+      "description": "Описание",
+      "filterLorebook": "Фильтр по названию..."
     },
     "empty": {
       "noLorebook": "Записей в лорбуке нет."
@@ -34,7 +35,8 @@
       "cancel": "Отмена",
       "done": "Готово",
       "addEntry": "Добавить запись",
-      "importJson": "Импортировать JSON"
+      "importJson": "Импортировать JSON",
+      "clearLorebook": "Очистить лорбук"
     },
     "sections": {
       "basicData": "Основные данные",

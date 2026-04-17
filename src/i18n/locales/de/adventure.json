@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "Name",
       "description": "Beschreibung",
-      "playerId": "Spieler-ID (optional)"
+      "playerId": "Spieler-ID (optional)",
+      "filterWorlds": "Nach Name filtern...",
+      "filterLorebook": "Nach Name filtern..."
     },
     "empty": {
       "noWorlds": "Keine Welten gefunden. Erstelle zuerst eine.",
@@ -60,7 +62,9 @@
       "done": "Fertig",
       "addEntry": "Eintrag hinzufügen",
       "advanced": "Erweitert",
-      "importJson": "JSON importieren"
+      "importJson": "JSON importieren",
+      "clearWorld": "Welt entfernen",
+      "clearLorebook": "Lore-Buch leeren"
     },
     "optional": "optional",
     "sections": {

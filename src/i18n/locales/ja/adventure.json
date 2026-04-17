@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "名前",
       "description": "説明",
-      "playerId": "プレイヤーID（任意）"
+      "playerId": "プレイヤーID（任意）",
+      "filterWorlds": "名前でフィルター...",
+      "filterLorebook": "名前でフィルター..."
     },
     "empty": {
       "noWorlds": "ワールドが見つかりません。先に作成してください。",
@@ -60,7 +62,9 @@
       "done": "完了",
       "addEntry": "エントリを追加",
       "advanced": "詳細設定",
-      "importJson": "JSONをインポート"
+      "importJson": "JSONをインポート",
+      "clearWorld": "ワールドをクリア",
+      "clearLorebook": "ロアブックをクリア"
     },
     "optional": "任意",
     "sections": {

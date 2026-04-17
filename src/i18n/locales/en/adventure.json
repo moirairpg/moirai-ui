@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "Name",
       "description": "Description",
-      "playerId": "Player ID (optional)"
+      "playerId": "Player ID (optional)",
+      "filterWorlds": "Filter by name...",
+      "filterLorebook": "Filter by name..."
     },
     "empty": {
       "noWorlds": "No worlds found. Create one first.",
@@ -60,7 +62,9 @@
       "done": "Done",
       "addEntry": "Add Entry",
       "advanced": "Advanced",
-      "importJson": "Import JSON"
+      "importJson": "Import JSON",
+      "clearWorld": "Clear World",
+      "clearLorebook": "Clear Lorebook"
     },
     "optional": "optional",
     "sections": {

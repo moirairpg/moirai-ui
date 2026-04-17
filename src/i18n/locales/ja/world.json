@@ -22,7 +22,8 @@
     },
     "placeholders": {
       "name": "名前",
-      "description": "説明"
+      "description": "説明",
+      "filterLorebook": "名前でフィルター..."
     },
     "empty": {
       "noLorebook": "ロアエントリがありません。"
@@ -34,7 +35,8 @@
       "cancel": "キャンセル",
       "done": "完了",
       "addEntry": "エントリを追加",
-      "importJson": "JSONをインポート"
+      "importJson": "JSONをインポート",
+      "clearLorebook": "ロアブックをクリア"
     },
     "sections": {
       "basicData": "基本データ",

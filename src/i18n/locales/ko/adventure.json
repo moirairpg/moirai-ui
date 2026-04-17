@@ -45,7 +45,9 @@
     "placeholders": {
       "name": "이름",
       "description": "설명",
-      "playerId": "플레이어 ID (선택사항)"
+      "playerId": "플레이어 ID (선택사항)",
+      "filterWorlds": "이름으로 필터...",
+      "filterLorebook": "이름으로 필터..."
     },
     "empty": {
       "noWorlds": "세계를 찾을 수 없습니다. 먼저 만들어 주세요.",
@@ -60,7 +62,9 @@
       "done": "완료",
       "addEntry": "항목 추가",
       "advanced": "고급",
-      "importJson": "JSON 가져오기"
+      "importJson": "JSON 가져오기",
+      "clearWorld": "세계 지우기",
+      "clearLorebook": "로어북 지우기"
     },
     "optional": "선택사항",
     "sections": {

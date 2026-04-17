@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Eye, Info, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Eye, Info, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes } from '../../sidebar/types';
-import { apiFetch } from '../../../utils/api';
-import { api } from '../../../utils/api';
+import { apiFetch, api, extractApiError } from '../../../utils/api';
 import { EntityBanner, Tooltip } from '../../../shared/view/ui';
 import { useJsonImport, parseAdventureJson } from '../../../utils/jsonImport';
 import { buildImagePrompt } from '../../../utils/imagePrompt';
@@ -99,7 +98,7 @@ function CardPicker({
         <div
           key={option.id}
           onClick={() => onChange(option.id)}
-          className={`relative flex flex-col overflow-hidden rounded-lg border-2 bg-card cursor-pointer transition-colors ${
+          className={`relative flex cursor-pointer flex-col overflow-hidden rounded-lg border-2 bg-card transition-colors ${
             value === option.id
               ? 'border-primary'
               : 'border-border hover:border-primary/50'
@@ -225,11 +224,26 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   const [worldName, setWorldName] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uiImagePositionX, setUiImagePositionX] = useState(0.5);
+  const [uiImagePositionY, setUiImagePositionY] = useState(0.5);
+  const [submitted, setSubmitted] = useState(false);
+  const [worldFilter, setWorldFilter] = useState('');
+  const [worldPage, setWorldPage] = useState(1);
+  const [worldTotalPages, setWorldTotalPages] = useState(1);
+  const [lorebookFilter, setLorebookFilter] = useState('');
 
   const readOnly = mode === 'view';
+  const errorBorder = (value: string, required = true) => required && submitted && !value.trim() ? ' border-red-500' : '';
   const title = mode === 'create' ? t('form.title.new') : mode === 'edit' ? t('form.title.edit') : t('form.title.fallback');
 
   useEffect(() => {
+    setSaving(false);
+    setSubmitted(false);
+    setError('');
+    setWorldFilter('');
+    setWorldPage(1);
+    setWorldTotalPages(1);
+    setLorebookFilter('');
     let restoredFromSnapshot = false;
 
     if (mode === 'create') {
@@ -239,16 +253,13 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         setCreateLorebook(snapshot.createLorebook);
         setDeletedIds(snapshot.deletedIds);
         restoredFromSnapshot = true;
+      } else {
+        setUiImagePositionX(0.5);
+        setUiImagePositionY(0.5);
       }
     }
 
-    const fetches: Promise<void>[] = [
-      apiFetch('/api/world?view=MY_STUFF&size=100').then((r) => r.json()).then((d) =>
-        setWorlds((d.data ?? []).map((w: { id: string; name: string; description?: string; visibility?: string; imageUrl?: string | null }) => ({
-          id: w.id, name: w.name, description: w.description, visibility: w.visibility, imageUrl: w.imageUrl,
-        })))
-      ),
-    ];
+    const fetches: Promise<void>[] = [];
 
     if (!restoredFromSnapshot && mode !== 'create' && adventureId) {
       fetches.push(
@@ -275,6 +286,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               playerId: e.playerId ?? '',
             })));
             setImageUrl(data.imageUrl ?? null);
+            setUiImagePositionX(data.uiImagePositionX ?? 0.5);
+            setUiImagePositionY(data.uiImagePositionY ?? 0.5);
           })
       );
     }
@@ -286,6 +299,18 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
         setLoading(false);
       });
   }, [mode, adventureId]);
+
+  useEffect(() => {
+    const url = `/api/world?view=EXPLORE&page=${worldPage}&size=4${worldFilter ? `&name=${encodeURIComponent(worldFilter)}` : ''}`;
+    apiFetch(url)
+      .then((r) => r.json())
+      .then((d) => {
+        setWorlds((d.data ?? []).map((w: { id: string; name: string; description?: string; visibility?: string; imageUrl?: string | null }) => ({
+          id: w.id, name: w.name, description: w.description, visibility: w.visibility, imageUrl: w.imageUrl,
+        })));
+        setWorldTotalPages(d.totalPages ?? 1);
+      });
+  }, [worldFilter, worldPage]);
 
   useEffect(() => {
     if (mode !== 'view' || !form.worldId) return;
@@ -308,8 +333,10 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const handleWorldChange = (id: string | null) => {
     if (id === null) {
-      setForm((prev) => ({ ...prev, worldId: null, adventureStart: '', narratorName: '', narratorPersonality: '' }));
+      setForm((prev) => ({ ...prev, worldId: null, name: '', description: '', adventureStart: '', narratorName: '', narratorPersonality: '' }));
       setCreateLorebook([]);
+      setImageUrl(null);
+      setImageFile(null);
       return;
     }
 
@@ -397,10 +424,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
     if (editingIndex === index) setEditingIndex(null);
   };
 
-  const isValid = form.name.trim() !== ''
-    && form.adventureStart.trim() !== ''
-    && form.visibility !== ''
-    && form.moderation !== '';
+  const isValid = form.name.trim() !== '' && (mode !== 'create' || (form.description.trim() !== '' && form.adventureStart.trim() !== ''));
 
   const handleImageUpload = (file: File) => {
     setImageFile(file);
@@ -428,8 +452,10 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    setSubmitted(true);
     setError('');
+    if (!isValid) return;
+    setSaving(true);
 
     try {
       if (mode === 'create') {
@@ -448,6 +474,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             description: e.description,
             playerId: e.playerId || null,
           })),
+          uiImagePositionX,
+          uiImagePositionY,
           permissions: [],
           modelConfiguration: form.modelConfiguration,
           contextAttributes: form.contextAttributes,
@@ -457,11 +485,12 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });
+        if (!res.ok) throw new Error(await extractApiError(res) ?? t('form.errors.saveFailed'));
         const data = await res.json();
         const id = data.id;
         if (imageFile) {
           const uploadRes = await api.adventure.uploadImage(id, imageFile);
-          if (!uploadRes.ok) throw new Error();
+          if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
         } else {
           const prompt = buildImagePrompt({
             name: form.name,
@@ -471,7 +500,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           const blob = await api.imageGenerations.generate(prompt);
           const file = new File([blob], 'generated.png', { type: 'image/png' });
           const uploadRes = await api.adventure.uploadImage(id, file);
-          if (!uploadRes.ok) throw new Error();
+          if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
         }
         window.dispatchEvent(new Event('adventure-list-changed'));
         navigate(`/adventure/play/${id}`);
@@ -488,8 +517,10 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           permissions: [],
           modelConfiguration: form.modelConfiguration,
           contextAttributes: form.contextAttributes,
+          uiImagePositionX,
+          uiImagePositionY,
         };
-        await apiFetch(`/api/adventure/${adventureId}`, {
+        const updateRes = await apiFetch(`/api/adventure/${adventureId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -503,17 +534,17 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             lorebookEntriesToDelete: deletedIds,
           }),
         });
-
+        if (!updateRes.ok) throw new Error(await extractApiError(updateRes) ?? t('form.errors.saveFailed'));
         navigate(`/adventure/${adventureId}/view`);
       }
-    } catch {
-      setError(t('form.errors.saveFailed'));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t('form.errors.saveFailed'));
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <div className="flex flex-1 items-center justify-center text-muted-foreground text-sm">{t('page.loading')}</div>;
+    return <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">{t('page.loading')}</div>;
   }
 
   const activeLorebook = mode === 'create' ? createLorebook : lorebook;
@@ -521,7 +552,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto px-6 py-8">
-        <div className="mx-auto w-full max-w-5xl flex flex-col gap-5">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
             <div className="flex items-center gap-2">
@@ -544,6 +575,9 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             name={form.name}
             mode={mode}
             canGenerate={mode !== 'view' && !!form.name && !!form.description}
+            uiImagePositionX={uiImagePositionX}
+            uiImagePositionY={uiImagePositionY}
+            onUiImagePositionChange={(x, y) => { setUiImagePositionX(x); setUiImagePositionY(y); }}
             onUpload={handleImageUpload}
             onRemove={handleImageRemove}
             onGenerate={handleImageGenerate}
@@ -555,27 +589,49 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             {mode !== 'view' && (
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.name')}</label>
-              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={INPUT_CLASS} />
+              <input type="text" value={form.name} onChange={set('name')} disabled={readOnly} className={`${INPUT_CLASS}${errorBorder(form.name)}`} />
             </div>
             )}
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.description')}</label>
-              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={TEXTAREA_CLASS} />
+              <textarea rows={4} value={form.description} onChange={set('description')} disabled={readOnly} className={`${TEXTAREA_CLASS}${errorBorder(form.description, mode === 'create')}`} />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">{t('form.fields.adventureStart')}</label>
-              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={TEXTAREA_CLASS} />
+              <textarea rows={6} value={form.adventureStart} onChange={set('adventureStart')} disabled={readOnly} className={`${TEXTAREA_CLASS}${errorBorder(form.adventureStart, mode === 'create')}`} />
             </div>
           </div>
 
           {mode !== 'edit' && (
             <div className="flex flex-col gap-5 rounded-md border border-border p-4">
-              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t('form.fields.world')}
-                <Tooltip content={t('form.tooltips.world')} position="top" className="normal-case"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
-              </span>
+              <div className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t('form.fields.world')}
+                  <Tooltip content={t('form.tooltips.world')} position="top" className="normal-case"><Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" /></Tooltip>
+                </span>
+                {!readOnly && (
+                  <div className="flex items-center gap-2">
+                    {form.worldId !== null && (
+                      <button
+                        type="button"
+                        onClick={() => handleWorldChange(null)}
+                        className="rounded-md border border-border px-2 py-1 text-xs font-medium text-foreground hover:bg-muted"
+                      >
+                        {t('form.actions.clearWorld')}
+                      </button>
+                    )}
+                    <input
+                      type="text"
+                      value={worldFilter}
+                      onChange={(e) => { setWorldFilter(e.target.value); setWorldPage(1); }}
+                      placeholder={t('form.placeholders.filterWorlds')}
+                      className="w-48 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    />
+                  </div>
+                )}
+              </div>
               {readOnly ? (
                 worldName ? (
                   <a href={`/world/${form.worldId}/view`} className="text-sm text-primary underline">
@@ -583,17 +639,35 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                   </a>
                 ) : null
               ) : (
-                <CardPicker
-                  options={worlds}
-                  value={form.worldId}
-                  onChange={handleWorldChange}
-                  readOnly={false}
-                  emptyText={t('form.empty.noWorlds')}
-                  viewBasePath="/world"
-                  onView={handleWorldView}
-                  nullable
-                  noneLabel={t('form.options.noWorld')}
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setWorldPage((p) => p - 1)}
+                    disabled={worldPage === 1}
+                    className={`shrink-0 rounded-md p-1 transition-colors ${worldPage === 1 ? 'cursor-default text-muted-foreground/40' : 'text-foreground hover:bg-muted'}`}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <div className="min-w-0 flex-1">
+                    <CardPicker
+                      options={worlds}
+                      value={form.worldId}
+                      onChange={handleWorldChange}
+                      readOnly={false}
+                      emptyText={t('form.empty.noWorlds')}
+                      viewBasePath="/world"
+                      onView={handleWorldView}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setWorldPage((p) => p + 1)}
+                    disabled={worldPage >= worldTotalPages}
+                    className={`shrink-0 rounded-md p-1 transition-colors ${worldPage >= worldTotalPages ? 'cursor-default text-muted-foreground/40' : 'text-foreground hover:bg-muted'}`}
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </div>
               )}
             </div>
           )}
@@ -662,17 +736,41 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           </div>
 
           <div className="flex flex-col gap-5 rounded-md border border-border p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('form.sections.lorebook')}</span>
-              {!readOnly && !addingNew && editingIndex === null && (
-                <button
-                  type="button"
-                  onClick={() => setAddingNew(true)}
-                  className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  {t('form.actions.addEntry')}
-                </button>
+              {!readOnly && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={lorebookFilter}
+                    onChange={(e) => setLorebookFilter(e.target.value)}
+                    placeholder={t('form.placeholders.filterLorebook')}
+                    className="w-40 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                  {activeLorebook.length > 0 && !addingNew && editingIndex === null && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (mode === 'create') setCreateLorebook([]);
+                        else setLorebook([]);
+                        setLorebookFilter('');
+                      }}
+                      className="rounded-md border border-border px-2 py-1 text-xs font-medium text-foreground hover:bg-muted"
+                    >
+                      {t('form.actions.clearLorebook')}
+                    </button>
+                  )}
+                  {!addingNew && editingIndex === null && (
+                    <button
+                      type="button"
+                      onClick={() => setAddingNew(true)}
+                      className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      {t('form.actions.addEntry')}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -690,12 +788,12 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
               />
             )}
 
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-64">
+            <div className="flex max-h-64 flex-col gap-2 overflow-y-auto">
               {activeLorebook.length === 0 && !addingNew && (
                 <p className="text-sm text-muted-foreground">{t('form.empty.noLorebook')}</p>
               )}
 
-              {activeLorebook.map((entry, i) =>
+              {activeLorebook.map((entry, i) => ({ entry, i })).filter(({ entry }) => !lorebookFilter || entry.name.toLowerCase().includes(lorebookFilter.toLowerCase())).map(({ entry, i }) =>
                 editingIndex === i ? (
                   <LorebookEntryForm
                     key={i}
@@ -711,9 +809,9 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                   />
                 ) : (
                   <div key={i} className="flex items-start justify-between gap-3 rounded-md border border-border px-4 py-3">
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                      <span className="text-sm font-medium text-foreground truncate">{entry.name}</span>
-                      <span className="text-sm text-muted-foreground line-clamp-2">{entry.description}</span>
+                    <div className="flex min-w-0 flex-col gap-0.5">
+                      <span className="truncate text-sm font-medium text-foreground">{entry.name}</span>
+                      <span className="line-clamp-2 text-sm text-muted-foreground">{entry.description}</span>
                       {entry.playerId && (
                         <span className="text-xs text-muted-foreground">{t('form.player')}{entry.playerId}</span>
                       )}
@@ -812,8 +910,8 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
       {!readOnly && (
         <div className="border-t border-border bg-background px-6 py-4">
-          <div className="mx-auto w-full max-w-5xl flex gap-3">
-            <button type="submit" disabled={saving || !isValid} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+          <div className="mx-auto flex w-full max-w-5xl gap-3">
+            <button type="submit" disabled={saving} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
               {saving ? t('form.actions.saving') : t('form.actions.save')}
             </button>
             <button type="button" onClick={() => navigate(-1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">

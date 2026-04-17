@@ -44,6 +44,8 @@ export type AdventureDetails = {
   contextAttributes: ContextAttributes;
   permissions: Permission[];
   lorebook: AdventureLorebookEntry[];
+  uiImagePositionX: number | null;
+  uiImagePositionY: number | null;
 };
 
 export type WorldLorebookEntry = {
@@ -68,5 +70,7 @@ export type WorldDetails = {
   lorebook: WorldLorebookEntry[];
   creationDate: string;
   lastUpdateDate: string;
+  uiImagePositionX: number | null;
+  uiImagePositionY: number | null;
 };
 
