@@ -8,7 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     steps:
+      - name: Validate branch
+        run: |
+          if [[ "${{ github.ref_name }}" != "develop" ]]; then
+            echo "::error::This workflow must be run on the develop branch."
+            exit 1
+          fi
+
       - name: Checkout develop
         uses: actions/checkout@v6.0.2
         with:
@@ -61,6 +69,7 @@ jobs:
 
       - name: Create release branch and finalize version
         run: |
+          git checkout main
           git checkout -b release/${{ env.NUMERIC_VERSION }}
           npm pkg set version="${{ env.NUMERIC_VERSION }}"
           git add package.json
@@ -76,3 +85,15 @@ jobs:
           gh release create ${{ env.TAG_NAME }} \
             --title "MoirAI ${{ env.NUMERIC_VERSION }}" \
             --generate-notes
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ vars.DOCKER_REPO_ADDR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push release image
+        run: |
+          docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.NUMERIC_VERSION }} .
+          docker push ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.NUMERIC_VERSION }}
