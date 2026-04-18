@@ -1,4 +1,4 @@
-name: Build MoirAI-UI on push
+name: Run build
 on:
   # push:
   #   branches:
