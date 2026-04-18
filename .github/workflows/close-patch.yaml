@@ -9,11 +9,19 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout develop
         uses: actions/checkout@v6.0.2
         with:
           ref: develop
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up Node
         uses: actions/setup-node@v4.4.0
@@ -21,9 +29,13 @@ jobs:
           node-version: "22"
 
       - name: Configure git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          APP_SLUG="${{ steps.app-token.outputs.app-slug }}"
+          APP_USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
 
       - name: Capture develop version
         run: |
@@ -54,7 +66,6 @@ jobs:
             git merge --abort
             exit 1
           fi
-          git push origin ${{ env.PATCH_BRANCH }}
 
       - name: Merge patch branch into main
         run: |
@@ -66,7 +77,9 @@ jobs:
         run: |
           npm pkg set version="${{ env.PATCH_VERSION }}"
           git add package.json
-          git commit -m "patch: set version ${{ env.PATCH_VERSION }}"
+          if ! git diff --cached --quiet; then
+            git commit -m "patch: set version ${{ env.PATCH_VERSION }}"
+          fi
           git push origin main
 
       - name: Merge main into develop
@@ -83,7 +96,9 @@ jobs:
         run: |
           npm pkg set version="${{ env.DEVELOP_VERSION }}"
           git add package.json
-          git commit -m "patch: restore develop version to ${{ env.DEVELOP_VERSION }}"
+          if ! git diff --cached --quiet; then
+            git commit -m "patch: restore develop version to ${{ env.DEVELOP_VERSION }}"
+          fi
           git push origin develop
 
       - name: Delete patch branch

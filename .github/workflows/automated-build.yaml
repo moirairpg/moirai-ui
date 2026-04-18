@@ -1,8 +1,8 @@
-name: Build MoirAI-UI on push
+name: Run build
 on:
-  # push:
-  #   branches:
-  #     - '**'
+  push:
+    branches:
+      - '**'
   workflow_dispatch:
 env:
   FORCE_COLOR: 2
@@ -15,6 +15,13 @@ jobs:
       contents: read
       packages: write
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout branch
         uses: actions/checkout@v6.0.2
       - name: Set up Node.js
@@ -29,9 +36,11 @@ jobs:
         run: yarn lint
       - name: Build
         run: yarn build
+      - name: Resolve image tag
+        run: echo "IMAGE_TAG=${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge" >> $GITHUB_ENV
       - name: Test container build image
         if: github.ref != 'refs/heads/develop'
-        run: docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+        run: docker build -t ${{ env.IMAGE_TAG }} .
       - name: Login to GitHub Container Registry
         if: github.ref == 'refs/heads/develop'
         uses: docker/login-action@v3.3.0
@@ -42,5 +51,5 @@ jobs:
       - name: Build and push image to GitHub Container Registry
         if: github.ref == 'refs/heads/develop'
         run: |
-          docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
-          docker push ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge
+          docker build -t ${{ env.IMAGE_TAG }} .
+          docker push ${{ env.IMAGE_TAG }}
