@@ -36,9 +36,11 @@ jobs:
         run: yarn lint
       - name: Build
         run: yarn build
+      - name: Resolve image tag
+        run: echo "IMAGE_TAG=${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge" >> $GITHUB_ENV
       - name: Test container build image
         if: github.ref != 'refs/heads/develop'
-        run: docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
+        run: docker build -t ${{ env.IMAGE_TAG }} .
       - name: Login to GitHub Container Registry
         if: github.ref == 'refs/heads/develop'
         uses: docker/login-action@v3.3.0
@@ -49,5 +51,5 @@ jobs:
       - name: Build and push image to GitHub Container Registry
         if: github.ref == 'refs/heads/develop'
         run: |
-          docker build -t ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge .
-          docker push ${{ vars.DOCKER_REPO_ADDR }}/${{ vars.DOCKER_REPO }}/${{ vars.DOCKER_IMAGE_NAME }}:bleeding-edge
+          docker build -t ${{ env.IMAGE_TAG }} .
+          docker push ${{ env.IMAGE_TAG }}
