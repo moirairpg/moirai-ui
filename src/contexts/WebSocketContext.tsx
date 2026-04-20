@@ -1,13 +1,13 @@
+import { Client, StompSubscription } from '@stomp/stompjs';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-type WebSocketContextType = {
-  ws: WebSocket | null;
-  sendMessage: (message: any) => void;
-  latestMessage: any | null;
+type StompContextType = {
+  subscribe: (destination: string, callback: (data: unknown) => void) => StompSubscription | null;
+  publish: (destination: string, body: string) => void;
   isConnected: boolean;
 };
 
-const WebSocketContext = createContext<WebSocketContextType | null>(null);
+const WebSocketContext = createContext<StompContextType | null>(null);
 
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);
@@ -22,98 +22,56 @@ const buildWebSocketUrl = () => {
   return `${protocol}//${window.location.host}/ws`;
 };
 
-const useWebSocketProviderState = (): WebSocketContextType => {
-  const wsRef = useRef<WebSocket | null>(null);
-  const unmountedRef = useRef(false); // Track if component is unmounted
-  const hasConnectedRef = useRef(false); // Track if we've ever connected (to detect reconnects)
-  const [latestMessage, setLatestMessage] = useState<any>(null);
+const useWebSocketProviderState = (): StompContextType => {
+  const clientRef = useRef<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    connect();
+    const client = new Client({
+      brokerURL: buildWebSocketUrl(),
+      reconnectDelay: 3000,
+      onConnect: () => setIsConnected(true),
+      onWebSocketClose: () => setIsConnected(false),
+      onStompError: (frame) => console.error('STOMP error:', frame),
+    });
+
+    client.activate();
+    clientRef.current = client;
 
     return () => {
-      unmountedRef.current = true;
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
+      client.deactivate();
+      clientRef.current = null;
     };
   }, []);
 
-  const connect = useCallback(() => {
-    if (unmountedRef.current) return;
-    try {
-      const wsUrl = buildWebSocketUrl();
-      
-      const websocket = new WebSocket(wsUrl);
-
-      websocket.onopen = () => {
-        setIsConnected(true);
-        wsRef.current = websocket;
-        if (hasConnectedRef.current) {
-          // This is a reconnect — signal so components can catch up on missed messages
-          setLatestMessage({ type: 'websocket-reconnected', timestamp: Date.now() });
-        }
-        hasConnectedRef.current = true;
-      };
-
-      websocket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          setLatestMessage(data);
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
-
-      websocket.onclose = () => {
-        setIsConnected(false);
-        wsRef.current = null;
-        
-        // Attempt to reconnect after 3 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          if (unmountedRef.current) return; // Prevent reconnection if unmounted
-          connect();
-        }, 3000);
-      };
-
-      websocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-
-    } catch (error) {
-      console.error('Error creating WebSocket connection:', error);
-    }
+  const subscribe = useCallback((destination: string, callback: (data: unknown) => void) => {
+    const client = clientRef.current;
+    if (!client || !client.connected) return null;
+    return client.subscribe(destination, (message) => {
+      try {
+        callback(JSON.parse(message.body));
+      } catch {
+        callback(message.body);
+      }
+    });
   }, []);
 
-  const sendMessage = useCallback((message: any) => {
-    const socket = wsRef.current;
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message));
+  const publish = useCallback((destination: string, body: string) => {
+    const client = clientRef.current;
+    if (client && client.connected) {
+      client.publish({ destination, body });
     } else {
-      console.warn('WebSocket not connected');
+      console.warn('STOMP client not connected');
     }
   }, []);
 
-  const value: WebSocketContextType = useMemo(() =>
-  ({
-    ws: wsRef.current,
-    sendMessage,
-    latestMessage,
-    isConnected
-  }), [sendMessage, latestMessage, isConnected]);
-
-  return value;
+  return useMemo(() => ({ subscribe, publish, isConnected }), [subscribe, publish, isConnected]);
 };
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const webSocketData = useWebSocketProviderState();
-  
+  const state = useWebSocketProviderState();
   return (
-    <WebSocketContext.Provider value={webSocketData}>
+    <WebSocketContext.Provider value={state}>
       {children}
     </WebSocketContext.Provider>
   );
