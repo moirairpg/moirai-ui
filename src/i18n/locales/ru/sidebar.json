@@ -10,6 +10,8 @@
     "settings": "Настройки"
   },
   "nav": {
+    "adminBackoffice": "Панель администратора",
+    "adminNotifications": "Уведомления",
     "myStuff": "Моё",
     "sharedWithMe": "Со мной поделились",
     "explore": "Обзор",

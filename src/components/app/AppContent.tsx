@@ -5,6 +5,7 @@ import Sidebar from '../sidebar/view/Sidebar';
 import AdventurePage from '../../features/adventure/components/AdventurePage';
 import { useDeviceSettings } from '../../hooks/useDeviceSettings';
 import type { MoirAISidebarNavProps } from '../../features/sidebar/components/MoirAISidebarNav';
+import { BroadcastRibbon } from '../../features/notifications';
 
 type AppContentProps = {
   children?: ReactNode;
@@ -35,13 +36,16 @@ export default function AppContent({ children }: AppContentProps) {
       ));
 
   return (
-    <div className="fixed inset-0 flex bg-background">
-      <div className="h-full flex-shrink-0 border-r border-border/50">
-        <Sidebar navProps={navProps} isMobile={isMobile} />
-      </div>
+    <div className="fixed inset-0 flex flex-col bg-background">
+      <BroadcastRibbon />
+      <div className="flex flex-1 min-h-0">
+        <div className="h-full flex-shrink-0 border-r border-border/50">
+          <Sidebar navProps={navProps} isMobile={isMobile} />
+        </div>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        {content}
+        <div className="flex min-w-0 flex-1 flex-col">
+          {content}
+        </div>
       </div>
     </div>
   );

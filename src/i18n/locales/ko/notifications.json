@@ -1,0 +1,82 @@
+{
+  "manageLink": "알림 관리",
+  "broadcastRibbon": {
+    "dismiss": "닫기"
+  },
+  "panel": {
+    "toggleAriaLabel": "알림 패널 전환",
+    "empty": "알림이 없습니다"
+  },
+  "admin": {
+    "title": "알림",
+    "form": {
+      "heading": "알림 생성",
+      "submit": "생성",
+      "submitting": "생성 중...",
+      "fields": {
+        "type": "유형",
+        "level": "수준",
+        "message": "메시지",
+        "targetUsernames": "대상 사용자"
+      },
+      "placeholders": {
+        "message": "메시지",
+        "targetUsernames": "사용자명을 쉼표로 구분하여 입력"
+      },
+      "types": {
+        "BROADCAST": "브로드캐스트",
+        "SYSTEM": "시스템",
+        "GAME": "게임"
+      },
+      "levels": {
+        "INFO": "정보",
+        "URGENT": "긴급"
+      },
+      "errors": {
+        "messageRequired": "메시지는 필수입니다.",
+        "targetUsernamesRequired": "최소 한 명의 대상 사용자가 필요합니다.",
+        "createFailed": "알림 생성에 실패했습니다."
+      }
+    },
+    "filters": {
+      "type": "유형",
+      "level": "수준",
+      "status": "상태",
+      "receiverId": "수신자",
+      "receiverIdPlaceholder": "수신자 사용자 ID (UUID)",
+      "any": "전체"
+    },
+    "statuses": {
+      "READ": "읽음",
+      "UNREAD": "안 읽음"
+    },
+    "table": {
+      "loading": "로딩 중...",
+      "error": "알림을 불러오지 못했습니다.",
+      "empty": "알림이 없습니다.",
+      "columns": {
+        "message": "메시지",
+        "type": "유형",
+        "level": "수준",
+        "status": "상태",
+        "actions": "작업"
+      },
+      "actions": {
+        "edit": "편집",
+        "delete": "삭제",
+        "confirmDelete": "삭제 확인",
+        "save": "저장",
+        "cancel": "취소"
+      },
+      "errors": {
+        "updateFailed": "알림 업데이트에 실패했습니다.",
+        "deleteFailed": "알림 삭제에 실패했습니다."
+      }
+    },
+    "pagination": {
+      "previous": "이전",
+      "next": "다음",
+      "pageOf": "{{totalPages}} 페이지 중 {{page}} 페이지"
+    }
+  }
+}

@@ -10,6 +10,8 @@
     "settings": "설정"
   },
   "nav": {
+    "adminBackoffice": "관리자 페이지",
+    "adminNotifications": "알림",
     "myStuff": "내 컨텐츠",
     "sharedWithMe": "공유된 항목",
     "explore": "탐색",

@@ -10,6 +10,8 @@
     "settings": "设置"
   },
   "nav": {
+    "adminBackoffice": "管理后台",
+    "adminNotifications": "通知",
     "myStuff": "我的内容",
     "sharedWithMe": "与我共享",
     "explore": "探索",

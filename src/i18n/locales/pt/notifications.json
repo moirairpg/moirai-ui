@@ -1,0 +1,82 @@
+{
+  "manageLink": "Gerenciar notificações",
+  "broadcastRibbon": {
+    "dismiss": "Dispensar"
+  },
+  "panel": {
+    "toggleAriaLabel": "Alternar painel de notificações",
+    "empty": "Sem notificações"
+  },
+  "admin": {
+    "title": "Notificações",
+    "form": {
+      "heading": "Criar notificação",
+      "submit": "Criar",
+      "submitting": "Criando...",
+      "fields": {
+        "type": "Tipo",
+        "level": "Nível",
+        "message": "Mensagem",
+        "targetUsernames": "Usuários alvo"
+      },
+      "placeholders": {
+        "message": "Mensagem",
+        "targetUsernames": "Digite nomes de usuário separados por vírgula"
+      },
+      "types": {
+        "BROADCAST": "Broadcast",
+        "SYSTEM": "Sistema",
+        "GAME": "Jogo"
+      },
+      "levels": {
+        "INFO": "Info",
+        "URGENT": "Urgente"
+      },
+      "errors": {
+        "messageRequired": "A mensagem é obrigatória.",
+        "targetUsernamesRequired": "Pelo menos um usuário alvo é obrigatório.",
+        "createFailed": "Falha ao criar a notificação."
+      }
+    },
+    "filters": {
+      "type": "Tipo",
+      "level": "Nível",
+      "status": "Status",
+      "receiverId": "Destinatário",
+      "receiverIdPlaceholder": "ID do usuário destinatário (UUID)",
+      "any": "Qualquer"
+    },
+    "statuses": {
+      "READ": "Lida",
+      "UNREAD": "Não lida"
+    },
+    "table": {
+      "loading": "Carregando...",
+      "error": "Falha ao carregar notificações.",
+      "empty": "Nenhuma notificação encontrada.",
+      "columns": {
+        "message": "Mensagem",
+        "type": "Tipo",
+        "level": "Nível",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Excluir",
+        "confirmDelete": "Confirmar exclusão",
+        "save": "Salvar",
+        "cancel": "Cancelar"
+      },
+      "errors": {
+        "updateFailed": "Falha ao atualizar a notificação.",
+        "deleteFailed": "Falha ao excluir a notificação."
+      }
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próxima",
+      "pageOf": "Página {{page}} de {{totalPages}}"
+    }
+  }
+}

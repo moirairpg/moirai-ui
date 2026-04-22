@@ -1,0 +1,82 @@
+{
+  "manageLink": "Manage notifications",
+  "broadcastRibbon": {
+    "dismiss": "Dismiss"
+  },
+  "panel": {
+    "toggleAriaLabel": "Toggle notifications panel",
+    "empty": "No notifications"
+  },
+  "admin": {
+    "title": "Notifications",
+    "form": {
+      "heading": "Create notification",
+      "submit": "Create",
+      "submitting": "Creating...",
+      "fields": {
+        "type": "Type",
+        "level": "Level",
+        "message": "Message",
+        "targetUsernames": "Target users"
+      },
+      "placeholders": {
+        "message": "Message",
+        "targetUsernames": "Type usernames, comma-separated"
+      },
+      "types": {
+        "BROADCAST": "Broadcast",
+        "SYSTEM": "System",
+        "GAME": "Game"
+      },
+      "levels": {
+        "INFO": "Info",
+        "URGENT": "Urgent"
+      },
+      "errors": {
+        "messageRequired": "Message is required.",
+        "targetUsernamesRequired": "At least one target user is required.",
+        "createFailed": "Failed to create notification."
+      }
+    },
+    "filters": {
+      "type": "Type",
+      "level": "Level",
+      "status": "Status",
+      "receiverId": "Receiver",
+      "receiverIdPlaceholder": "Receiver user ID (UUID)",
+      "any": "Any"
+    },
+    "statuses": {
+      "READ": "Read",
+      "UNREAD": "Unread"
+    },
+    "table": {
+      "loading": "Loading...",
+      "error": "Failed to load notifications.",
+      "empty": "No notifications found.",
+      "columns": {
+        "message": "Message",
+        "type": "Type",
+        "level": "Level",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "confirmDelete": "Confirm delete",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "updateFailed": "Failed to update notification.",
+        "deleteFailed": "Failed to delete notification."
+      }
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {{page}} of {{totalPages}}"
+    }
+  }
+}

@@ -5,6 +5,11 @@ export const languages = [
     nativeName: 'English',
   },
   {
+    value: 'pt',
+    label: 'Portuguese',
+    nativeName: 'Português',
+  },
+  {
     value: 'ko',
     label: 'Korean',
     nativeName: '한국어',
@@ -28,10 +33,5 @@ export const languages = [
     value: 'de',
     label: 'German',
     nativeName: 'Deutsch',
-  },
-  {
-    value: 'pt',
-    label: 'Portuguese',
-    nativeName: 'Português',
   },
 ];

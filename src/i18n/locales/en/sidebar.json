@@ -10,6 +10,8 @@
     "settings": "Settings"
   },
   "nav": {
+    "adminBackoffice": "Admin backoffice",
+    "adminNotifications": "Notifications",
     "myStuff": "My stuff",
     "sharedWithMe": "Shared with me",
     "explore": "Explore",

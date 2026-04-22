@@ -10,6 +10,8 @@
     "settings": "Configurações"
   },
   "nav": {
+    "adminBackoffice": "Painel administrativo",
+    "adminNotifications": "Notificações",
     "myStuff": "Meu conteúdo",
     "sharedWithMe": "Compartilhado comigo",
     "explore": "Explorar",

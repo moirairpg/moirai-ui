@@ -2,26 +2,26 @@ import { useEffect, useState } from 'react';
 import { useWebSocket } from '../../../contexts/WebSocketContext';
 
 type GameNotification = {
-  notificationId: string;
+  publicId: string;
   message: string;
   isInteractable: boolean;
   metadata: Record<string, unknown> | null;
-  createdAt: string;
+  creationDate: string;
 };
 
 type UseGameNotificationsWebSocketResult = {
-  gameNotifications: GameNotification[];
+  latestGameNotification: GameNotification | null;
 };
 
 export function useGameNotificationsWebSocket(adventureId: string): UseGameNotificationsWebSocketResult {
   const { subscribe, isConnected } = useWebSocket();
-  const [gameNotifications, setGameNotifications] = useState<GameNotification[]>([]);
+  const [latestGameNotification, setLatestGameNotification] = useState<GameNotification | null>(null);
 
   useEffect(() => {
     if (!isConnected) return;
 
     const sub = subscribe(`/topic/notifications/game/${adventureId}`, (data: unknown) => {
-      setGameNotifications((prev) => [...prev, data as GameNotification]);
+      setLatestGameNotification(data as GameNotification);
     });
 
     return () => {
@@ -29,5 +29,5 @@ export function useGameNotificationsWebSocket(adventureId: string): UseGameNotif
     };
   }, [isConnected, adventureId, subscribe]);
 
-  return { gameNotifications };
+  return { latestGameNotification };
 }

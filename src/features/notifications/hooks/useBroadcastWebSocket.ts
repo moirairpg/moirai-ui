@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useWebSocket } from '../../../contexts/WebSocketContext';
 
 type BroadcastNotification = {
-  notificationId: string;
+  publicId: string;
   message: string;
   level: string;
   status: string;
   isInteractable: boolean;
   metadata: Record<string, unknown> | null;
-  createdAt: string;
+  creationDate: string;
 };
 
 type UseBroadcastWebSocketResult = {
@@ -16,8 +16,8 @@ type UseBroadcastWebSocketResult = {
 };
 
 const merge = (prev: BroadcastNotification[], incoming: BroadcastNotification[]) => {
-  const existingIds = new Set(prev.map((n) => n.notificationId));
-  return [...prev, ...incoming.filter((n) => !existingIds.has(n.notificationId))];
+  const existingIds = new Set(prev.map((n) => n.publicId));
+  return [...prev, ...incoming.filter((n) => !existingIds.has(n.publicId))];
 };
 
 export function useBroadcastWebSocket(): UseBroadcastWebSocketResult {
@@ -40,6 +40,16 @@ export function useBroadcastWebSocket(): UseBroadcastWebSocketResult {
       subs.forEach((sub) => sub?.unsubscribe());
     };
   }, [isConnected, subscribe]);
+
+  useEffect(() => {
+    const onDeleted = (e: Event) => {
+      const detail = (e as CustomEvent<{ publicId: string }>).detail;
+      if (!detail?.publicId) return;
+      setBroadcasts((prev) => prev.filter((b) => b.publicId !== detail.publicId));
+    };
+    window.addEventListener('notification-deleted', onDeleted);
+    return () => window.removeEventListener('notification-deleted', onDeleted);
+  }, []);
 
   return { broadcasts };
 }
