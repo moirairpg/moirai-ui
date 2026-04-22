@@ -1,0 +1,82 @@
+{
+  "manageLink": "Benachrichtigungen verwalten",
+  "broadcastRibbon": {
+    "dismiss": "Schließen"
+  },
+  "panel": {
+    "toggleAriaLabel": "Benachrichtigungsfenster umschalten",
+    "empty": "Keine Benachrichtigungen"
+  },
+  "admin": {
+    "title": "Benachrichtigungen",
+    "form": {
+      "heading": "Benachrichtigung erstellen",
+      "submit": "Erstellen",
+      "submitting": "Wird erstellt...",
+      "fields": {
+        "type": "Typ",
+        "level": "Stufe",
+        "message": "Nachricht",
+        "targetUsernames": "Zielbenutzer"
+      },
+      "placeholders": {
+        "message": "Nachricht",
+        "targetUsernames": "Benutzernamen durch Komma getrennt eingeben"
+      },
+      "types": {
+        "BROADCAST": "Rundruf",
+        "SYSTEM": "System",
+        "GAME": "Spiel"
+      },
+      "levels": {
+        "INFO": "Info",
+        "URGENT": "Dringend"
+      },
+      "errors": {
+        "messageRequired": "Nachricht ist erforderlich.",
+        "targetUsernamesRequired": "Mindestens ein Zielbenutzer ist erforderlich.",
+        "createFailed": "Benachrichtigung konnte nicht erstellt werden."
+      }
+    },
+    "filters": {
+      "type": "Typ",
+      "level": "Stufe",
+      "status": "Status",
+      "receiverId": "Empfänger",
+      "receiverIdPlaceholder": "Empfänger-Benutzer-ID (UUID)",
+      "any": "Beliebig"
+    },
+    "statuses": {
+      "READ": "Gelesen",
+      "UNREAD": "Ungelesen"
+    },
+    "table": {
+      "loading": "Wird geladen...",
+      "error": "Benachrichtigungen konnten nicht geladen werden.",
+      "empty": "Keine Benachrichtigungen gefunden.",
+      "columns": {
+        "message": "Nachricht",
+        "type": "Typ",
+        "level": "Stufe",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "confirmDelete": "Löschen bestätigen",
+        "save": "Speichern",
+        "cancel": "Abbrechen"
+      },
+      "errors": {
+        "updateFailed": "Aktualisierung der Benachrichtigung fehlgeschlagen.",
+        "deleteFailed": "Löschen der Benachrichtigung fehlgeschlagen."
+      }
+    },
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "pageOf": "Seite {{page}} von {{totalPages}}"
+    }
+  }
+}

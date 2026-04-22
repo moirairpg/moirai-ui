@@ -10,6 +10,8 @@
     "settings": "Einstellungen"
   },
   "nav": {
+    "adminBackoffice": "Administrationsbereich",
+    "adminNotifications": "Benachrichtigungen",
     "myStuff": "Meine Inhalte",
     "sharedWithMe": "Mit mir geteilt",
     "explore": "Erkunden",

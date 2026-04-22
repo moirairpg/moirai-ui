@@ -230,6 +230,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
   return (
     <div className="flex h-full flex-col">
       <AdventureMessagesPane
+        adventureId={adventureId}
         messages={messages}
         isGenerating={isGenerating}
         hasMore={hasMore}

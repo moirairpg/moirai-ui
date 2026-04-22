@@ -3,6 +3,7 @@ import type { TFunction } from 'i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '../../../../shared/view/ui';
 import { IS_PLATFORM } from '../../../../constants/config';
+import { NotificationPanel } from '../../../../features/notifications';
 
 type SidebarHeaderProps = {
   isPWA: boolean;
@@ -48,6 +49,7 @@ export default function SidebarHeader({
           )}
 
           <div className="flex flex-shrink-0 items-center gap-0.5">
+            <NotificationPanel />
             <Button
               variant="ghost"
               size="sm"

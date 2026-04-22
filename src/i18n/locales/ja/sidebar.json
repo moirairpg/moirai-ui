@@ -10,6 +10,8 @@
     "settings": "設定"
   },
   "nav": {
+    "adminBackoffice": "管理画面",
+    "adminNotifications": "通知",
     "myStuff": "マイコンテンツ",
     "sharedWithMe": "共有されたもの",
     "explore": "探索",

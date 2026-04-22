@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdventureMessageBlock } from './AdventureMessageBlock';
+import { GameNotification } from '../../notifications';
 import type { AdventureMessage } from '../types';
 
 type AdventureMessagesPaneProps = {
+  adventureId: string;
   messages: AdventureMessage[];
   isGenerating: boolean;
   hasMore: boolean;
@@ -16,6 +18,7 @@ type AdventureMessagesPaneProps = {
 };
 
 export function AdventureMessagesPane({
+  adventureId,
   messages,
   isGenerating,
   hasMore,
@@ -102,6 +105,8 @@ export function AdventureMessagesPane({
           <span>{currentPhrase}</span>
         </div>
       )}
+
+      <GameNotification adventureId={adventureId} />
 
     </div>
   );

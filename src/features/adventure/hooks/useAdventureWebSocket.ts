@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useWebSocket } from '../../../contexts/WebSocketContext';
 
 type MessageResult = {
   id: string;
@@ -13,28 +14,22 @@ type UseAdventureWebSocketResult = {
 };
 
 export function useAdventureWebSocket(adventureId: string): UseAdventureWebSocketResult {
-  const wsRef = useRef<WebSocket | null>(null);
+  const { subscribe, publish, isConnected } = useWebSocket();
   const [lastMessage, setLastMessage] = useState<MessageResult | null>(null);
 
   useEffect(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const ws = new WebSocket(`${protocol}://${window.location.host}/ws/adventure/${adventureId}`);
-    wsRef.current = ws;
-
-    ws.onmessage = (event) => {
-      const parsed: MessageResult = JSON.parse(event.data);
-      setLastMessage(parsed);
-    };
-
+    if (!isConnected) return;
+    const subscription = subscribe(`/topic/adventure/${adventureId}`, (data: unknown) => {
+      setLastMessage(data as MessageResult);
+    });
     return () => {
-      ws.close();
-      wsRef.current = null;
+      subscription?.unsubscribe();
     };
-  }, [adventureId]);
+  }, [adventureId, isConnected, subscribe]);
 
-  const sendMessage = useCallback((content: string) => {
-    wsRef.current?.send(JSON.stringify({ content }));
-  }, []);
+  const sendMessage = (content: string) => {
+    publish(`/app/adventure/${adventureId}`, JSON.stringify({ content }));
+  };
 
   return { sendMessage, lastMessage };
 }

@@ -1,0 +1,82 @@
+{
+  "manageLink": "Управление уведомлениями",
+  "broadcastRibbon": {
+    "dismiss": "Закрыть"
+  },
+  "panel": {
+    "toggleAriaLabel": "Переключить панель уведомлений",
+    "empty": "Нет уведомлений"
+  },
+  "admin": {
+    "title": "Уведомления",
+    "form": {
+      "heading": "Создать уведомление",
+      "submit": "Создать",
+      "submitting": "Создание...",
+      "fields": {
+        "type": "Тип",
+        "level": "Уровень",
+        "message": "Сообщение",
+        "targetUsernames": "Целевые пользователи"
+      },
+      "placeholders": {
+        "message": "Сообщение",
+        "targetUsernames": "Введите имена пользователей через запятую"
+      },
+      "types": {
+        "BROADCAST": "Рассылка",
+        "SYSTEM": "Система",
+        "GAME": "Игра"
+      },
+      "levels": {
+        "INFO": "Инфо",
+        "URGENT": "Срочно"
+      },
+      "errors": {
+        "messageRequired": "Сообщение обязательно.",
+        "targetUsernamesRequired": "Требуется хотя бы один целевой пользователь.",
+        "createFailed": "Не удалось создать уведомление."
+      }
+    },
+    "filters": {
+      "type": "Тип",
+      "level": "Уровень",
+      "status": "Статус",
+      "receiverId": "Получатель",
+      "receiverIdPlaceholder": "ID пользователя получателя (UUID)",
+      "any": "Любой"
+    },
+    "statuses": {
+      "READ": "Прочитано",
+      "UNREAD": "Не прочитано"
+    },
+    "table": {
+      "loading": "Загрузка...",
+      "error": "Не удалось загрузить уведомления.",
+      "empty": "Уведомления не найдены.",
+      "columns": {
+        "message": "Сообщение",
+        "type": "Тип",
+        "level": "Уровень",
+        "status": "Статус",
+        "actions": "Действия"
+      },
+      "actions": {
+        "edit": "Редактировать",
+        "delete": "Удалить",
+        "confirmDelete": "Подтвердить удаление",
+        "save": "Сохранить",
+        "cancel": "Отмена"
+      },
+      "errors": {
+        "updateFailed": "Не удалось обновить уведомление.",
+        "deleteFailed": "Не удалось удалить уведомление."
+      }
+    },
+    "pagination": {
+      "previous": "Предыдущая",
+      "next": "Следующая",
+      "pageOf": "Страница {{page}} из {{totalPages}}"
+    }
+  }
+}
