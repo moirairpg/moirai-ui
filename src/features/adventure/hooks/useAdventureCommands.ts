@@ -81,7 +81,7 @@ function dispatchCommand(
         appendMessage({ id: crypto.randomUUID(), role: 'narrator', content: adventureStart, narratorName });
       }
       setIsGenerating(true);
-      apiFetch(`/api/adventure/${adventureId}/start`, { method: 'POST' })
+      apiFetch(`/api/adventures/${adventureId}/start`, { method: 'POST' })
         .then((res) => res.json())
         .then((result: { id: string; content: string; role: string }) => {
           appendMessage({ id: result.id, role: 'narrator', content: result.content, narratorName });
@@ -95,7 +95,7 @@ function dispatchCommand(
 
     case 'go':
       setIsGenerating(true);
-      apiFetch(`/api/adventure/${adventureId}/go`, { method: 'POST' })
+      apiFetch(`/api/adventures/${adventureId}/go`, { method: 'POST' })
         .then((res) => res.json())
         .then((result: { id: string; content: string; role: string }) => {
           appendMessage({ id: result.id, role: 'narrator', content: result.content, narratorName });
@@ -115,7 +115,7 @@ function dispatchCommand(
       }
       removeMessage(lastMessage.id);
       setIsGenerating(true);
-      apiFetch(`/api/adventure/${adventureId}/retry`, { method: 'POST' })
+      apiFetch(`/api/adventures/${adventureId}/retry`, { method: 'POST' })
         .then((res) => res.json())
         .then((result: { id: string; content: string; role: string }) => {
           appendMessage({ id: result.id, role: 'narrator', content: result.content, narratorName });
@@ -129,7 +129,7 @@ function dispatchCommand(
     }
 
     case 'say':
-      apiFetch(`/api/adventure/${adventureId}/say`, {
+      apiFetch(`/api/adventures/${adventureId}/say`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: command.text }),
@@ -142,7 +142,7 @@ function dispatchCommand(
       break;
 
     case 'nudge':
-      apiFetch(`/api/adventure/${adventureId}/nudge`, {
+      apiFetch(`/api/adventures/${adventureId}/nudge`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nudge: command.text }),
@@ -152,7 +152,7 @@ function dispatchCommand(
       break;
 
     case 'authors-note':
-      apiFetch(`/api/adventure/${adventureId}/authors-note`, {
+      apiFetch(`/api/adventures/${adventureId}/authors-note`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ authorsNote: command.text }),
@@ -162,7 +162,7 @@ function dispatchCommand(
       break;
 
     case 'scene':
-      apiFetch(`/api/adventure/${adventureId}/scene`, {
+      apiFetch(`/api/adventures/${adventureId}/scene`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scene: command.text }),
@@ -172,7 +172,7 @@ function dispatchCommand(
       break;
 
     case 'bump':
-      apiFetch(`/api/adventure/${adventureId}/bump`, {
+      apiFetch(`/api/adventures/${adventureId}/bump`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bump: command.text, bumpFrequency: command.frequency }),

@@ -13,9 +13,7 @@ export function NotificationPanel() {
   const { mutate: markRead } = useReadNotification();
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
 
-  const unreadCount = systemNotifications.filter(
-    (n) => n.status !== 'READ' && !readIds.has(n.publicId),
-  ).length;
+  const unreadCount = systemNotifications.filter((n) => !readIds.has(n.publicId)).length;
 
   const handleRead = (publicId: string) => {
     void markRead(publicId);
@@ -44,7 +42,7 @@ export function NotificationPanel() {
             <p className="p-4 text-sm text-muted-foreground">{t('panel.empty')}</p>
           ) : (
             systemNotifications.map((n) => {
-              const isRead = readIds.has(n.publicId) || n.status === 'READ';
+              const isRead = readIds.has(n.publicId);
               return (
                 <button
                   key={n.publicId}

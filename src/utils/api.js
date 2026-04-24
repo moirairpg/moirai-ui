@@ -36,18 +36,18 @@ export const api = {
     uploadImage: (id, file) => {
       const form = new FormData();
       form.append('file', file);
-      return apiFetch(`/api/world/${id}/image`, { method: 'PUT', body: form });
+      return apiFetch(`/api/worlds/${id}/image`, { method: 'PUT', body: form });
     },
     removeImage: (id) =>
-      apiFetch(`/api/world/${id}/image`, { method: 'DELETE' }),
+      apiFetch(`/api/worlds/${id}/image`, { method: 'DELETE' }),
   },
   adventure: {
     uploadImage: (id, file) => {
       const form = new FormData();
       form.append('file', file);
-      return apiFetch(`/api/adventure/${id}/image`, { method: 'PUT', body: form });
+      return apiFetch(`/api/adventures/${id}/image`, { method: 'PUT', body: form });
     },
     removeImage: (id) =>
-      apiFetch(`/api/adventure/${id}/image`, { method: 'DELETE' }),
+      apiFetch(`/api/adventures/${id}/image`, { method: 'DELETE' }),
   },
 };

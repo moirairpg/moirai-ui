@@ -18,7 +18,7 @@ export function useUpdateNotification(): UseUpdateNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notification/${publicId}`, {
+      const res = await apiFetch(`/api/notifications/${publicId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

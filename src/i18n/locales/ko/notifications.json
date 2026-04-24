@@ -41,14 +41,9 @@
     "filters": {
       "type": "유형",
       "level": "수준",
-      "status": "상태",
       "receiverId": "수신자",
       "receiverIdPlaceholder": "수신자 사용자 ID (UUID)",
       "any": "전체"
-    },
-    "statuses": {
-      "READ": "읽음",
-      "UNREAD": "안 읽음"
     },
     "table": {
       "loading": "로딩 중...",
@@ -58,7 +53,6 @@
         "message": "메시지",
         "type": "유형",
         "level": "수준",
-        "status": "상태",
         "actions": "작업"
       },
       "actions": {

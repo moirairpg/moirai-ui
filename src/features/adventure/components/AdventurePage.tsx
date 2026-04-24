@@ -187,7 +187,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
     }
 
     if (action === 'delete') {
-      apiFetch(`/api/adventure/${adventureId}/message/${messageId}`, { method: 'DELETE' })
+      apiFetch(`/api/adventures/${adventureId}/messages/${messageId}`, { method: 'DELETE' })
         .then(() => removeMessage(messageId))
         .catch(() => {});
       return;
@@ -195,7 +195,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
 
     if (action === 'retry') {
       setIsGenerating(true);
-      apiFetch(`/api/adventure/${adventureId}/message/${messageId}/retry`, { method: 'POST' })
+      apiFetch(`/api/adventures/${adventureId}/messages/${messageId}/retry`, { method: 'POST' })
         .then((res) => res.json())
         .then((result: { id: string; role: string; content: string }) => {
           removeMessagesFromIdForward(messageId);
@@ -207,7 +207,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
   };
 
   const handleEditConfirm = (messageId: string, newContent: string) => {
-    apiFetch(`/api/adventure/${adventureId}/message/${messageId}`, {
+    apiFetch(`/api/adventures/${adventureId}/messages/${messageId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: newContent }),
@@ -217,7 +217,7 @@ export default function AdventurePage({ adventureId }: AdventurePageProps) {
         setEditingMessageId(null);
         setIsGenerating(true);
         appendMessage({ id: messageId, role: 'user', content: newContent, authorUsername: user?.username });
-        return apiFetch(`/api/adventure/${adventureId}/go`, { method: 'POST' });
+        return apiFetch(`/api/adventures/${adventureId}/go`, { method: 'POST' });
       })
       .then((res) => res.json())
       .then((result: { id: string; content: string }) => {

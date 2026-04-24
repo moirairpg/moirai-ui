@@ -41,14 +41,9 @@
     "filters": {
       "type": "Type",
       "level": "Level",
-      "status": "Status",
       "receiverId": "Receiver",
       "receiverIdPlaceholder": "Receiver user ID (UUID)",
       "any": "Any"
-    },
-    "statuses": {
-      "READ": "Read",
-      "UNREAD": "Unread"
     },
     "table": {
       "loading": "Loading...",
@@ -58,7 +53,6 @@
         "message": "Message",
         "type": "Type",
         "level": "Level",
-        "status": "Status",
         "actions": "Actions"
       },
       "actions": {

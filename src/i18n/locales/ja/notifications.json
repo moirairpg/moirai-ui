@@ -41,14 +41,9 @@
     "filters": {
       "type": "種類",
       "level": "レベル",
-      "status": "状態",
       "receiverId": "受信者",
       "receiverIdPlaceholder": "受信者ユーザーID (UUID)",
       "any": "すべて"
-    },
-    "statuses": {
-      "READ": "既読",
-      "UNREAD": "未読"
     },
     "table": {
       "loading": "読み込み中...",
@@ -58,7 +53,6 @@
         "message": "メッセージ",
         "type": "種類",
         "level": "レベル",
-        "status": "状態",
         "actions": "操作"
       },
       "actions": {

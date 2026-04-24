@@ -66,7 +66,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
     setAdventureStart(undefined);
     knownIds.current = new Set();
 
-    apiFetch(`/api/adventure/${adventureId}`)
+    apiFetch(`/api/adventures/${adventureId}`)
       .then((res) => res.json())
       .then((adv: AdventureData) => {
         const name = adv.narratorName ?? undefined;
@@ -75,7 +75,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
         setAdventureStart(start);
         narratorNameRef.current = name;
 
-        return apiFetch(`/api/adventure/${adventureId}/messages?size=50`)
+        return apiFetch(`/api/adventures/${adventureId}/messages?size=50`)
           .then((res) => res.json())
           .then((data: CursorResult<MessageSummary>) => {
             setHasMore(data.hasMore);
@@ -95,7 +95,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
     const oldestId = messages[0].id;
     setIsFetchingMore(true);
 
-    apiFetch(`/api/adventure/${adventureId}/messages?lastMessageId=${oldestId}&size=50`)
+    apiFetch(`/api/adventures/${adventureId}/messages?lastMessageId=${oldestId}&size=50`)
       .then((res) => res.json())
       .then((data: CursorResult<MessageSummary>) => {
         setHasMore(data.hasMore);

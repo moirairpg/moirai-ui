@@ -20,7 +20,7 @@ export function useRecentAdventures(): { data: AdventureSummary[] | undefined } 
 
   useEffect(() => {
     const fetch = () => {
-      apiFetch('/api/adventure?view=MY_STUFF&sorting_field=LAST_UPDATE_DATE&direction=DESC&size=3')
+      apiFetch('/api/adventures?view=MY_STUFF&sorting_field=LAST_UPDATE_DATE&direction=DESC&size=3')
         .then((res) => res.json())
         .then((json: PaginatedResult<AdventureSummary>) => setData(json.data))
         .catch(() => setData([]));

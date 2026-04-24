@@ -20,7 +20,7 @@ export function useGameNotificationsWebSocket(adventureId: string): UseGameNotif
   useEffect(() => {
     if (!isConnected) return;
 
-    const sub = subscribe(`/topic/notifications/game/${adventureId}`, (data: unknown) => {
+    const sub = subscribe(`/topic/notifications/adventure/${adventureId}`, (data: unknown) => {
       setLatestGameNotification(data as GameNotification);
     });
 

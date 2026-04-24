@@ -263,7 +263,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
     if (!restoredFromSnapshot && mode !== 'create' && adventureId) {
       fetches.push(
-        apiFetch(`/api/adventure/${adventureId}`)
+        apiFetch(`/api/adventures/${adventureId}`)
           .then((r) => r.json())
           .then((data: AdventureDetails) => {
             setForm({
@@ -301,7 +301,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   }, [mode, adventureId]);
 
   useEffect(() => {
-    const url = `/api/world?view=EXPLORE&page=${worldPage}&size=4${worldFilter ? `&name=${encodeURIComponent(worldFilter)}` : ''}`;
+    const url = `/api/worlds?view=EXPLORE&page=${worldPage}&size=4${worldFilter ? `&name=${encodeURIComponent(worldFilter)}` : ''}`;
     apiFetch(url)
       .then((r) => r.json())
       .then((d) => {
@@ -314,7 +314,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   useEffect(() => {
     if (mode !== 'view' || !form.worldId) return;
-    apiFetch(`/api/world/${form.worldId}`)
+    apiFetch(`/api/worlds/${form.worldId}`)
       .then((r) => r.json())
       .then((w: { name: string }) => setWorldName(w.name))
       .catch(() => {});
@@ -342,7 +342,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
     setForm((prev) => ({ ...prev, worldId: id }));
 
-    apiFetch(`/api/world/${id}`)
+    apiFetch(`/api/worlds/${id}`)
       .then((res) => res.json())
       .then((world) => {
         setForm((prev) => ({
@@ -432,8 +432,9 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
   };
 
   const handleImageRemove = async () => {
-    if (!adventureId) return;
-    await api.adventure.removeImage(adventureId);
+    if (adventureId) {
+      await api.adventure.removeImage(adventureId);
+    }
     setImageUrl(null);
     setImageFile(null);
   };
@@ -480,7 +481,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           modelConfiguration: form.modelConfiguration,
           contextAttributes: form.contextAttributes,
         };
-        const res = await apiFetch('/api/adventure', {
+        const res = await apiFetch('/api/adventures', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
@@ -520,7 +521,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           uiImagePositionX,
           uiImagePositionY,
         };
-        const updateRes = await apiFetch(`/api/adventure/${adventureId}`, {
+        const updateRes = await apiFetch(`/api/adventures/${adventureId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

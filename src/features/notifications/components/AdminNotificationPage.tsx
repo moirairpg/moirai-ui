@@ -7,7 +7,6 @@ import { useDeleteNotification } from '../hooks/useDeleteNotification';
 import { UsernameChipInput } from './UsernameChipInput';
 import type {
   NotificationLevel,
-  NotificationStatus,
   NotificationSummary,
   NotificationType,
   SearchNotificationsParams,
@@ -105,7 +104,7 @@ export function AdminNotificationPage() {
       isInteractable: false,
     });
 
-    if (result.notifications) {
+    if (result.notification) {
       setCreateForm(EMPTY_CREATE_STATE);
       setMessageInvalid(false);
       setUsernamesInvalid(false);
@@ -300,19 +299,6 @@ export function AdminNotificationPage() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          <span className="text-muted-foreground">{t('admin.filters.status')}</span>
-          <select
-            className={inputClass}
-            value={filters.status ?? ''}
-            onChange={(e) => handleFilterChange('status', (e.target.value as NotificationStatus) || '')}
-          >
-            <option value="">{t('admin.filters.any')}</option>
-            <option value="READ">{t('admin.statuses.READ')}</option>
-            <option value="UNREAD">{t('admin.statuses.UNREAD')}</option>
-          </select>
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">{t('admin.filters.receiverId')}</span>
           <input
             className={inputClass}
@@ -345,9 +331,6 @@ export function AdminNotificationPage() {
                   </th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">
                     {t('admin.table.columns.level')}
-                  </th>
-                  <th className="py-2 pr-3 font-medium text-muted-foreground">
-                    {t('admin.table.columns.status')}
                   </th>
                   <th className="py-2 font-medium text-muted-foreground">
                     {t('admin.table.columns.actions')}
@@ -393,7 +376,6 @@ export function AdminNotificationPage() {
                           n.level ?? '—'
                         )}
                       </td>
-                      <td className="py-2 pr-3">{n.status}</td>
                       <td className="flex gap-2 py-2">
                         {isEditing ? (
                           <>

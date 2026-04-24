@@ -41,14 +41,9 @@
     "filters": {
       "type": "Tipo",
       "level": "Nível",
-      "status": "Status",
       "receiverId": "Destinatário",
       "receiverIdPlaceholder": "ID do usuário destinatário (UUID)",
       "any": "Qualquer"
-    },
-    "statuses": {
-      "READ": "Lida",
-      "UNREAD": "Não lida"
     },
     "table": {
       "loading": "Carregando...",
@@ -58,7 +53,6 @@
         "message": "Mensagem",
         "type": "Tipo",
         "level": "Nível",
-        "status": "Status",
         "actions": "Ações"
       },
       "actions": {

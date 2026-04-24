@@ -120,7 +120,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     setUiImagePositionX(0.5);
     setUiImagePositionY(0.5);
     setLoading(true);
-    apiFetch(`/api/world/${worldId}`)
+    apiFetch(`/api/worlds/${worldId}`)
       .then((r) => r.json())
       .then((data: WorldDetails) => {
         setForm({ name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility, narratorName: data.narratorName ?? '', narratorPersonality: data.narratorPersonality ?? '' });
@@ -184,8 +184,9 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
   };
 
   const handleImageRemove = async () => {
-    if (!worldId) return;
-    await api.world.removeImage(worldId);
+    if (worldId) {
+      await api.world.removeImage(worldId);
+    }
     setImageUrl(null);
     setImageFile(null);
   };
@@ -223,7 +224,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
       };
 
       if (mode === 'create') {
-        const res = await apiFetch('/api/world', {
+        const res = await apiFetch('/api/worlds', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...baseBody, lorebook: lorebook.map(({ name, description }) => ({ name, description })) }),
@@ -247,7 +248,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         }
         navigate(`/world/${id}/view`);
       } else {
-        const updateRes = await apiFetch(`/api/world/${worldId}`, {
+        const updateRes = await apiFetch(`/api/worlds/${worldId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

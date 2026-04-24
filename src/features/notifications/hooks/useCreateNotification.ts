@@ -3,7 +3,7 @@ import { apiFetch, extractApiError } from '../../../utils/api';
 import type { CreateNotificationInput, NotificationDetails } from '../types';
 
 type CreateResult = {
-  notifications: NotificationDetails[] | null;
+  notification: NotificationDetails | null;
   error: string | null;
 };
 
@@ -21,7 +21,7 @@ export function useCreateNotification(): UseCreateNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch('/api/notification', {
+      const res = await apiFetch('/api/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
@@ -29,14 +29,14 @@ export function useCreateNotification(): UseCreateNotificationResult {
       if (!res.ok) {
         const errorMessage = await extractApiError(res);
         setIsError(true);
-        return { notifications: null, error: errorMessage };
+        return { notification: null, error: errorMessage };
       }
-      const json: NotificationDetails[] = await res.json();
+      const json: NotificationDetails = await res.json();
       window.dispatchEvent(new Event('notification-list-changed'));
-      return { notifications: json, error: null };
+      return { notification: json, error: null };
     } catch {
       setIsError(true);
-      return { notifications: null, error: null };
+      return { notification: null, error: null };
     } finally {
       setIsLoading(false);
     }

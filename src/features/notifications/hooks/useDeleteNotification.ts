@@ -15,7 +15,7 @@ export function useDeleteNotification(): UseDeleteNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notification/${publicId}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/notifications/${publicId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete notification');
       window.dispatchEvent(new Event('notification-list-changed'));
       window.dispatchEvent(new CustomEvent('notification-deleted', { detail: { publicId } }));

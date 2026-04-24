@@ -15,7 +15,7 @@ export function useReadNotification(): UseReadNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notification/${publicId}/read`, { method: 'POST' });
+      const res = await apiFetch(`/api/notifications/${publicId}/read`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to mark notification as read');
       window.dispatchEvent(new Event('notification-list-changed'));
       window.dispatchEvent(new Event('notification-details-changed'));

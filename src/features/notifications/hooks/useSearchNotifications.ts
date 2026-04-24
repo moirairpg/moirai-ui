@@ -20,7 +20,6 @@ const buildQueryString = (params: SearchNotificationsParams): string => {
   const search = new URLSearchParams();
   if (params.type) search.append('type', params.type);
   if (params.level) search.append('level', params.level);
-  if (params.status) search.append('status', params.status);
   if (params.receiverId) search.append('receiverId', params.receiverId);
   if (params.page !== undefined) search.append('page', String(params.page));
   if (params.size !== undefined) search.append('size', String(params.size));
@@ -39,7 +38,7 @@ export function useSearchNotifications(params: SearchNotificationsParams): UseSe
     const fetch = () => {
       setIsLoading(true);
       setIsError(false);
-      apiFetch(`/api/notification${queryString}`)
+      apiFetch(`/api/notifications${queryString}`)
         .then((res) => {
           if (!res.ok) throw new Error('Failed to search notifications');
           return res.json();

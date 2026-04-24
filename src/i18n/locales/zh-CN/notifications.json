@@ -41,14 +41,9 @@
     "filters": {
       "type": "类型",
       "level": "级别",
-      "status": "状态",
       "receiverId": "接收者",
       "receiverIdPlaceholder": "接收者用户 ID (UUID)",
       "any": "全部"
-    },
-    "statuses": {
-      "READ": "已读",
-      "UNREAD": "未读"
     },
     "table": {
       "loading": "加载中...",
@@ -58,7 +53,6 @@
         "message": "消息",
         "type": "类型",
         "level": "级别",
-        "status": "状态",
         "actions": "操作"
       },
       "actions": {

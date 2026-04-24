@@ -1,15 +1,13 @@
 export type NotificationType = 'BROADCAST' | 'SYSTEM' | 'GAME';
 export type NotificationLevel = 'INFO' | 'URGENT';
-export type NotificationStatus = 'READ' | 'UNREAD';
 
 export type NotificationDetails = {
   publicId: string;
   message: string;
   type: NotificationType;
   level: NotificationLevel | null;
-  status: NotificationStatus;
-  targetUserId: number | null;
-  adventureId: number | null;
+  targetUsernames: string[];
+  adventureId: string | null;
   isInteractable: boolean;
   metadata: Record<string, unknown> | null;
   creationDate: string;
@@ -21,14 +19,12 @@ export type NotificationSummary = {
   message: string;
   type: NotificationType;
   level: NotificationLevel | null;
-  status: NotificationStatus;
   creationDate: string;
 };
 
 export type SearchNotificationsParams = {
   type?: NotificationType;
   level?: NotificationLevel;
-  status?: NotificationStatus;
   receiverId?: string;
   page?: number;
   size?: number;

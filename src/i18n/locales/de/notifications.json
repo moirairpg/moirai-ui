@@ -41,14 +41,9 @@
     "filters": {
       "type": "Typ",
       "level": "Stufe",
-      "status": "Status",
       "receiverId": "Empfänger",
       "receiverIdPlaceholder": "Empfänger-Benutzer-ID (UUID)",
       "any": "Beliebig"
-    },
-    "statuses": {
-      "READ": "Gelesen",
-      "UNREAD": "Ungelesen"
     },
     "table": {
       "loading": "Wird geladen...",
@@ -58,7 +53,6 @@
         "message": "Nachricht",
         "type": "Typ",
         "level": "Stufe",
-        "status": "Status",
         "actions": "Aktionen"
       },
       "actions": {

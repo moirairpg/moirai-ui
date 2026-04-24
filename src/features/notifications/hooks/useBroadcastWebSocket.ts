@@ -5,7 +5,7 @@ type BroadcastNotification = {
   publicId: string;
   message: string;
   level: string;
-  status: string;
+  targetUsernames: string[];
   isInteractable: boolean;
   metadata: Record<string, unknown> | null;
   creationDate: string;

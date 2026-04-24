@@ -22,7 +22,7 @@ export function useWorldCollection(view: CollectionView): UseWorldCollectionResu
     setHasMore(false);
     setIsLoading(true);
 
-    apiFetch(`/api/world?view=${view}&page=1&size=20`)
+    apiFetch(`/api/worlds?view=${view}&page=1&size=20`)
       .then((res) => res.json())
       .then((json: PaginatedResult<WorldSummary>) => {
         setItems(json.data);
@@ -34,7 +34,7 @@ export function useWorldCollection(view: CollectionView): UseWorldCollectionResu
 
   const loadMore = useCallback(() => {
     const nextPage = page + 1;
-    apiFetch(`/api/world?view=${view}&page=${nextPage}&size=20`)
+    apiFetch(`/api/worlds?view=${view}&page=${nextPage}&size=20`)
       .then((res) => res.json())
       .then((json: PaginatedResult<WorldSummary>) => {
         setItems((prev) => [...prev, ...json.data]);

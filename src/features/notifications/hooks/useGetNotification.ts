@@ -24,7 +24,7 @@ export function useGetNotification(publicId: string | undefined): UseGetNotifica
     const fetch = () => {
       setIsLoading(true);
       setIsError(false);
-      apiFetch(`/api/notification/${publicId}`)
+      apiFetch(`/api/notifications/${publicId}`)
         .then((res) => {
           if (!res.ok) throw new Error('Failed to load notification');
           return res.json();

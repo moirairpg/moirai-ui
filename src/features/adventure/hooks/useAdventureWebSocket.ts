@@ -19,7 +19,7 @@ export function useAdventureWebSocket(adventureId: string): UseAdventureWebSocke
 
   useEffect(() => {
     if (!isConnected) return;
-    const subscription = subscribe(`/topic/adventure/${adventureId}`, (data: unknown) => {
+    const subscription = subscribe(`/topic/adventures/${adventureId}`, (data: unknown) => {
       setLastMessage(data as MessageResult);
     });
     return () => {
@@ -28,7 +28,7 @@ export function useAdventureWebSocket(adventureId: string): UseAdventureWebSocke
   }, [adventureId, isConnected, subscribe]);
 
   const sendMessage = (content: string) => {
-    publish(`/app/adventure/${adventureId}`, JSON.stringify({ content }));
+    publish(`/app/adventures/${adventureId}`, JSON.stringify({ content }));
   };
 
   return { sendMessage, lastMessage };

@@ -41,14 +41,9 @@
     "filters": {
       "type": "Тип",
       "level": "Уровень",
-      "status": "Статус",
       "receiverId": "Получатель",
       "receiverIdPlaceholder": "ID пользователя получателя (UUID)",
       "any": "Любой"
-    },
-    "statuses": {
-      "READ": "Прочитано",
-      "UNREAD": "Не прочитано"
     },
     "table": {
       "loading": "Загрузка...",
@@ -58,7 +53,6 @@
         "message": "Сообщение",
         "type": "Тип",
         "level": "Уровень",
-        "status": "Статус",
         "actions": "Действия"
       },
       "actions": {

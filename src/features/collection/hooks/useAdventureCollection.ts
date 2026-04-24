@@ -22,7 +22,7 @@ export function useAdventureCollection(view: CollectionView): UseAdventureCollec
     setHasMore(false);
     setIsLoading(true);
 
-    apiFetch(`/api/adventure?view=${view}&page=1&size=20`)
+    apiFetch(`/api/adventures?view=${view}&page=1&size=20`)
       .then((res) => res.json())
       .then((json: PaginatedResult<AdventureSummary>) => {
         setItems(json.data);
@@ -34,7 +34,7 @@ export function useAdventureCollection(view: CollectionView): UseAdventureCollec
 
   const loadMore = useCallback(() => {
     const nextPage = page + 1;
-    apiFetch(`/api/adventure?view=${view}&page=${nextPage}&size=20`)
+    apiFetch(`/api/adventures?view=${view}&page=${nextPage}&size=20`)
       .then((res) => res.json())
       .then((json: PaginatedResult<AdventureSummary>) => {
         setItems((prev) => [...prev, ...json.data]);
