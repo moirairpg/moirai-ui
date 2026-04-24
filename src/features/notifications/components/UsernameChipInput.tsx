@@ -28,7 +28,7 @@ export function UsernameChipInput({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ',' || e.key === 'Enter') {
+    if (e.key === ',' || e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       commitChip(text);
       onTextChange('');

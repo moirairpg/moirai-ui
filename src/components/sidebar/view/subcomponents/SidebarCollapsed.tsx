@@ -16,7 +16,7 @@ export default function SidebarCollapsed({ onExpand, onShowSettings, t }: Sideba
         aria-label={t('common:versionUpdate.ariaLabels.showSidebar')}
         title={t('common:versionUpdate.ariaLabels.showSidebar')}
       >
-        <PanelLeftOpen className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
+        <PanelLeftOpen className="h-4 w-4 text-foreground" />
       </button>
 
       <div className="nav-divider my-1 w-6" />

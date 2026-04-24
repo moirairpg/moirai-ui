@@ -53,7 +53,7 @@ export default function SidebarHeader({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 rounded-lg p-0 text-muted-foreground hover:bg-accent/80 hover:text-foreground"
+              className="h-7 w-7 rounded-lg p-0 text-foreground hover:bg-accent/80"
               onClick={onCollapseSidebar}
               title={t('tooltips.hideSidebar')}
             >
