@@ -60,23 +60,23 @@ jobs:
         run: |
           git checkout main
           git pull origin main
-          git merge develop --no-ff -m "release: merge develop into main for ${{ env.TAG_NAME }}"
+          git merge develop --no-ff -m "create release: merge develop into main for ${{ env.TAG_NAME }}"
           git push origin main
 
       - name: Set RC-SNAPSHOT version on main
         run: |
           npm pkg set version="${{ env.RC_VERSION }}"
           git add package.json
-          git commit -m "release: set version ${{ env.RC_VERSION }}"
+          git commit -m "create release: set version ${{ env.RC_VERSION }}"
           git push origin main
 
       - name: Merge main back into develop and bump version
         run: |
           git checkout develop
-          git merge main --no-ff -m "release: merge main back into develop after ${{ env.TAG_NAME }}"
+          git merge main --no-ff -m "create release: merge main back into develop after ${{ env.TAG_NAME }}"
           npm pkg set version="${{ env.NEXT_SNAPSHOT }}"
           git add package.json
-          git commit -m "release: bump version to ${{ env.NEXT_SNAPSHOT }}"
+          git commit -m "create release: bump version to ${{ env.NEXT_SNAPSHOT }}"
           git push origin develop
 
       - name: Create release branch and finalize version
@@ -85,7 +85,7 @@ jobs:
           git checkout -b release/${{ env.NUMERIC_VERSION }}
           npm pkg set version="${{ env.NUMERIC_VERSION }}"
           git add package.json
-          git commit -m "release: set version ${{ env.NUMERIC_VERSION }}"
+          git commit -m "create release: set version ${{ env.NUMERIC_VERSION }}"
 
       - name: Tag and publish release
         env:

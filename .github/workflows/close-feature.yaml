@@ -47,7 +47,7 @@ jobs:
       - name: Merge develop into feature branch
         run: |
           git fetch origin develop
-          if ! git merge origin/develop --no-ff -m "feature: merge develop into ${{ github.ref_name }}"; then
+          if ! git merge origin/develop --no-ff -m "close feature: merge develop into ${{ github.ref_name }}"; then
             echo "::error::Merge conflicts detected. Resolve conflicts manually before closing this feature."
             git merge --abort
             exit 1
@@ -57,7 +57,7 @@ jobs:
         run: |
           git checkout develop
           git pull origin develop
-          git merge ${{ github.ref_name }} --no-ff -m "feature: merge ${{ github.ref_name }} into develop"
+          git merge ${{ github.ref_name }} --no-ff -m "close feature: merge ${{ github.ref_name }} into develop"
 
       - name: Normalize version on develop
         run: |
@@ -69,7 +69,7 @@ jobs:
           npm pkg set version="$SNAPSHOT_VERSION"
           git add package.json
           if ! git diff --cached --quiet; then
-            git commit -m "feature: normalize version to $SNAPSHOT_VERSION"
+            git commit -m "close feature: normalize version to $SNAPSHOT_VERSION"
           fi
           git push origin develop
 

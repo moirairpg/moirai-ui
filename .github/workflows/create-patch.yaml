@@ -67,5 +67,5 @@ jobs:
         run: |
           npm pkg set version="${{ env.PATCH_VERSION }}-PATCH-SNAPSHOT"
           git add package.json
-          git commit -m "patch: set version ${{ env.PATCH_VERSION }}-PATCH-SNAPSHOT"
+          git commit -m "create patch: set version ${{ env.PATCH_VERSION }}-PATCH-SNAPSHOT"
           git push origin patch/${{ env.PATCH_VERSION }}

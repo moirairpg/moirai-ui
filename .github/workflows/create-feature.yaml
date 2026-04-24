@@ -60,5 +60,5 @@ jobs:
           FEATURE_VERSION="${NUMERIC_VERSION}-${{ inputs.feature_name }}-SNAPSHOT"
           npm pkg set version="$FEATURE_VERSION"
           git add package.json
-          git commit -m "feature: set version $FEATURE_VERSION"
+          git commit -m "create feature: set version $FEATURE_VERSION"
           git push origin feature/${{ inputs.feature_name }}
