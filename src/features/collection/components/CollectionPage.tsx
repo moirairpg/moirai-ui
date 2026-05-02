@@ -16,7 +16,11 @@ function AdventureTab({ view }: TabProps) {
   const handlePlay = (id: string) => navigate(`/adventure/play/${id}`);
   const handleView = (id: string) => navigate(`/adventure/${id}/view`);
   const handleEdit = (id: string) => navigate(`/adventure/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/adventures/${id}`, { method: 'DELETE' }).then(() => { removeItem(id); window.dispatchEvent(new Event('adventure-list-changed')); }).catch(() => {});
+  const handleDelete = (id: string) => apiFetch(`/api/adventures/${id}`, { method: 'DELETE' }).then((res) => {
+    if (!res.ok) return;
+    removeItem(id);
+    window.dispatchEvent(new Event('adventure-list-changed'));
+  }).catch(() => {});
 
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
@@ -32,7 +36,7 @@ function WorldTab({ view }: TabProps) {
   const { items, isLoading, hasMore, loadMore, removeItem } = useWorldCollection(view);
   const handleView = (id: string) => navigate(`/world/${id}/view`);
   const handleEdit = (id: string) => navigate(`/world/${id}/edit`);
-  const handleDelete = (id: string) => apiFetch(`/api/worlds/${id}`, { method: 'DELETE' }).then(() => removeItem(id)).catch(() => {});
+  const handleDelete = (id: string) => apiFetch(`/api/worlds/${id}`, { method: 'DELETE' }).then((res) => { if (res.ok) removeItem(id); }).catch(() => {});
 
   return (
     <CardGrid isLoading={isLoading} hasMore={hasMore} onLoadMore={loadMore}>
