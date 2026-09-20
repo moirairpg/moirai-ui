@@ -11,6 +11,7 @@ import AdventureFormPage from './features/adventure/components/AdventureFormPage
 import WorldFormPage from './features/world/components/WorldFormPage';
 import CharacterFormPage from './features/character/components/CharacterFormPage';
 import { AdminNotificationPage, NotificationPanelProvider } from './features/notifications';
+import { UserEditPage, UsersPage } from './features/users';
 import i18n from './i18n/config.js';
 
 export default function App() {
@@ -40,6 +41,16 @@ export default function App() {
                         <Route path="/character/new" element={<AppContent><CharacterFormPage mode="create" /></AppContent>} />
                         <Route path="/character/:characterId/edit" element={<AppContent><CharacterFormPage mode="edit" /></AppContent>} />
                         <Route path="/character/:characterId/view" element={<AppContent><CharacterFormPage mode="view" /></AppContent>} />
+                        <Route path="/admin/users" element={
+                          <AdminRoute>
+                            <AppContent><UsersPage /></AppContent>
+                          </AdminRoute>
+                        } />
+                        <Route path="/admin/users/:userId" element={
+                          <AdminRoute>
+                            <AppContent><UserEditPage /></AppContent>
+                          </AdminRoute>
+                        } />
                         <Route path="/admin/notifications" element={
                           <AdminRoute>
                             <AppContent><AdminNotificationPage /></AppContent>

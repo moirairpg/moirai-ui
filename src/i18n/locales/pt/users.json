@@ -1,0 +1,56 @@
+{
+  "title": "Gestão de usuários",
+  "roles": {
+    "PLAYER": "Jogador",
+    "ADMIN": "Administrador"
+  },
+  "status": {
+    "active": "Ativo",
+    "inactive": "Desativado"
+  },
+  "actions": {
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir {{username}} permanentemente? As aventuras, mundos e personagens da conta serão excluídos junto. Isso não pode ser desfeito."
+  },
+  "edit": {
+    "title": "Editar {{username}}",
+    "loading": "Carregando usuário…",
+    "error": "Não foi possível carregar este usuário.",
+    "moiraiUsername": "Nome de usuário MoirAI",
+    "discordUsername": "Nome de usuário do Discord",
+    "role": "Papel",
+    "status": "Situação",
+    "bio": "Biografia",
+    "bioCounter": "{{count}} / {{max}} caracteres",
+    "ownAccountNotice": "Você não pode alterar seu próprio papel ou situação.",
+    "save": "Salvar",
+    "cancel": "Cancelar"
+  },
+  "filters": {
+    "any": "Qualquer",
+    "username": "Nome de usuário",
+    "usernamePlaceholder": "Buscar por nome de usuário",
+    "role": "Papel",
+    "status": "Situação",
+    "registeredFrom": "Registrado de",
+    "registeredTo": "Registrado até"
+  },
+  "table": {
+    "loading": "Carregando usuários…",
+    "error": "Não foi possível carregar os usuários.",
+    "empty": "Nenhum usuário corresponde a estes filtros.",
+    "columns": {
+      "username": "Nome de usuário",
+      "role": "Papel",
+      "status": "Situação",
+      "registered": "Registro",
+      "actions": "Ações"
+    }
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Próxima",
+    "pageOf": "Página {{page}} de {{totalPages}}"
+  }
+}

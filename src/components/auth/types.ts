@@ -3,10 +3,12 @@ import type { ReactNode } from 'react';
 export type AuthUser = {
   publicId: string;
   discordId: string;
+  discordUsername: string;
   username: string;
-  nickname: string;
   avatarUrl: string;
   role: string;
+  isActive: boolean;
+  bio: string | null;
   creationDate: string;
 };
 
