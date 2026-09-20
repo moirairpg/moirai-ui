@@ -32,6 +32,15 @@ export type UpdateUserInput = {
   bio: string | null;
 };
 
+export type UpdateUsersActiveStateInput = {
+  userIds: string[];
+  isActive: boolean;
+};
+
+export type DeleteUsersResult = {
+  failedUserIds: string[];
+};
+
 export type UserDetails = {
   publicId: string;
   id: number;

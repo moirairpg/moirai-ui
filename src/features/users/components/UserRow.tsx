@@ -10,9 +10,11 @@ import type { UserSummary } from '../types';
 
 type UserRowProps = {
   user: UserSummary;
+  isSelected: boolean;
+  onToggleSelected: (publicId: string) => void;
 };
 
-export function UserRow({ user }: UserRowProps) {
+export function UserRow({ user, isSelected, onToggleSelected }: UserRowProps) {
   const { t } = useTranslation('users');
   const { user: currentUser } = useAuth();
   const { mutate: deleteUser, isLoading: isDeleting } = useDeleteUser();
@@ -29,6 +31,17 @@ export function UserRow({ user }: UserRowProps) {
 
   return (
     <tr className="border-b border-border/30 align-top">
+      <td className="py-2 pr-3">
+        {!isOwnAccount && (
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onToggleSelected(user.publicId)}
+            aria-label={t('table.select', { username: user.username })}
+            className="h-4 w-4 rounded border-border"
+          />
+        )}
+      </td>
       <td className="py-2 pr-3">{user.username}</td>
       <td className="py-2 pr-3">{t(`roles.${user.role}`)}</td>
       <td className="py-2 pr-3">{user.isActive ? t('status.active') : t('status.inactive')}</td>

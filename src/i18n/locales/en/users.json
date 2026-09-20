@@ -40,6 +40,7 @@
     "loading": "Loading users…",
     "error": "Users could not be loaded.",
     "empty": "No users match these filters.",
+    "select": "Select {{username}}",
     "columns": {
       "username": "Username",
       "role": "Role",
@@ -47,6 +48,19 @@
       "registered": "Registered",
       "actions": "Actions"
     }
+  },
+  "bulk": {
+    "selected": "{{count}} selected",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "clear": "Clear selection",
+    "activateConfirm": "Activate {{count}} accounts?",
+    "deactivateConfirm": "Deactivate {{count}} accounts? They will not be able to use MoirAI until they are activated again.",
+    "deleteConfirm": "Delete {{count}} accounts permanently? Their adventures, worlds and characters are deleted with them. This cannot be undone.",
+    "deletePartial": "{{names}} could not be deleted.",
+    "deletePartialOverflow": "{{names}} and {{count}} others could not be deleted.",
+    "deletePartialCount": "{{count}} accounts could not be deleted."
   },
   "pagination": {
     "previous": "Previous",

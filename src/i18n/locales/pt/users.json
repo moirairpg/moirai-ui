@@ -40,6 +40,7 @@
     "loading": "Carregando usuários…",
     "error": "Não foi possível carregar os usuários.",
     "empty": "Nenhum usuário corresponde a estes filtros.",
+    "select": "Selecionar {{username}}",
     "columns": {
       "username": "Nome de usuário",
       "role": "Papel",
@@ -47,6 +48,19 @@
       "registered": "Registro",
       "actions": "Ações"
     }
+  },
+  "bulk": {
+    "selected": "{{count}} selecionados",
+    "activate": "Ativar",
+    "deactivate": "Desativar",
+    "delete": "Excluir",
+    "clear": "Limpar seleção",
+    "activateConfirm": "Ativar {{count}} contas?",
+    "deactivateConfirm": "Desativar {{count}} contas? Elas não poderão usar o MoirAI até serem ativadas novamente.",
+    "deleteConfirm": "Excluir {{count}} contas permanentemente? As aventuras, mundos e personagens delas serão excluídos junto. Isso não pode ser desfeito.",
+    "deletePartial": "{{names}} não puderam ser excluídas.",
+    "deletePartialOverflow": "{{names}} e outras {{count}} não puderam ser excluídas.",
+    "deletePartialCount": "{{count}} contas não puderam ser excluídas."
   },
   "pagination": {
     "previous": "Anterior",
