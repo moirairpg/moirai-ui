@@ -26,6 +26,13 @@ export function UsersPage() {
     setSelectedIds([]);
   }, [page, filters]);
 
+  useEffect(() => {
+    if (!data) return;
+
+    const visibleIds = new Set(data.data.map((user) => user.publicId));
+    setSelectedIds((prev) => prev.filter((id) => visibleIds.has(id)));
+  }, [data]);
+
   const totalPages = data?.totalPages ?? 1;
   const hasPrev = page > 1;
   const hasNext = page < totalPages;
