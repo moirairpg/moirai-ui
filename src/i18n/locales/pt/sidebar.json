@@ -11,6 +11,7 @@
   },
   "nav": {
     "adminBackoffice": "Painel administrativo",
+    "adminUsers": "Gestão de usuários",
     "adminNotifications": "Notificações",
     "myStuff": "Meu conteúdo",
     "sharedWithMe": "Compartilhado comigo",

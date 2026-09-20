@@ -11,6 +11,7 @@ import enWorld from './locales/en/world.json';
 import enCollection from './locales/en/collection.json';
 import enNotifications from './locales/en/notifications.json';
 import enCharacter from './locales/en/character.json';
+import enUsers from './locales/en/users.json';
 
 import ptCommon from './locales/pt/common.json';
 import ptSettings from './locales/pt/settings.json';
@@ -21,6 +22,7 @@ import ptWorld from './locales/pt/world.json';
 import ptCollection from './locales/pt/collection.json';
 import ptNotifications from './locales/pt/notifications.json';
 import ptCharacter from './locales/pt/character.json';
+import ptUsers from './locales/pt/users.json';
 
 import { languages } from './languages.js';
 
@@ -51,6 +53,7 @@ i18n
         collection: enCollection,
         notifications: enNotifications,
         character: enCharacter,
+        users: enUsers,
       },
       pt: {
         common: ptCommon,
@@ -62,6 +65,7 @@ i18n
         collection: ptCollection,
         notifications: ptNotifications,
         character: ptCharacter,
+        users: ptUsers,
       },
     },
 
@@ -71,7 +75,7 @@ i18n
 
     debug: import.meta.env.DEV,
 
-    ns: ['common', 'settings', 'sidebar', 'auth', 'adventure', 'world', 'collection', 'notifications', 'character'],
+    ns: ['common', 'settings', 'sidebar', 'auth', 'adventure', 'world', 'collection', 'notifications', 'character', 'users'],
     defaultNS: 'common',
 
     keySeparator: '.',

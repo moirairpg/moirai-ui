@@ -18,10 +18,24 @@
     "username": {
       "label": "Logged in as"
     },
+    "bio": {
+      "empty": "Not set",
+      "placeholder": "Write something about yourself",
+      "counter": "{{count}} / {{max}} characters",
+      "edit": "Edit bio",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
     "logout": {
       "label": "Logout",
       "description": "Sign out of your account",
       "button": "Logout"
+    },
+    "deleteAccount": {
+      "label": "Delete account",
+      "description": "Permanently delete your account and everything you created",
+      "button": "Delete account",
+      "confirm": "Permanently delete your account? Your adventures, worlds and characters go with it. This cannot be undone."
     }
   },
   "appearanceSettings": {

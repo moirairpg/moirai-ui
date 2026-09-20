@@ -18,10 +18,24 @@
     "username": {
       "label": "Conectado como"
     },
+    "bio": {
+      "empty": "Não definida",
+      "placeholder": "Escreva algo sobre você",
+      "counter": "{{count}} / {{max}} caracteres",
+      "edit": "Editar biografia",
+      "save": "Salvar",
+      "cancel": "Cancelar"
+    },
     "logout": {
       "label": "Sair",
       "description": "Encerrar sessão na conta",
       "button": "Sair"
+    },
+    "deleteAccount": {
+      "label": "Excluir conta",
+      "description": "Excluir permanentemente sua conta e tudo o que você criou",
+      "button": "Excluir conta",
+      "confirm": "Excluir sua conta permanentemente? Suas aventuras, mundos e personagens serão excluídos junto. Isso não pode ser desfeito."
     }
   },
   "appearanceSettings": {

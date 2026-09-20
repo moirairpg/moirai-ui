@@ -1,0 +1,70 @@
+{
+  "title": "User management",
+  "roles": {
+    "PLAYER": "Player",
+    "ADMIN": "Admin"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Deactivated"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Permanently delete {{username}}? Their adventures, worlds and characters go with the account. This cannot be undone."
+  },
+  "edit": {
+    "title": "Edit {{username}}",
+    "loading": "Loading user…",
+    "error": "This user could not be loaded.",
+    "moiraiUsername": "MoirAI username",
+    "discordUsername": "Discord username",
+    "role": "Role",
+    "status": "Status",
+    "bio": "Bio",
+    "bioCounter": "{{count}} / {{max}} characters",
+    "ownAccountNotice": "You cannot change your own role or status.",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "filters": {
+    "any": "Any",
+    "username": "Username",
+    "usernamePlaceholder": "Search by username",
+    "role": "Role",
+    "status": "Status",
+    "registeredFrom": "Registered from",
+    "registeredTo": "Registered to"
+  },
+  "table": {
+    "loading": "Loading users…",
+    "error": "Users could not be loaded.",
+    "empty": "No users match these filters.",
+    "select": "Select {{username}}",
+    "columns": {
+      "username": "Username",
+      "role": "Role",
+      "status": "Status",
+      "registered": "Registered",
+      "actions": "Actions"
+    }
+  },
+  "bulk": {
+    "selected": "{{count}} selected",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "clear": "Clear selection",
+    "activateConfirm": "Activate {{count}} accounts?",
+    "deactivateConfirm": "Deactivate {{count}} accounts? They will not be able to use MoirAI until they are activated again.",
+    "deleteConfirm": "Delete {{count}} accounts permanently? Their adventures, worlds and characters are deleted with them. This cannot be undone.",
+    "deletePartial": "{{names}} could not be deleted.",
+    "deletePartialOverflow": "{{names}} and {{count}} others could not be deleted.",
+    "deletePartialCount": "{{count}} accounts could not be deleted."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{totalPages}}"
+  }
+}

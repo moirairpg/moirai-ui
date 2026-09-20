@@ -55,24 +55,23 @@ export function MoirAISidebarNav({
     <div className="space-y-0.5 px-1.5 py-2">
       {isAdmin && (
         <div>
-          <div className="flex w-full items-center rounded-lg pr-1 text-sm font-medium text-foreground transition-colors hover:bg-accent/50">
-            <Link to="/admin" className="flex flex-1 items-center px-2.5 py-1.5">
-              <span>{t('nav.adminBackoffice')}</span>
-            </Link>
-            <button
-              type="button"
-              onClick={() => toggle('admin')}
-              className="flex items-center justify-center rounded p-1 text-muted-foreground hover:text-foreground"
-              aria-label={t('nav.adminBackoffice')}
-            >
-              {isAdminExpanded
-                ? <ChevronDown className="h-3.5 w-3.5" />
-                : <ChevronRight className="h-3.5 w-3.5" />}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => toggle('admin')}
+            className="flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
+            aria-expanded={isAdminExpanded}
+          >
+            <span>{t('nav.adminBackoffice')}</span>
+            {isAdminExpanded
+              ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+          </button>
 
           {isAdminExpanded && (
             <div className="ml-4 mt-0.5 space-y-0.5 border-l border-border/40 pl-3">
+              <Link to="/admin/users" className={subItemClass}>
+                {t('nav.adminUsers')}
+              </Link>
               <Link to="/admin/notifications" className={subItemClass}>
                 {t('nav.adminNotifications')}
               </Link>
