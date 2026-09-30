@@ -2,17 +2,17 @@ import { useCallback, useState } from 'react';
 import { apiFetch } from '../../../utils/api';
 
 type UseDeleteUserResult = {
-  mutate: (publicId: string) => Promise<boolean>;
+  mutate: (username: string) => Promise<boolean>;
   isLoading: boolean;
 };
 
 export function useDeleteUser(): UseDeleteUserResult {
   const [isLoading, setIsLoading] = useState(false);
 
-  const mutate = useCallback(async (publicId: string) => {
+  const mutate = useCallback(async (username: string) => {
     setIsLoading(true);
     try {
-      const res = await apiFetch(`/api/users/${publicId}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/users/${username}`, { method: 'DELETE' });
       if (!res.ok) return false;
       window.dispatchEvent(new Event('user-list-changed'));
 

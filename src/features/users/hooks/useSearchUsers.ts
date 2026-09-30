@@ -11,6 +11,7 @@ type UseSearchUsersResult = {
 const buildQueryString = (params: SearchUsersParams): string => {
   const search = new URLSearchParams();
   if (params.username) search.append('username', params.username);
+  if (params.displayName) search.append('display_name', params.displayName);
   if (params.role) search.append('role', params.role);
   if (params.isActive !== undefined) search.append('is_active', String(params.isActive));
   if (params.registeredFrom) search.append('registered_from', params.registeredFrom);

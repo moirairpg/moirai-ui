@@ -51,6 +51,7 @@ export type AdventureMembershipSummary = {
   playerCharacterId: string;
   playerId: string;
   playerUsername: string;
+  playerDisplayName: string;
   name: string;
   characterClass: string | null;
   imageUrl: string | null;

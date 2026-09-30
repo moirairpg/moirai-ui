@@ -11,7 +11,7 @@ import type { UserSummary } from '../types';
 type UserRowProps = {
   user: UserSummary;
   isSelected: boolean;
-  onToggleSelected: (publicId: string) => void;
+  onToggleSelected: (username: string) => void;
 };
 
 export function UserRow({ user, isSelected, onToggleSelected }: UserRowProps) {
@@ -23,7 +23,7 @@ export function UserRow({ user, isSelected, onToggleSelected }: UserRowProps) {
   const isOwnAccount = user.publicId === currentUser?.publicId;
 
   const handleDeleteConfirm = async () => {
-    const deleted = await deleteUser(user.publicId);
+    const deleted = await deleteUser(user.username);
     if (deleted) notifySuccess(t('toast.deleted', { ns: 'common' }));
 
     setIsConfirmingDelete(false);
@@ -36,19 +36,20 @@ export function UserRow({ user, isSelected, onToggleSelected }: UserRowProps) {
           <input
             type="checkbox"
             checked={isSelected}
-            onChange={() => onToggleSelected(user.publicId)}
+            onChange={() => onToggleSelected(user.username)}
             aria-label={t('table.select', { username: user.username })}
             className="h-4 w-4 rounded border-border"
           />
         )}
       </td>
       <td className="py-2 pr-3">{user.username}</td>
+      <td className="py-2 pr-3">{user.displayName}</td>
       <td className="py-2 pr-3">{t(`roles.${user.role}`)}</td>
       <td className="py-2 pr-3">{user.isActive ? t('status.active') : t('status.inactive')}</td>
       <td className="py-2 pr-3">{new Date(user.creationDate).toLocaleDateString()}</td>
       <td className="flex gap-1 py-2">
         <Link
-          to={`/admin/users/${user.publicId}`}
+          to={`/admin/users/${user.username}`}
           title={t('actions.edit')}
           aria-label={t('actions.edit')}
           className="rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"

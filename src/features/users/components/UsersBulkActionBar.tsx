@@ -29,6 +29,15 @@ export function UsersBulkActionBar({
 
       <button
         type="button"
+        onClick={onClear}
+        disabled={isSaving}
+        className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50"
+      >
+        {t('bulk.clear')}
+      </button>
+
+      <button
+        type="button"
         onClick={() => setPendingState(false)}
         disabled={isSaving}
         className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50"
@@ -52,14 +61,6 @@ export function UsersBulkActionBar({
         className="rounded border border-destructive/30 px-3 py-1 text-sm text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
       >
         {t('bulk.delete')}
-      </button>
-
-      <button
-        type="button"
-        onClick={onClear}
-        className="ml-auto text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        {t('bulk.clear')}
       </button>
 
       {pendingState !== null && (

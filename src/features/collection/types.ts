@@ -27,6 +27,7 @@ export type WorldSummary = {
 export type PlayerCharacterSummary = {
   id: string;
   ownerUsername: string;
+  ownerDisplayName: string;
   name: string;
   characterClass: string | null;
   background: string;

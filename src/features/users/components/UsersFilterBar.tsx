@@ -37,6 +37,17 @@ export function UsersFilterBar({ filters, onChange }: UsersFilterBarProps) {
       </label>
 
       <label className="flex flex-col gap-1 text-sm">
+        <span className="text-muted-foreground">{t('filters.displayName')}</span>
+        <input
+          className={INPUT_CLASS}
+          type="text"
+          value={filters.displayName ?? ''}
+          onChange={(e) => onChange('displayName', e.target.value)}
+          placeholder={t('filters.displayNamePlaceholder')}
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm">
         <span className="text-muted-foreground">{t('filters.role')}</span>
         <select
           className={INPUT_CLASS}

@@ -5,30 +5,64 @@ import { useAuth } from '../../../components/auth';
 import { notifySuccess } from '../../../utils/api';
 import { useGetUser } from '../hooks/useGetUser';
 import { useUpdateUser } from '../hooks/useUpdateUser';
+import { useUpdateUsername } from '../hooks/useUpdateUsername';
 import type { UserRole } from '../types';
 
 const MAX_BIO_LENGTH = 2000;
+const MAX_USERNAME_LENGTH = 32;
+const MAX_DISPLAY_NAME_LENGTH = 32;
 
 const FIELD_CLASS = 'rounded border border-border bg-background px-3 py-2 text-sm';
 
+type EditableFields = {
+  username: string;
+  displayName: string;
+  role: UserRole;
+  isActive: boolean;
+  bio: string;
+};
+
+const EMPTY_FIELDS: EditableFields = {
+  username: '',
+  displayName: '',
+  role: 'PLAYER',
+  isActive: true,
+  bio: '',
+};
+
 export function UserEditPage() {
   const { t } = useTranslation('users');
-  const { userId } = useParams<{ userId: string }>();
+  const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  const { data, isLoading, isError } = useGetUser(userId);
+  const { data, isLoading, isError } = useGetUser(username);
   const { mutate: updateUser, isLoading: isSaving } = useUpdateUser();
+  const { mutate: updateUsername, isLoading: isRenaming } = useUpdateUsername();
 
+  const [newUsername, setNewUsername] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<UserRole>('PLAYER');
   const [isActive, setIsActive] = useState(true);
   const [bio, setBio] = useState('');
+  const [savedFields, setSavedFields] = useState<EditableFields>(EMPTY_FIELDS);
 
   useEffect(() => {
     if (!data) return;
 
-    setRole(data.role);
-    setIsActive(data.isActive);
-    setBio(data.bio ?? '');
+    const loaded: EditableFields = {
+      username: data.username,
+      displayName: data.displayName,
+      role: data.role,
+      isActive: data.isActive,
+      bio: data.bio ?? '',
+    };
+
+    setSavedFields(loaded);
+    setNewUsername(loaded.username);
+    setDisplayName(loaded.displayName);
+    setRole(loaded.role);
+    setIsActive(loaded.isActive);
+    setBio(loaded.bio);
   }, [data]);
 
   if (isLoading) return <p className="p-6 text-sm text-muted-foreground">{t('edit.loading')}</p>;
@@ -36,14 +70,36 @@ export function UserEditPage() {
 
   const isOwnAccount = data.publicId === currentUser?.publicId;
 
+  const isUserChanged =
+    displayName !== savedFields.displayName
+    || role !== savedFields.role
+    || isActive !== savedFields.isActive
+    || bio !== savedFields.bio;
+
+  const isUsernameChanged = newUsername !== savedFields.username;
+  const canSave = (isUserChanged || isUsernameChanged) && !isSaving && !isRenaming;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updated = await updateUser(data.publicId, { role, isActive, bio });
-    if (updated) {
-      notifySuccess(t('toast.saved', { ns: 'common' }));
-      navigate('/admin/users');
+    if (isUserChanged) {
+      const updated = await updateUser(data.username, { role, isActive, bio, displayName });
+      if (!updated) return;
+
+      setSavedFields((current) => ({ ...current, displayName, role, isActive, bio }));
     }
+
+    if (isUsernameChanged) {
+      const renamed = await updateUsername(data.username, { username: newUsername });
+      if (!renamed) {
+        if (isUserChanged) notifySuccess(t('edit.savedExceptUsername'));
+        return;
+      }
+
+      navigate(`/admin/users/${newUsername}`, { replace: true });
+    }
+
+    notifySuccess(t('toast.saved', { ns: 'common' }));
   };
 
   return (
@@ -55,7 +111,24 @@ export function UserEditPage() {
       <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">{t('edit.moiraiUsername')}</span>
-          <span className="text-sm font-medium text-foreground">{data.username}</span>
+          <input
+            className={FIELD_CLASS}
+            type="text"
+            maxLength={MAX_USERNAME_LENGTH}
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+          />
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-muted-foreground">{t('edit.displayName')}</span>
+          <input
+            className={FIELD_CLASS}
+            type="text"
+            maxLength={MAX_DISPLAY_NAME_LENGTH}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
@@ -110,7 +183,7 @@ export function UserEditPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSaving}
+            disabled={!canSave}
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
             {t('edit.save')}

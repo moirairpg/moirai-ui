@@ -6,6 +6,7 @@ import AdventurePage from '../../features/adventure/components/AdventurePage';
 import { useDeviceSettings } from '../../hooks/useDeviceSettings';
 import type { MoirAISidebarNavProps } from '../../features/sidebar/components/MoirAISidebarNav';
 import { BroadcastRibbon, ToastHost } from '../../features/notifications';
+import { useRedirectNotice } from '../../shared/hooks/useRedirectNotice';
 
 type AppContentProps = {
   children?: ReactNode;
@@ -15,6 +16,8 @@ export default function AppContent({ children }: AppContentProps) {
   const { adventureId } = useParams<{ adventureId?: string }>();
   const { isMobile } = useDeviceSettings({ trackPWA: false });
   const { t } = useTranslation('common');
+
+  useRedirectNotice();
 
   const navProps: MoirAISidebarNavProps = {
     myStuffPath: '/my-stuff',
