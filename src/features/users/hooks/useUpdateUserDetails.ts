@@ -1,19 +1,19 @@
 import { useCallback, useState } from 'react';
 import { apiFetch } from '../../../utils/api';
-import type { UpdateUserInput } from '../types';
+import type { UpdateUserDetailsInput } from '../types';
 
-type UseUpdateUserResult = {
-  mutate: (username: string, input: UpdateUserInput) => Promise<boolean>;
+type UseUpdateUserDetailsResult = {
+  mutate: (username: string, input: UpdateUserDetailsInput) => Promise<boolean>;
   isLoading: boolean;
 };
 
-export function useUpdateUser(): UseUpdateUserResult {
+export function useUpdateUserDetails(): UseUpdateUserDetailsResult {
   const [isLoading, setIsLoading] = useState(false);
 
-  const mutate = useCallback(async (username: string, input: UpdateUserInput) => {
+  const mutate = useCallback(async (username: string, input: UpdateUserDetailsInput) => {
     setIsLoading(true);
     try {
-      const res = await apiFetch(`/api/users/${username}`, {
+      const res = await apiFetch(`/api/users/${username}/user-details`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),

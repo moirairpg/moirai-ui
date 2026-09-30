@@ -18,13 +18,21 @@
     "username": {
       "label": "Conectado como"
     },
+    "displayName": {
+      "label": "Nome de exibição",
+      "hint": "O que os outros jogadores veem. De 2 a 32 caracteres. Você pode mudar quando quiser.",
+      "placeholder": "Como você quer aparecer",
+      "length": "Precisa ter entre 2 e 32 caracteres."
+    },
+    "profile": {
+      "edit": "Editar perfil",
+      "save": "Salvar",
+      "cancel": "Cancelar"
+    },
     "bio": {
       "empty": "Não definida",
       "placeholder": "Escreva algo sobre você",
-      "counter": "{{count}} / {{max}} caracteres",
-      "edit": "Editar biografia",
-      "save": "Salvar",
-      "cancel": "Cancelar"
+      "counter": "{{count}} / {{max}} caracteres"
     },
     "logout": {
       "label": "Sair",

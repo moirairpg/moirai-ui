@@ -16,21 +16,21 @@ export function UsersPage() {
   const { t } = useTranslation('users');
   const [filters, setFilters] = useState<SearchUsersParams>({});
   const [page, setPage] = useState(1);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
 
   const { data, isLoading, isError } = useSearchUsers({ ...filters, page, size: DEFAULT_PAGE_SIZE });
   const { mutate: updateUsersActiveState, isLoading: isSavingSelection } = useUpdateUsersActiveState();
   const { mutate: deleteUsers, isLoading: isDeletingSelection } = useDeleteUsers();
 
   useEffect(() => {
-    setSelectedIds([]);
+    setSelectedUsernames([]);
   }, [page, filters]);
 
   useEffect(() => {
     if (!data) return;
 
-    const visibleIds = new Set(data.data.map((user) => user.publicId));
-    setSelectedIds((prev) => prev.filter((id) => visibleIds.has(id)));
+    const visibleUsernames = new Set(data.data.map((user) => user.username));
+    setSelectedUsernames((prev) => prev.filter((username) => visibleUsernames.has(username)));
   }, [data]);
 
   const totalPages = data?.totalPages ?? 1;
@@ -54,27 +54,27 @@ export function UsersPage() {
     setPage(1);
   };
 
-  const handleToggleSelected = (publicId: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(publicId) ? prev.filter((id) => id !== publicId) : [...prev, publicId],
+  const handleToggleSelected = (username: string) => {
+    setSelectedUsernames((prev) =>
+      prev.includes(username) ? prev.filter((selected) => selected !== username) : [...prev, username],
     );
   };
 
   const handleApplyActiveState = async (isActive: boolean) => {
-    const updated = await updateUsersActiveState({ userIds: selectedIds, isActive });
+    const updated = await updateUsersActiveState({ usernames: selectedUsernames, isActive });
     if (updated) {
       notifySuccess(t('toast.saved', { ns: 'common' }));
-      setSelectedIds([]);
+      setSelectedUsernames([]);
     }
   };
 
-  const describeFailures = (failedUserIds: string[]) => {
-    const names = failedUserIds
-      .map((id) => data?.data.find((user) => user.publicId === id)?.username)
-      .filter((username): username is string => Boolean(username));
+  const describeFailures = (failedUsernames: string[]) => {
+    const names = failedUsernames.filter((username) =>
+      data?.data.some((user) => user.username === username),
+    );
 
     if (names.length === 0) {
-      return t('bulk.deletePartialCount', { count: failedUserIds.length });
+      return t('bulk.deletePartialCount', { count: failedUsernames.length });
     }
 
     if (names.length <= NAMED_FAILURE_LIMIT) {
@@ -88,18 +88,18 @@ export function UsersPage() {
   };
 
   const handleDeleteSelection = async () => {
-    const result = await deleteUsers(selectedIds);
+    const result = await deleteUsers(selectedUsernames);
     if (!result) return;
 
-    if (result.failedUserIds.length > 0) {
-      notifyError(describeFailures(result.failedUserIds));
-      setSelectedIds(result.failedUserIds);
+    if (result.failedUsernames.length > 0) {
+      notifyError(describeFailures(result.failedUsernames));
+      setSelectedUsernames(result.failedUsernames);
 
       return;
     }
 
     notifySuccess(t('toast.deleted', { ns: 'common' }));
-    setSelectedIds([]);
+    setSelectedUsernames([]);
   };
 
   return (
@@ -109,11 +109,11 @@ export function UsersPage() {
       <UsersFilterBar filters={filters} onChange={handleFilterChange} />
 
       <UsersBulkActionBar
-        selectedCount={selectedIds.length}
+        selectedCount={selectedUsernames.length}
         isSaving={isSavingSelection || isDeletingSelection}
         onApply={handleApplyActiveState}
         onDelete={handleDeleteSelection}
-        onClear={() => setSelectedIds([])}
+        onClear={() => setSelectedUsernames([])}
       />
 
       <section>
@@ -129,6 +129,7 @@ export function UsersPage() {
                 <tr className="border-b border-border/50 text-left">
                   <th className="py-2 pr-3" />
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.username')}</th>
+                  <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.displayName')}</th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.role')}</th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.status')}</th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.registered')}</th>
@@ -140,7 +141,7 @@ export function UsersPage() {
                   <UserRow
                     key={user.publicId}
                     user={user}
-                    isSelected={selectedIds.includes(user.publicId)}
+                    isSelected={selectedUsernames.includes(user.username)}
                     onToggleSelected={handleToggleSelected}
                   />
                 ))}

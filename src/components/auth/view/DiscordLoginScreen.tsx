@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useRedirectNotice } from '../../../shared/hooks/useRedirectNotice';
 import { useAuth } from '../context/AuthContext';
 import AuthScreenLayout from './AuthScreenLayout';
 import AuthErrorAlert from './AuthErrorAlert';
@@ -12,8 +13,10 @@ function DiscordIcon() {
 }
 
 export default function DiscordLoginScreen() {
-  const { loginWithDiscord, error, isLoading } = useAuth();
+  const { signInWithDiscord, signUpWithDiscord, error, isLoading } = useAuth();
   const { t } = useTranslation('auth');
+
+  useRedirectNotice();
 
   return (
     <AuthScreenLayout
@@ -24,13 +27,21 @@ export default function DiscordLoginScreen() {
       <div className="space-y-4">
         <AuthErrorAlert errorMessage={error ?? ''} />
         <button
-          onClick={loginWithDiscord}
+          onClick={signInWithDiscord}
           disabled={isLoading}
           className="flex w-full items-center justify-center gap-3 rounded-md px-4 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
           style={{ backgroundColor: '#5865F2' }}
         >
           <DiscordIcon />
-          {t('login.button')}
+          {t('login.signIn')}
+        </button>
+        <button
+          onClick={signUpWithDiscord}
+          disabled={isLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-md border border-border px-4 py-2.5 font-medium text-foreground transition-colors hover:bg-accent/50 disabled:opacity-60"
+        >
+          <DiscordIcon />
+          {t('login.signUp')}
         </button>
       </div>
     </AuthScreenLayout>

@@ -5,20 +5,26 @@ import { useAuth } from '../../../components/auth';
 import { notifySuccess } from '../../../utils/api';
 import { useGetUser } from '../hooks/useGetUser';
 import { useUpdateUser } from '../hooks/useUpdateUser';
+import { useUpdateUsername } from '../hooks/useUpdateUsername';
 import type { UserRole } from '../types';
 
 const MAX_BIO_LENGTH = 2000;
+const MAX_USERNAME_LENGTH = 32;
+const MAX_DISPLAY_NAME_LENGTH = 32;
 
 const FIELD_CLASS = 'rounded border border-border bg-background px-3 py-2 text-sm';
 
 export function UserEditPage() {
   const { t } = useTranslation('users');
-  const { userId } = useParams<{ userId: string }>();
+  const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  const { data, isLoading, isError } = useGetUser(userId);
+  const { data, isLoading, isError } = useGetUser(username);
   const { mutate: updateUser, isLoading: isSaving } = useUpdateUser();
+  const { mutate: updateUsername, isLoading: isRenaming } = useUpdateUsername();
 
+  const [newUsername, setNewUsername] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<UserRole>('PLAYER');
   const [isActive, setIsActive] = useState(true);
   const [bio, setBio] = useState('');
@@ -26,6 +32,8 @@ export function UserEditPage() {
   useEffect(() => {
     if (!data) return;
 
+    setNewUsername(data.username);
+    setDisplayName(data.displayName);
     setRole(data.role);
     setIsActive(data.isActive);
     setBio(data.bio ?? '');
@@ -39,11 +47,19 @@ export function UserEditPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updated = await updateUser(data.publicId, { role, isActive, bio });
-    if (updated) {
-      notifySuccess(t('toast.saved', { ns: 'common' }));
-      navigate('/admin/users');
+    const updated = await updateUser(data.username, { role, isActive, bio, displayName });
+    if (!updated) return;
+
+    if (newUsername !== data.username) {
+      const renamed = await updateUsername(data.username, { username: newUsername });
+      if (!renamed) {
+        notifySuccess(t('edit.savedExceptUsername'));
+        return;
+      }
     }
+
+    notifySuccess(t('toast.saved', { ns: 'common' }));
+    navigate('/admin/users');
   };
 
   return (
@@ -55,7 +71,24 @@ export function UserEditPage() {
       <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">{t('edit.moiraiUsername')}</span>
-          <span className="text-sm font-medium text-foreground">{data.username}</span>
+          <input
+            className={FIELD_CLASS}
+            type="text"
+            maxLength={MAX_USERNAME_LENGTH}
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+          />
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-muted-foreground">{t('edit.displayName')}</span>
+          <input
+            className={FIELD_CLASS}
+            type="text"
+            maxLength={MAX_DISPLAY_NAME_LENGTH}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
@@ -110,7 +143,7 @@ export function UserEditPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSaving}
+            disabled={isSaving || isRenaming}
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
             {t('edit.save')}

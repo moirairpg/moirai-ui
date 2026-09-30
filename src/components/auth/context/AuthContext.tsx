@@ -24,9 +24,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const loginWithDiscord = useCallback(async () => {
+  const authorizeWithDiscord = useCallback((redirectUri?: string) => {
     const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI;
     if (!clientId || !redirectUri) {
       setError(AUTH_ERROR_MESSAGES.oauthFailed);
       return;
@@ -35,14 +34,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     window.location.href = url;
   }, []);
 
-  const logout = useCallback(async () => {
+  const signInWithDiscord = useCallback(async () => {
+    authorizeWithDiscord(import.meta.env.VITE_DISCORD_SIGNIN_REDIRECT_URI);
+  }, [authorizeWithDiscord]);
+
+  const signUpWithDiscord = useCallback(async () => {
+    authorizeWithDiscord(import.meta.env.VITE_DISCORD_SIGNUP_REDIRECT_URI);
+  }, [authorizeWithDiscord]);
+
+  const logout = useCallback(async (redirectPath: string = '/') => {
     await api.auth.logout().catch(() => {});
-    window.location.href = '/';
+    window.location.href = redirectPath;
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isLoading, error, loginWithDiscord, logout }),
-    [error, isLoading, loginWithDiscord, logout, user],
+    () => ({ user, isLoading, error, signInWithDiscord, signUpWithDiscord, logout }),
+    [error, isLoading, signInWithDiscord, signUpWithDiscord, logout, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -15,7 +15,7 @@ function ErrorIcon() {
 }
 
 export default function AuthErrorPage() {
-  const { loginWithDiscord } = useAuth();
+  const { signInWithDiscord } = useAuth();
   const { t } = useTranslation('auth');
 
   return (
@@ -26,7 +26,7 @@ export default function AuthErrorPage() {
       logo={<ErrorIcon />}
     >
       <button
-        onClick={loginWithDiscord}
+        onClick={signInWithDiscord}
         className="flex w-full items-center justify-center gap-3 rounded-md px-4 py-2.5 font-medium text-white transition-opacity hover:opacity-90"
         style={{ backgroundColor: '#5865F2' }}
       >

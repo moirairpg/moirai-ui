@@ -18,13 +18,21 @@
     "username": {
       "label": "Logged in as"
     },
+    "displayName": {
+      "label": "Display name",
+      "hint": "What other players see. 2 to 32 characters. You can change this whenever you like.",
+      "placeholder": "How you want to appear",
+      "length": "Must be between 2 and 32 characters."
+    },
+    "profile": {
+      "edit": "Edit profile",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
     "bio": {
       "empty": "Not set",
       "placeholder": "Write something about yourself",
-      "counter": "{{count}} / {{max}} characters",
-      "edit": "Edit bio",
-      "save": "Save",
-      "cancel": "Cancel"
+      "counter": "{{count}} / {{max}} characters"
     },
     "logout": {
       "label": "Logout",

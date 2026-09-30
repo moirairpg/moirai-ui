@@ -8,13 +8,13 @@ type UseGetUserResult = {
   isError: boolean;
 };
 
-export function useGetUser(publicId: string | undefined): UseGetUserResult {
+export function useGetUser(username: string | undefined): UseGetUserResult {
   const [data, setData] = useState<UserDetails | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    if (!publicId) {
+    if (!username) {
       setIsError(true);
       setIsLoading(false);
       return;
@@ -22,7 +22,7 @@ export function useGetUser(publicId: string | undefined): UseGetUserResult {
 
     setIsLoading(true);
     setIsError(false);
-    apiFetch(`/api/users/${publicId}`)
+    apiFetch(`/api/users/${username}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load user');
         return res.json();
@@ -33,7 +33,7 @@ export function useGetUser(publicId: string | undefined): UseGetUserResult {
         setIsError(true);
       })
       .finally(() => setIsLoading(false));
-  }, [publicId]);
+  }, [username]);
 
   return { data, isLoading, isError };
 }

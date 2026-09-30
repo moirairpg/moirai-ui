@@ -34,6 +34,7 @@ export type CharacterClassOption = {
 export type PlayerCharacterDetails = {
   id: string;
   ownerUsername: string;
+  ownerDisplayName: string;
   name: string;
   characterClass: string | null;
   personality: string;

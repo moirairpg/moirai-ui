@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 
 export type AuthUser = {
   publicId: string;
-  discordId: string;
   discordUsername: string;
   username: string;
+  displayName: string;
   avatarUrl: string;
   role: string;
   isActive: boolean;
@@ -16,8 +16,9 @@ export type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
   error: string | null;
-  loginWithDiscord: () => Promise<void>;
-  logout: () => Promise<void>;
+  signInWithDiscord: () => Promise<void>;
+  signUpWithDiscord: () => Promise<void>;
+  logout: (redirectPath?: string) => Promise<void>;
 };
 
 export type AuthProviderProps = {

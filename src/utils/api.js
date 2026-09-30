@@ -46,6 +46,13 @@ export const api = {
     user: () => apiFetch('/api/auth/user', { silent: true }),
     refresh: () => apiFetch('/api/auth/refresh', { method: 'POST', silent: true }),
     logout: () => apiFetch('/api/auth/logout', { method: 'POST', silent: true }),
+    signUpDetails: () => apiFetch('/api/auth/signup/details', { silent: true }),
+    signUp: (input) =>
+      apiFetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      }),
   },
   imageGenerations: {
     generate: async (prompt, options = {}) => {

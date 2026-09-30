@@ -19,7 +19,6 @@ export type NotificationMetadata = {
   kind?: NotificationKind;
   adventureId?: string;
   adventureName?: string;
-  username?: string;
   worldId?: string;
   worldName?: string;
   level?: string;

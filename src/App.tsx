@@ -5,6 +5,7 @@ import { AdminRoute, AuthProvider, ProtectedRoute } from './components/auth';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import AppContent from './components/app/AppContent';
 import AuthErrorPage from './components/auth/view/AuthErrorPage';
+import SignUpPage from './features/auth/components/SignUpPage';
 import CollectionPage from './features/collection/components/CollectionPage';
 import BrowsePage from './features/collection/components/BrowsePage';
 import AdventureFormPage from './features/adventure/components/AdventureFormPage';
@@ -22,6 +23,7 @@ export default function App() {
           <Router basename={window.__ROUTER_BASENAME__ || ''}>
             <Routes>
               <Route path="/auth/error" element={<AuthErrorPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
               <Route path="/*" element={
                 <WebSocketProvider>
                   <ProtectedRoute>
@@ -46,7 +48,7 @@ export default function App() {
                             <AppContent><UsersPage /></AppContent>
                           </AdminRoute>
                         } />
-                        <Route path="/admin/users/:userId" element={
+                        <Route path="/admin/users/:username" element={
                           <AdminRoute>
                             <AppContent><UserEditPage /></AppContent>
                           </AdminRoute>

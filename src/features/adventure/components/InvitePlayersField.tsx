@@ -34,9 +34,8 @@ export function InvitePlayersField({ adventureId }: InvitePlayersFieldProps) {
       const res = await api.adventure.invite(adventureId, usernames, { silent: true });
       if (!res.ok) throw new Error(await extractApiError(res) ?? t('invite.errors.failed'));
       const data = await res.json();
-      const accepted: string[] = data.invited ?? [];
-      setInvited(accepted);
-      setNotFound(usernames.filter((u) => !accepted.includes(u)));
+      setInvited(data.invited ?? []);
+      setNotFound(data.notFound ?? []);
       setChips([]);
       setText('');
     } catch (e) {

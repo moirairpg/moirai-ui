@@ -17,7 +17,10 @@ function AssetMemberRow({ member, isPublic, readOnly, onLevelChange, onRemove }:
 
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-md border border-border px-3 py-2">
-      <span className="flex-1 truncate text-sm text-foreground">{member.username}</span>
+      <span className="flex-1 truncate text-sm text-foreground">
+        {member.displayName}
+        <span className="block truncate text-xs text-muted-foreground">@{member.username}</span>
+      </span>
 
       {hasNoEffect && (
         <span className="text-xs text-muted-foreground">{t('access.readHasNoEffect')}</span>

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
+import { ToastHost } from '../../../features/notifications';
 
 const backgroundImages = Object.values(
   import.meta.glob('../../../assets/auth-backgrounds/*.{jpg,jpeg,png,webp}', { eager: true, import: 'default' })
@@ -30,6 +31,9 @@ export default function AuthScreenLayout({
       className="flex min-h-screen items-center justify-center p-4"
       style={background ? { backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
     >
+      <div className="fixed inset-x-0 top-0 z-50">
+        <ToastHost />
+      </div>
       <div className="w-full max-w-md">
         <div className="space-y-6 rounded-lg border border-border bg-card/90 p-8 shadow-lg backdrop-blur-sm">
           <div className="text-center">

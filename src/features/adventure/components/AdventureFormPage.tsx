@@ -989,7 +989,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
                           <span className="inline-flex w-fit items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                             {member.characterClass ? labelOf(member.characterClass) : t('card.noClass', { ns: 'collection' })}
                           </span>
-                          <p className="truncate text-xs text-muted-foreground">@{member.playerUsername}</p>
+                          <p className="truncate text-xs text-muted-foreground">{member.playerDisplayName}</p>
                         </div>
                       </a>
                       {canManage && (
