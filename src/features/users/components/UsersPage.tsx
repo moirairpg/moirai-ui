@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../components/auth';
 import { notifyError, notifySuccess } from '../../../utils/api';
 import { useDeleteUsers } from '../hooks/useDeleteUsers';
 import { useSearchUsers } from '../hooks/useSearchUsers';
@@ -14,6 +15,7 @@ const NAMED_FAILURE_LIMIT = 3;
 
 export function UsersPage() {
   const { t } = useTranslation('users');
+  const { user: currentUser } = useAuth();
   const [filters, setFilters] = useState<SearchUsersParams>({});
   const [page, setPage] = useState(1);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
@@ -32,6 +34,14 @@ export function UsersPage() {
     const visibleUsernames = new Set(data.data.map((user) => user.username));
     setSelectedUsernames((prev) => prev.filter((username) => visibleUsernames.has(username)));
   }, [data]);
+
+  const selectableUsernames = (data?.data ?? [])
+    .filter((user) => user.publicId !== currentUser?.publicId)
+    .map((user) => user.username);
+
+  const isAllSelected =
+    selectableUsernames.length > 0
+    && selectableUsernames.every((username) => selectedUsernames.includes(username));
 
   const totalPages = data?.totalPages ?? 1;
   const hasPrev = page > 1;
@@ -58,6 +68,10 @@ export function UsersPage() {
     setSelectedUsernames((prev) =>
       prev.includes(username) ? prev.filter((selected) => selected !== username) : [...prev, username],
     );
+  };
+
+  const handleToggleAll = () => {
+    setSelectedUsernames(isAllSelected ? [] : selectableUsernames);
   };
 
   const handleApplyActiveState = async (isActive: boolean) => {
@@ -127,7 +141,17 @@ export function UsersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border/50 text-left">
-                  <th className="py-2 pr-3" />
+                  <th className="py-2 pr-3">
+                    {selectableUsernames.length > 0 && (
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={handleToggleAll}
+                        aria-label={t('table.selectAll')}
+                        className="h-4 w-4 rounded border-border"
+                      />
+                    )}
+                  </th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.username')}</th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.displayName')}</th>
                   <th className="py-2 pr-3 font-medium text-muted-foreground">{t('table.columns.role')}</th>

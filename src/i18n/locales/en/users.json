@@ -45,6 +45,7 @@
     "error": "Users could not be loaded.",
     "empty": "No users match these filters.",
     "select": "Select {{username}}",
+    "selectAll": "Select all users on this page",
     "columns": {
       "username": "Username",
       "displayName": "Display name",

@@ -45,6 +45,7 @@
     "error": "Não foi possível carregar os usuários.",
     "empty": "Nenhum usuário corresponde a estes filtros.",
     "select": "Selecionar {{username}}",
+    "selectAll": "Selecionar todos os usuários desta página",
     "columns": {
       "username": "Nome de usuário",
       "displayName": "Nome de exibição",

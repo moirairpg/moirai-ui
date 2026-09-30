@@ -14,6 +14,22 @@ const MAX_DISPLAY_NAME_LENGTH = 32;
 
 const FIELD_CLASS = 'rounded border border-border bg-background px-3 py-2 text-sm';
 
+type EditableFields = {
+  username: string;
+  displayName: string;
+  role: UserRole;
+  isActive: boolean;
+  bio: string;
+};
+
+const EMPTY_FIELDS: EditableFields = {
+  username: '',
+  displayName: '',
+  role: 'PLAYER',
+  isActive: true,
+  bio: '',
+};
+
 export function UserEditPage() {
   const { t } = useTranslation('users');
   const { username } = useParams<{ username: string }>();
@@ -28,15 +44,25 @@ export function UserEditPage() {
   const [role, setRole] = useState<UserRole>('PLAYER');
   const [isActive, setIsActive] = useState(true);
   const [bio, setBio] = useState('');
+  const [savedFields, setSavedFields] = useState<EditableFields>(EMPTY_FIELDS);
 
   useEffect(() => {
     if (!data) return;
 
-    setNewUsername(data.username);
-    setDisplayName(data.displayName);
-    setRole(data.role);
-    setIsActive(data.isActive);
-    setBio(data.bio ?? '');
+    const loaded: EditableFields = {
+      username: data.username,
+      displayName: data.displayName,
+      role: data.role,
+      isActive: data.isActive,
+      bio: data.bio ?? '',
+    };
+
+    setSavedFields(loaded);
+    setNewUsername(loaded.username);
+    setDisplayName(loaded.displayName);
+    setRole(loaded.role);
+    setIsActive(loaded.isActive);
+    setBio(loaded.bio);
   }, [data]);
 
   if (isLoading) return <p className="p-6 text-sm text-muted-foreground">{t('edit.loading')}</p>;
@@ -44,22 +70,36 @@ export function UserEditPage() {
 
   const isOwnAccount = data.publicId === currentUser?.publicId;
 
+  const isUserChanged =
+    displayName !== savedFields.displayName
+    || role !== savedFields.role
+    || isActive !== savedFields.isActive
+    || bio !== savedFields.bio;
+
+  const isUsernameChanged = newUsername !== savedFields.username;
+  const canSave = (isUserChanged || isUsernameChanged) && !isSaving && !isRenaming;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updated = await updateUser(data.username, { role, isActive, bio, displayName });
-    if (!updated) return;
+    if (isUserChanged) {
+      const updated = await updateUser(data.username, { role, isActive, bio, displayName });
+      if (!updated) return;
 
-    if (newUsername !== data.username) {
+      setSavedFields((current) => ({ ...current, displayName, role, isActive, bio }));
+    }
+
+    if (isUsernameChanged) {
       const renamed = await updateUsername(data.username, { username: newUsername });
       if (!renamed) {
-        notifySuccess(t('edit.savedExceptUsername'));
+        if (isUserChanged) notifySuccess(t('edit.savedExceptUsername'));
         return;
       }
+
+      navigate(`/admin/users/${newUsername}`, { replace: true });
     }
 
     notifySuccess(t('toast.saved', { ns: 'common' }));
-    navigate('/admin/users');
   };
 
   return (
@@ -143,7 +183,7 @@ export function UserEditPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSaving || isRenaming}
+            disabled={!canSave}
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
             {t('edit.save')}
