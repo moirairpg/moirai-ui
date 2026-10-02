@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api } from '../../../utils/api';
+import { api, SESSION_ENDED_EVENT } from '../../../utils/api';
 import { AUTH_ERROR_MESSAGES } from '../constants';
 import type { AuthContextValue, AuthProviderProps, AuthUser } from '../types';
 
@@ -22,6 +22,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .then((data) => setUser(data ?? null))
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const handleSessionEnded = () => setUser(null);
+
+    window.addEventListener(SESSION_ENDED_EVENT, handleSessionEnded);
+    return () => window.removeEventListener(SESSION_ENDED_EVENT, handleSessionEnded);
   }, []);
 
   const authorizeWithDiscord = useCallback((redirectUri?: string) => {

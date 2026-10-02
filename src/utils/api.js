@@ -1,4 +1,13 @@
 export const TOAST_EVENT = 'app-toast';
+export const SESSION_ENDED_EVENT = 'session-ended';
+export const SESSION_RENEWED_EVENT = 'session-renewed';
+
+const HTTP_UNAUTHORIZED = 401;
+const SESSION_RENEWED_HEADER = 'X-Session-Renewed';
+
+const endSession = () => {
+  window.dispatchEvent(new CustomEvent(SESSION_ENDED_EVENT));
+};
 
 export const notifyError = (message) => {
   window.dispatchEvent(new CustomEvent(TOAST_EVENT, { detail: { message: message ?? null, variant: 'error' } }));
@@ -28,6 +37,15 @@ const apiFetch = async (url, options = {}) => {
   try {
     const res = await fetch(url, { ...init, credentials: 'include' });
 
+    if (res.headers.get(SESSION_RENEWED_HEADER)) {
+      window.dispatchEvent(new CustomEvent(SESSION_RENEWED_EVENT));
+    }
+
+    if (res.status === HTTP_UNAUTHORIZED) {
+      endSession();
+      return res;
+    }
+
     if (!res.ok && !isSilenced(silent, res)) {
       notifyError(await extractApiError(res.clone()));
     }
@@ -44,7 +62,6 @@ export { apiFetch };
 export const api = {
   auth: {
     user: () => apiFetch('/api/auth/user', { silent: true }),
-    refresh: () => apiFetch('/api/auth/refresh', { method: 'POST', silent: true }),
     logout: () => apiFetch('/api/auth/logout', { method: 'POST', silent: true }),
     signUpDetails: () => apiFetch('/api/auth/signup/details', { silent: true }),
     signUp: (input) =>
