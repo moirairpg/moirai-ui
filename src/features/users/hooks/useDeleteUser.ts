@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 
 type UseDeleteUserResult = {
   mutate: (username: string) => Promise<boolean>;
@@ -12,7 +12,7 @@ export function useDeleteUser(): UseDeleteUserResult {
   const mutate = useCallback(async (username: string) => {
     setIsLoading(true);
     try {
-      const res = await apiFetch(`/api/users/${username}`, { method: 'DELETE' });
+      const res = await apiFetch(apiPath`/api/users/${username}`, { method: 'DELETE' });
       if (!res.ok) return false;
       window.dispatchEvent(new Event('user-list-changed'));
 

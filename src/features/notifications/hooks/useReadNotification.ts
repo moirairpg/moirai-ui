@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 
 type UseReadNotificationResult = {
   mutate: (publicId: string) => Promise<void>;
@@ -15,7 +15,7 @@ export function useReadNotification(): UseReadNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notifications/${publicId}/read`, { method: 'POST' });
+      const res = await apiFetch(apiPath`/api/notifications/${publicId}/read`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to mark notification as read');
       window.dispatchEvent(new Event('notification-list-changed'));
       window.dispatchEvent(new Event('notification-details-changed'));

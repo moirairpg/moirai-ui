@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Info, Pencil, Trash2, Plus, Loader2, Upload } from 'lucide-react';
 import type { WorldDetails } from '../../sidebar/types';
-import { apiFetch, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
+import { apiFetch, apiPath, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
 import { EntityBanner, Tooltip } from '../../../shared/view/ui';
 import { LorebookEntryForm } from '../../../shared/components/LorebookEntryForm';
 import { ConfirmDialog } from '../../../shared/components/ConfirmDialog';
@@ -86,7 +86,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
 
   const handleDelete = async () => {
     setConfirmingDelete(false);
-    const res = await apiFetch(`/api/worlds/${worldId}`, { method: 'DELETE' });
+    const res = await apiFetch(apiPath`/api/worlds/${worldId}`, { method: 'DELETE' });
     if (res.ok) {
       notifySuccess(t('toast.deleted', { ns: 'common' }));
       navigate('/my-stuff');
@@ -128,7 +128,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
     setUiImagePositionX(0.5);
     setUiImagePositionY(0.5);
     setLoading(true);
-    apiFetch(`/api/worlds/${worldId}`)
+    apiFetch(apiPath`/api/worlds/${worldId}`)
       .then((r) => r.json())
       .then((data: WorldDetails) => {
         const loadedForm: FormState = { name: data.name, description: data.description, adventureStart: data.adventureStart, visibility: data.visibility, narratorName: data.narratorName ?? '', narratorPersonality: data.narratorPersonality ?? '' };
@@ -292,7 +292,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
           const uploadRes = await api.world.uploadImage(id, file, { silent: true });
           if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
           const position = await resolveImagePosition(file);
-          await apiFetch(`/api/worlds/${id}`, {
+          await apiFetch(apiPath`/api/worlds/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...baseBody, uiImagePositionX: position.x, uiImagePositionY: position.y }),
@@ -305,7 +305,7 @@ export default function WorldFormPage({ mode }: WorldFormPageProps) {
         let allSaved = true;
 
         if (hasAssetChanges) {
-          const updateRes = await apiFetch(`/api/worlds/${worldId}`, {
+          const updateRes = await apiFetch(apiPath`/api/worlds/${worldId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

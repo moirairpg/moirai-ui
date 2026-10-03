@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { apiFetch, extractApiError } from '../../../utils/api';
+import { apiFetch, apiPath, extractApiError } from '../../../utils/api';
 import { parseCommand } from '../commands/parser';
 import type { AdventureMessage } from '../types';
 import type { ParsedCommand } from '../commands/types';
@@ -178,7 +178,7 @@ function applyContextUpdate(
   appendMessage: (msg: AdventureMessage) => void,
   onContextUpdated: (patch: Partial<ContextAttributes>) => void,
 ) {
-  apiFetch(`/api/adventures/${adventureId}/${update.path}`, {
+  apiFetch(apiPath`/api/adventures/${adventureId}/${update.path}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(update.body),

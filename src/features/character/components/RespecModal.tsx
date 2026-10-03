@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Minus, Plus, Star } from 'lucide-react';
-import { apiFetch, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
+import { apiFetch, apiPath, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
 import { useCharacterClasses } from '../hooks/useCharacterClasses';
 import { useAttributeAllocation } from '../hooks/useAttributeAllocation';
 import { useAttributeVocabulary } from '../hooks/useAttributeVocabulary';
@@ -145,7 +145,7 @@ export default function RespecModal({
   const handleSave = async () => {
     setSaving(true);
     setError('');
-    const res = await apiFetch(`/api/player-characters/${characterId}/sheet`, {
+    const res = await apiFetch(apiPath`/api/player-characters/${characterId}/sheet`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

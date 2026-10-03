@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { useRedirectNotice } from '../../../shared/hooks/useRedirectNotice';
 import { useAuth } from '../context/AuthContext';
 import AuthScreenLayout from './AuthScreenLayout';
-import AuthErrorAlert from './AuthErrorAlert';
 
 function DiscordIcon() {
   return (
@@ -13,7 +12,7 @@ function DiscordIcon() {
 }
 
 export default function DiscordLoginScreen() {
-  const { signInWithDiscord, signUpWithDiscord, error, isLoading } = useAuth();
+  const { signInWithDiscord, signUpWithDiscord, isLoading } = useAuth();
   const { t } = useTranslation('auth');
 
   useRedirectNotice();
@@ -25,7 +24,6 @@ export default function DiscordLoginScreen() {
       footerText={t('login.footer')}
     >
       <div className="space-y-4">
-        <AuthErrorAlert errorMessage={error ?? ''} />
         <button
           onClick={signInWithDiscord}
           disabled={isLoading}

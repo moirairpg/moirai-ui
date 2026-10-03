@@ -15,7 +15,6 @@ export type AuthUser = {
 export type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
-  error: string | null;
   signInWithDiscord: () => Promise<void>;
   signUpWithDiscord: () => Promise<void>;
   logout: (redirectPath?: string) => Promise<void>;

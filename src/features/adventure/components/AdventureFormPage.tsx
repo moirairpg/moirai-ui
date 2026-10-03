@@ -3,7 +3,7 @@ import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Eye, Info, Pencil, Play, Plus, Trash2, Loader2, Upload } from 'lucide-react';
 import type { AdventureDetails, ModelConfiguration, ContextAttributes, AdventureMembershipSummary } from '../../sidebar/types';
-import { apiFetch, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
+import { apiFetch, apiPath, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
 import { useAuth } from '../../../components/auth';
 import { useAssetMembers } from '../../../shared/hooks/useAssetMembers';
 import { useCharacterClasses } from '../../character/hooks/useCharacterClasses';
@@ -230,7 +230,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const refreshRoster = useCallback(() => {
     if (!adventureId) return;
-    apiFetch(`/api/adventures/${adventureId}`)
+    apiFetch(apiPath`/api/adventures/${adventureId}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data: AdventureDetails | null) => { if (data) setRoster(data.roster ?? []); })
       .catch(() => {});
@@ -285,7 +285,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
   const handleDelete = async () => {
     setConfirmingDelete(false);
-    const res = await apiFetch(`/api/adventures/${adventureId}`, { method: 'DELETE' });
+    const res = await apiFetch(apiPath`/api/adventures/${adventureId}`, { method: 'DELETE' });
     if (res.ok) {
       window.dispatchEvent(new Event('adventure-list-changed'));
       notifySuccess(t('toast.deleted', { ns: 'common' }));
@@ -335,7 +335,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
     if (!restoredFromSnapshot && mode !== 'create' && adventureId) {
       fetches.push(
-        apiFetch(`/api/adventures/${adventureId}`)
+        apiFetch(apiPath`/api/adventures/${adventureId}`)
           .then((r) => r.json())
           .then((data: AdventureDetails) => {
             const loadedForm: FormState = {
@@ -398,7 +398,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
       return;
     }
 
-    apiFetch(`/api/worlds/${form.worldId}`, { silent: (r: Response) => r.status === 404 })
+    apiFetch(apiPath`/api/worlds/${form.worldId}`, { silent: (r: Response) => r.status === 404 })
       .then((r) => (r.ok ? r.json() : null))
       .then((w: { name: string } | null) => setWorldName(w?.name ?? null))
       .catch(() => setWorldName(null));
@@ -426,7 +426,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
 
     setForm((prev) => ({ ...prev, worldId: id }));
 
-    apiFetch(`/api/worlds/${id}`)
+    apiFetch(apiPath`/api/worlds/${id}`)
       .then((res) => res.json())
       .then((world) => {
         setForm((prev) => ({
@@ -642,7 +642,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
           const uploadRes = await api.adventure.uploadImage(id, file, { silent: true });
           if (!uploadRes.ok) throw new Error(await extractApiError(uploadRes) ?? t('form.errors.saveFailed'));
           const position = await resolveImagePosition(file);
-          await apiFetch(`/api/adventures/${id}`, {
+          await apiFetch(apiPath`/api/adventures/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             silent: true,
@@ -681,7 +681,7 @@ export default function AdventureFormPage({ mode }: AdventureFormPageProps) {
             uiImagePositionX,
             uiImagePositionY,
           };
-          const updateRes = await apiFetch(`/api/adventures/${adventureId}`, {
+          const updateRes = await apiFetch(apiPath`/api/adventures/${adventureId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             silent: true,

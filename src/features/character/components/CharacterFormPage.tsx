@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronUp, Pencil, Trash2, ChevronLeft, ChevronRight, Loader2, RotateCcw } from 'lucide-react';
-import { apiFetch, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
+import { apiFetch, apiPath, api, extractApiError, notifyError, notifySuccess } from '../../../utils/api';
 import { EntityBanner } from '../../../shared/view/ui';
 import { buildImagePrompt } from '../../../utils/imagePrompt';
 import { objectPositionOf, resolveImagePosition } from '../../../utils/imagePosition';
@@ -88,7 +88,7 @@ export default function CharacterFormPage({ mode }: CharacterFormPageProps) {
 
   const handleDelete = async () => {
     setConfirmingDelete(false);
-    const res = await apiFetch(`/api/player-characters/${characterId}`, { method: 'DELETE' });
+    const res = await apiFetch(apiPath`/api/player-characters/${characterId}`, { method: 'DELETE' });
     if (res.ok) {
       notifySuccess(t('toast.deleted', { ns: 'common' }));
       navigate('/my-stuff');
@@ -145,7 +145,7 @@ export default function CharacterFormPage({ mode }: CharacterFormPageProps) {
     if (!characterId) return;
 
     setLoading(true);
-    apiFetch(`/api/player-characters/${characterId}`)
+    apiFetch(apiPath`/api/player-characters/${characterId}`)
       .then((res) => res.json())
       .then((data: PlayerCharacterDetails) => {
         setForm({
@@ -292,7 +292,7 @@ export default function CharacterFormPage({ mode }: CharacterFormPageProps) {
 
           if (!imageFile) {
             const position = await resolveImagePosition(file);
-            await apiFetch(`/api/player-characters/${id}`, {
+            await apiFetch(apiPath`/api/player-characters/${id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ ...body, uiImagePositionX: position.x, uiImagePositionY: position.y }),
@@ -304,7 +304,7 @@ export default function CharacterFormPage({ mode }: CharacterFormPageProps) {
         notifySuccess(t('toast.saved', { ns: 'common' }));
         navigate(`/character/${id}/view`);
       } else {
-        const res = await apiFetch(`/api/player-characters/${characterId}`, {
+        const res = await apiFetch(apiPath`/api/player-characters/${characterId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
