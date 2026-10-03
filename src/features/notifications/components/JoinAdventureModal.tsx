@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { apiFetch, api, extractApiError } from '../../../utils/api';
+import { apiFetch, apiPath, api, extractApiError } from '../../../utils/api';
 import { objectPositionOf } from '../../../utils/imagePosition';
 import { useCharacterClasses } from '../../character/hooks/useCharacterClasses';
 import type { PlayerCharacterSummary } from '../../collection/types';
@@ -44,7 +44,7 @@ export function JoinAdventureModal({ invitationId, adventureName, onJoined, onCl
   const openDetail = (id: string) => {
     setDetailLoading(true);
     setError('');
-    apiFetch(`/api/player-characters/${id}`)
+    apiFetch(apiPath`/api/player-characters/${id}`)
       .then((res) => res.json())
       .then((data: PlayerCharacterDetails) => setDetail(data))
       .catch(() => setError(t('invite.join.errors.detailFailed')))

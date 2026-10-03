@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 import type { NotificationDetails } from '../types';
 
 type UseGetNotificationResult = {
@@ -24,7 +24,7 @@ export function useGetNotification(publicId: string | undefined): UseGetNotifica
     const fetch = () => {
       setIsLoading(true);
       setIsError(false);
-      apiFetch(`/api/notifications/${publicId}`)
+      apiFetch(apiPath`/api/notifications/${publicId}`)
         .then((res) => {
           if (!res.ok) throw new Error('Failed to load notification');
           return res.json();

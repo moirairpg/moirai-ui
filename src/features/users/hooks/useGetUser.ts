@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 import type { UserDetails } from '../types';
 
 type UseGetUserResult = {
@@ -22,7 +22,7 @@ export function useGetUser(username: string | undefined): UseGetUserResult {
 
     setIsLoading(true);
     setIsError(false);
-    apiFetch(`/api/users/${username}`)
+    apiFetch(apiPath`/api/users/${username}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load user');
         return res.json();

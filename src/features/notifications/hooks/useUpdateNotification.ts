@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 import type { NotificationDetails, UpdateNotificationInput } from '../types';
 
 type UpdateNotificationArgs = UpdateNotificationInput & { publicId: string };
@@ -18,7 +18,7 @@ export function useUpdateNotification(): UseUpdateNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notifications/${publicId}`, {
+      const res = await apiFetch(apiPath`/api/notifications/${publicId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 
 type UseDeleteNotificationResult = {
   mutate: (publicId: string) => Promise<boolean>;
@@ -15,7 +15,7 @@ export function useDeleteNotification(): UseDeleteNotificationResult {
     setIsLoading(true);
     setIsError(false);
     try {
-      const res = await apiFetch(`/api/notifications/${publicId}`, { method: 'DELETE', silent: true });
+      const res = await apiFetch(apiPath`/api/notifications/${publicId}`, { method: 'DELETE', silent: true });
       if (!res.ok) throw new Error('Failed to delete notification');
       window.dispatchEvent(new Event('notification-list-changed'));
       window.dispatchEvent(new CustomEvent('notification-deleted', { detail: { publicId } }));

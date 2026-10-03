@@ -1,6 +1,6 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { apiFetch, notifySuccess } from '../../../utils/api';
+import { apiFetch, apiPath, notifySuccess } from '../../../utils/api';
 import { useAdventureCollection } from '../hooks/useAdventureCollection';
 import { useWorldCollection } from '../hooks/useWorldCollection';
 import { useCharacterCollection } from '../hooks/useCharacterCollection';
@@ -15,7 +15,7 @@ type TabProps = { view: CollectionView };
 function AdventureTab({ view }: TabProps) {
   const { t } = useTranslation('collection');
   const { items, isLoading, hasMore, loadMore, removeItem } = useAdventureCollection(view);
-  const handleDelete = (id: string) => apiFetch(`/api/adventures/${id}`, { method: 'DELETE' }).then((res) => {
+  const handleDelete = (id: string) => apiFetch(apiPath`/api/adventures/${id}`, { method: 'DELETE' }).then((res) => {
     if (!res.ok) return;
     removeItem(id);
     window.dispatchEvent(new Event('adventure-list-changed'));
@@ -35,7 +35,7 @@ function AdventureTab({ view }: TabProps) {
 function WorldTab({ view }: TabProps) {
   const { t } = useTranslation('collection');
   const { items, isLoading, hasMore, loadMore, removeItem } = useWorldCollection(view);
-  const handleDelete = (id: string) => apiFetch(`/api/worlds/${id}`, { method: 'DELETE' }).then((res) => {
+  const handleDelete = (id: string) => apiFetch(apiPath`/api/worlds/${id}`, { method: 'DELETE' }).then((res) => {
     if (!res.ok) return;
     removeItem(id);
     notifySuccess(t('toast.deleted', { ns: 'common' }));
@@ -56,7 +56,7 @@ function CharacterTab() {
   const { items, isLoading, hasMore, loadMore, removeItem } = useCharacterCollection();
   const { labelOf } = useCharacterClasses();
 
-  const handleDelete = (id: string) => apiFetch(`/api/player-characters/${id}`, { method: 'DELETE' }).then((res) => {
+  const handleDelete = (id: string) => apiFetch(apiPath`/api/player-characters/${id}`, { method: 'DELETE' }).then((res) => {
     if (!res.ok) return;
     removeItem(id);
     notifySuccess(t('toast.deleted', { ns: 'common' }));

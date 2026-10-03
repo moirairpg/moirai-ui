@@ -1,7 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api, SESSION_ENDED_EVENT } from '../../../utils/api';
-import { AUTH_ERROR_MESSAGES } from '../constants';
 import type { AuthContextValue, AuthProviderProps, AuthUser } from '../types';
+
+const SIGN_IN_AUTHORIZE_PATH = '/api/auth/signin/authorize';
+const SIGN_UP_AUTHORIZE_PATH = '/api/auth/signup/authorize';
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -14,7 +16,6 @@ export function useAuth(): AuthContextValue {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api.auth.user()
@@ -31,23 +32,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => window.removeEventListener(SESSION_ENDED_EVENT, handleSessionEnded);
   }, []);
 
-  const authorizeWithDiscord = useCallback((redirectUri?: string) => {
-    const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
-    if (!clientId || !redirectUri) {
-      setError(AUTH_ERROR_MESSAGES.oauthFailed);
-      return;
-    }
-    const url = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
-    window.location.href = url;
+  const signInWithDiscord = useCallback(async () => {
+    window.location.href = SIGN_IN_AUTHORIZE_PATH;
   }, []);
 
-  const signInWithDiscord = useCallback(async () => {
-    authorizeWithDiscord(import.meta.env.VITE_DISCORD_SIGNIN_REDIRECT_URI);
-  }, [authorizeWithDiscord]);
-
   const signUpWithDiscord = useCallback(async () => {
-    authorizeWithDiscord(import.meta.env.VITE_DISCORD_SIGNUP_REDIRECT_URI);
-  }, [authorizeWithDiscord]);
+    window.location.href = SIGN_UP_AUTHORIZE_PATH;
+  }, []);
 
   const logout = useCallback(async (redirectPath: string = '/') => {
     await api.auth.logout().catch(() => {});
@@ -55,8 +46,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isLoading, error, signInWithDiscord, signUpWithDiscord, logout }),
-    [error, isLoading, signInWithDiscord, signUpWithDiscord, logout, user],
+    () => ({ user, isLoading, signInWithDiscord, signUpWithDiscord, logout }),
+    [isLoading, signInWithDiscord, signUpWithDiscord, logout, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

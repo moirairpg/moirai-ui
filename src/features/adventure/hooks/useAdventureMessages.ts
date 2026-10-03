@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 import type { AdventureMessage } from '../types';
 import type { AdventureMembershipSummary, ContextAttributes } from '../../sidebar/types';
 
@@ -93,7 +93,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
     setLoadError(false);
     knownIds.current = new Set();
 
-    apiFetch(`/api/adventures/${adventureId}`, { silent: true })
+    apiFetch(apiPath`/api/adventures/${adventureId}`, { silent: true })
       .then((res) => {
         if (!res.ok) throw new Error('Adventure not accessible');
         return res.json();
@@ -112,7 +112,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
           bumpFrequency: adv.contextAttributes?.bumpFrequency ?? 0,
         });
 
-        return apiFetch(`/api/adventures/${adventureId}/messages?size=50`)
+        return apiFetch(apiPath`/api/adventures/${adventureId}/messages?size=50`)
           .then((res) => res.json())
           .then((data: CursorResult<MessageSummary>) => {
             setHasMore(data.hasMore);
@@ -132,7 +132,7 @@ export function useAdventureMessages(adventureId: string): UseAdventureMessagesR
     const oldestId = messages[0].id;
     setIsFetchingMore(true);
 
-    apiFetch(`/api/adventures/${adventureId}/messages?lastMessageId=${oldestId}&size=50`)
+    apiFetch(apiPath`/api/adventures/${adventureId}/messages?lastMessageId=${oldestId}&size=50`)
       .then((res) => res.json())
       .then((data: CursorResult<MessageSummary>) => {
         setHasMore(data.hasMore);

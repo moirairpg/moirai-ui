@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { apiFetch } from '../../../utils/api';
+import { apiFetch, apiPath } from '../../../utils/api';
 import type { UpdateUsernameInput } from '../types';
 
 type UseUpdateUsernameResult = {
@@ -13,7 +13,7 @@ export function useUpdateUsername(): UseUpdateUsernameResult {
   const mutate = useCallback(async (username: string, input: UpdateUsernameInput) => {
     setIsLoading(true);
     try {
-      const res = await apiFetch(`/api/users/${username}/username`, {
+      const res = await apiFetch(apiPath`/api/users/${username}/username`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),

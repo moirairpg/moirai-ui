@@ -4,6 +4,11 @@ export const SESSION_RENEWED_EVENT = 'session-renewed';
 
 const HTTP_UNAUTHORIZED = 401;
 const SESSION_RENEWED_HEADER = 'X-Session-Renewed';
+const CLIENT_HEADER = 'X-Moirai-Client';
+const CLIENT_NAME = 'moirai-ui';
+const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS'];
+const DOT_SEGMENTS = ['.', '..'];
+const DOT_SEGMENT_PATTERN = /(^|\/)(\.|%2e){1,2}(\/|$)/i;
 
 const endSession = () => {
   window.dispatchEvent(new CustomEvent(SESSION_ENDED_EVENT));
@@ -31,11 +36,37 @@ export const extractApiError = async (res) => {
 
 const isSilenced = (silent, res) => (typeof silent === 'function' ? silent(res) : silent);
 
+const withClientHeader = (init) => {
+  const method = (init.method ?? 'GET').toUpperCase();
+
+  if (SAFE_METHODS.includes(method)) return init;
+
+  const headers = new Headers(init.headers);
+  headers.set(CLIENT_HEADER, CLIENT_NAME);
+
+  return { ...init, headers };
+};
+
+const hasDotSegment = (url) => DOT_SEGMENT_PATTERN.test(url.split(/[?#]/)[0]);
+
+const encodePathValue = (value) => {
+  const text = String(value);
+
+  if (DOT_SEGMENTS.includes(text)) throw new Error(`Invalid URL path value: ${text}`);
+
+  return encodeURIComponent(text);
+};
+
+export const apiPath = (strings, ...values) =>
+  strings.reduce((path, part, index) => path + part + (index < values.length ? encodePathValue(values[index]) : ''), '');
+
 const apiFetch = async (url, options = {}) => {
   const { silent = false, ...init } = options;
 
+  if (hasDotSegment(url)) throw new Error(`Refused API URL with a dot segment: ${url}`);
+
   try {
-    const res = await fetch(url, { ...init, credentials: 'include' });
+    const res = await fetch(url, { ...withClientHeader(init), credentials: 'include' });
 
     if (res.headers.get(SESSION_RENEWED_HEADER)) {
       window.dispatchEvent(new CustomEvent(SESSION_RENEWED_EVENT));
@@ -87,38 +118,38 @@ export const api = {
     uploadImage: (id, file, options = {}) => {
       const form = new FormData();
       form.append('file', file);
-      return apiFetch(`/api/worlds/${id}/image`, { ...options, method: 'PUT', body: form });
+      return apiFetch(apiPath`/api/worlds/${id}/image`, { ...options, method: 'PUT', body: form });
     },
     removeImage: (id) =>
-      apiFetch(`/api/worlds/${id}/image`, { method: 'DELETE' }),
+      apiFetch(apiPath`/api/worlds/${id}/image`, { method: 'DELETE' }),
   },
   adventure: {
     uploadImage: (id, file, options = {}) => {
       const form = new FormData();
       form.append('file', file);
-      return apiFetch(`/api/adventures/${id}/image`, { ...options, method: 'PUT', body: form });
+      return apiFetch(apiPath`/api/adventures/${id}/image`, { ...options, method: 'PUT', body: form });
     },
     removeImage: (id) =>
-      apiFetch(`/api/adventures/${id}/image`, { method: 'DELETE' }),
+      apiFetch(apiPath`/api/adventures/${id}/image`, { method: 'DELETE' }),
     invite: (adventureId, usernames, options = {}) =>
-      apiFetch(`/api/adventures/${adventureId}/invitations`, {
+      apiFetch(apiPath`/api/adventures/${adventureId}/invitations`, {
         ...options,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ usernames }),
       }),
     removeCharacter: (adventureId, playerCharacterId, options = {}) =>
-      apiFetch(`/api/adventures/${adventureId}/characters/${playerCharacterId}`, { ...options, method: 'DELETE' }),
+      apiFetch(apiPath`/api/adventures/${adventureId}/characters/${playerCharacterId}`, { ...options, method: 'DELETE' }),
   },
   adventureInvitations: {
     join: (invitationId, playerCharacterId) =>
-      apiFetch(`/api/adventures/invitations/${invitationId}/join`, {
+      apiFetch(apiPath`/api/adventures/invitations/${invitationId}/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ playerCharacterId }),
       }),
     decline: (invitationId) =>
-      apiFetch(`/api/adventures/invitations/${invitationId}/decline`, { method: 'POST' }),
+      apiFetch(apiPath`/api/adventures/invitations/${invitationId}/decline`, { method: 'POST' }),
   },
   character: {
     search: (name) =>
@@ -126,15 +157,15 @@ export const api = {
     uploadImage: (id, file, options = {}) => {
       const form = new FormData();
       form.append('file', file);
-      return apiFetch(`/api/player-characters/${id}/image`, { ...options, method: 'PUT', body: form });
+      return apiFetch(apiPath`/api/player-characters/${id}/image`, { ...options, method: 'PUT', body: form });
     },
     removeImage: (id) =>
-      apiFetch(`/api/player-characters/${id}/image`, { method: 'DELETE' }),
+      apiFetch(apiPath`/api/player-characters/${id}/image`, { method: 'DELETE' }),
   },
   assetPermissions: {
-    list: (assetKind, assetId) => apiFetch(`/api/${assetKind}/${assetId}/permissions`),
+    list: (assetKind, assetId) => apiFetch(apiPath`/api/${assetKind}/${assetId}/permissions`),
     save: (assetKind, assetId, visibility, members, options = {}) =>
-      apiFetch(`/api/${assetKind}/${assetId}/permissions`, {
+      apiFetch(apiPath`/api/${assetKind}/${assetId}/permissions`, {
         ...options,
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
